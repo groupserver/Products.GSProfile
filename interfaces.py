@@ -26,12 +26,23 @@ class IGSSetPassword(Interface):
 
 EMAIL_RE = r'[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}'
 check_email = re.compile(EMAIL_RE).match
-class IGSRequestPasswordReset(Interface):
-    """Schema used to request that the user's password is reset.
-    """
 
+class IGSEmailAddressEntry(Interface):
     email = TextLine(title=u'Email Address',
         description=u'The email address that you use for this site',
         required=True,
         constraint=check_email)
+
+class IGSRequestPasswordReset(IGSEmailAddressEntry):
+    """Schema used to request that the user's password is reset.
+    """
+
+class IGSRequestRegistration(IGSEmailAddressEntry):
+    """Schema use to define the user-interface that start the whole
+    registration process"""
+    
+class IGSResendVerification(IGSEmailAddressEntry):
+    """Schema use to define the user-interface that the user uses to
+    resend his or her verification email, while in the middle of 
+    registration."""
 

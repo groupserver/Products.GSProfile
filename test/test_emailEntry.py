@@ -37,7 +37,7 @@ def test_posting():
       >>> zcml.load_config('permissions.zcml', Products.Five)
       >>> zcml.load_config('configure.zcml', Products.GSProfile)
 
-      >>> from Products.GSProfile.interfaces import IGSRequestPasswordReset
+      >>> from Products.GSProfile.interfaces import *
 
     Create an implementation of the IGSRequestPasswordReset schema
       >>> class RequestPasswordReset(object):
@@ -48,6 +48,8 @@ def test_posting():
       ...     def __init__(self, email):
       ...         self.email = email
       >>> IGSRequestPasswordReset.implementedBy(RequestPasswordReset)
+      True
+      >>> IGSEmailAddressEntry.implementedBy(RequestPasswordReset)
       True
 
     Create a test request, which will validate

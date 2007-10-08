@@ -18,7 +18,16 @@
     interface=".interfaces.IGSSetPassword" />
     
   <interface 
+    interface=".interfaces.IGSEmailAddressEntry" />
+
+  <interface 
     interface=".interfaces.IGSRequestPasswordReset" />
+
+  <interface 
+    interface=".interfaces.IGSRequestRegistration" />
+
+  <interface 
+    interface=".interfaces.IGSResendVerification" />
 
 </configure>
 
