@@ -29,5 +29,8 @@
   <interface 
     interface=".interfaces.IGSResendVerification" />
 
+  <interface 
+    interface=".interfaces.IGSCoreProfile" />
+
 </configure>
 
