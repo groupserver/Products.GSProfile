@@ -16,5 +16,9 @@
   
   <interface 
     interface=".interfaces.IGSSetPassword" />
+    
+  <interface 
+    interface=".interfaces.IGSRequestPasswordReset" />
+
 </configure>
 

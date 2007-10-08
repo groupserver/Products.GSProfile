@@ -31,13 +31,13 @@ def test_posting():
       >>> import zope.interface, zope.schema
       >>> from zope.interface.verify import verifyObject
 
-      >>> import Products.GSRegister
+      >>> import Products.GSProfile
       >>> from Products.Five import zcml
       >>> zcml.load_config('meta.zcml', Products.Five)
       >>> zcml.load_config('permissions.zcml', Products.Five)
-      >>> zcml.load_config('configure.zcml', Products.GSRegister)
+      >>> zcml.load_config('configure.zcml', Products.GSProfile)
 
-      >>> from Products.GSRegister.interfaces import IGSSetPassword
+      >>> from Products.GSProfile.interfaces import IGSSetPassword
 
     Create an implementation of the IGSSetPassword schema
       >>> class Password(object):
