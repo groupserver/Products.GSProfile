@@ -28,35 +28,41 @@ def test_posting():
       >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
       >>> import Products.Five
-      >>> import zope.interface, zope.schema
-      >>> from zope.interface.verify import verifyObject
-
-      >>> import Products.GSProfile
       >>> from Products.Five import zcml
       >>> zcml.load_config('meta.zcml', Products.Five)
       >>> zcml.load_config('permissions.zcml', Products.Five)
-      >>> zcml.load_config('configure.zcml', Products.GSProfile)
 
+      >>> import zope.interface, zope.schema
+      >>> from zope.interface.verify import verifyObject
+
+      >>> import Products.Five.formlib, Products.Five.form
+      >>> zcml.load_config('configure.zcml', Products.Five.formlib)
+      >>> zcml.load_config('configure.zcml', Products.Five.form)
+
+      >>> import Products.GSProfile
+      >>> zcml.load_config('configure.zcml', Products.GSProfile)
       >>> from Products.GSProfile.interfaces import *
 
-      >>> class DataHandler(object):
-      ...     
-      ...     email = None
-      ...     
-      ...     def getData(self):
-      ...         return {'email': self.email}
+    Create the test form
+      >>> from zope.formlib import form
+      >>> class TestForm(object):
+      ...     form_fields = form.Fields(IGSRequestPasswordReset)
+      ... 
+      ...     def __init__(self, context, request):
+      ...         self.context, self.request = context, request
+      ... 
+      ...     def __call__(self, ignore_request=False):
+      ...         widgets = form.setUpWidgets(self.form_fields, 'form',
+      ...           self.context, self.request, 
+      ...           ignore_request=ignore_request)
+      ...         return u'\\n'.join([w() for w in widgets])
       ...
-      ...     def setData(self, data):
-      ...         self.email = data['email']
-      ...         return u'Saved changes'
-      ...
-      >>> from zope.app.form.browser.formview import FormView
-      >>> View = type('View', bases=(DataHandler, FormView),
-      ...             dict={'schema': IGSRequestPasswordReset})
-      
+      >>> len(TestForm.form_fields)
+      1
       >>> from zope.publisher.browser import TestRequest
-      >>> request = TestRequest()      
-      >>> view = View(None, request)
+      >>> request = TestRequest()
+      >>> print TestForm(None, request)() # doctest: +NORMALIZE_WHITESPACE
+      <input class="textType" id="form.email" name="form.email" size="20" type="text" value=""  />
       
     Clean up:
       >>> tearDown()
