@@ -31,7 +31,6 @@ def test_posting():
       >>> from Products.Five import zcml
       >>> zcml.load_config('meta.zcml', Products.Five)
       >>> zcml.load_config('permissions.zcml', Products.Five)
-
       >>> import zope.interface, zope.schema
       >>> from zope.interface.verify import verifyObject
 
@@ -44,25 +43,27 @@ def test_posting():
       >>> from Products.GSProfile.interfaces import *
 
     Create the test form
-      >>> from zope.formlib import form
-      >>> class TestForm(object):
-      ...     form_fields = form.Fields(IGSRequestPasswordReset)
-      ... 
-      ...     def __init__(self, context, request):
-      ...         self.context, self.request = context, request
-      ... 
-      ...     def __call__(self, ignore_request=False):
-      ...         widgets = form.setUpWidgets(self.form_fields, 'form',
-      ...           self.context, self.request, 
-      ...           ignore_request=ignore_request)
-      ...         return u'\\n'.join([w() for w in widgets])
-      ...
+      >>> from Products.GSProfile.request_reset_password import TestForm
       >>> len(TestForm.form_fields)
       1
+      
+    Load GroupServer Content
+      >>> import Products.GSContent
+      >>> zcml.load_config('configure.zcml', Products.GSContent)
+      
+    Create some context
+      >>> from Products.Five.tests.testing.simplecontent import manage_addSimpleContent
+      >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+      >>> uf = self.folder.acl_users
+      >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+      >>> self.login('manager')
+
+    Test the form
       >>> from zope.publisher.browser import TestRequest
       >>> request = TestRequest()
-      >>> print TestForm(None, request)() # doctest: +NORMALIZE_WHITESPACE
-      <input class="textType" id="form.email" name="form.email" size="20" type="text" value=""  />
+      >>> request.RESPONSE = request.response
+      >>> testPage = TestForm(self.folder, request)
+      >>> testPage()
       
     Clean up:
       >>> tearDown()

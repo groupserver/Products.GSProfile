@@ -28,7 +28,7 @@ EMAIL_RE = r'[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}'
 check_email = re.compile(EMAIL_RE).match
 
 class IGSEmailAddressEntry(Interface):
-    email = TextLine(title=u'Email Address',
+    email = ASCIILine(title=u'Email Address',
         description=u'The email address that you use for this site',
         required=True,
         constraint=check_email)
