@@ -43,8 +43,8 @@ def test_posting():
       >>> from Products.GSProfile.interfaces import *
 
     Create the test form
-      >>> from Products.GSProfile.request_reset_password import TestForm
-      >>> len(TestForm.form_fields)
+      >>> from Products.GSProfile.request_reset_password import RequestPasswordResetForm
+      >>> len(RequestPasswordResetForm.form_fields)
       1
       
     Load GroupServer Content
@@ -58,11 +58,13 @@ def test_posting():
       >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
       >>> self.login('manager')
 
-    Test the form
+    Create a request
       >>> from zope.publisher.browser import TestRequest
       >>> request = TestRequest()
       >>> request.RESPONSE = request.response
-      >>> testPage = TestForm(self.folder, request)
+
+    Test the form
+      >>> testPage = RequestPasswordResetForm(self.folder, request)
       >>> testPage = testPage.__of__(self.folder.testoid) 
       >>> testPage.update()
       >>> print testPage() # doctest: +NORMALIZE_WHITESPACE
@@ -75,12 +77,17 @@ def test_posting():
       <h1>Reset Password</h1>
       ...
       <label for="form.email"
-         title="The email address that you use for this site">* Email Address</label>
+         title="Your email address.">* Email Address</label>
       ...
       <input class="textType" id="form.email" name="form.email" size="20" 
       type="text" value=""  />
       ...
-      
+      <div class="buttons">
+      ...
+      <input type="submit" id="form.actions.reset" 
+        name="form.actions.reset" value="Reset" class="button" />
+      ...
+            
     Clean up:
       >>> tearDown()
       

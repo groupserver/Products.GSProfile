@@ -29,7 +29,7 @@ check_email = re.compile(EMAIL_RE).match
 
 class IGSEmailAddressEntry(Interface):
     email = ASCIILine(title=u'Email Address',
-        description=u'The email address that you use for this site',
+        description=u'Your email address.',
         required=True,
         constraint=check_email)
 

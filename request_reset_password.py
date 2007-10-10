@@ -4,13 +4,13 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Products.GSProfile.interfaces import *
 
-class TestForm(PageForm):
+class RequestPasswordResetForm(PageForm):
     form_fields = form.Fields(IGSRequestPasswordReset)
     label = u'Reset Password'
     pageTemplateFileName = 'browser/templates/request_password_reset.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
-    @form.action(u'Stuff')
-    def handle_stuff(self, action, data):
+    @form.action(u'Reset')
+    def handle_reset(self, action, data):
         pass
 
