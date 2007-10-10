@@ -63,7 +63,23 @@ def test_posting():
       >>> request = TestRequest()
       >>> request.RESPONSE = request.response
       >>> testPage = TestForm(self.folder, request)
-      >>> testPage()
+      >>> testPage = testPage.__of__(self.folder.testoid) 
+      >>> testPage.update()
+      >>> print testPage() # doctest: +NORMALIZE_WHITESPACE
+      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+      ...
+      <title>
+          Reset Password
+      </title>
+      ...
+      <h1>Reset Password</h1>
+      ...
+      <label for="form.email"
+         title="The email address that you use for this site">* Email Address</label>
+      ...
+      <input class="textType" id="form.email" name="form.email" size="20" 
+      type="text" value=""  />
+      ...
       
     Clean up:
       >>> tearDown()

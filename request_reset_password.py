@@ -10,7 +10,7 @@ class TestForm(PageForm):
     pageTemplateFileName = 'browser/templates/request_password_reset.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
-    form.action(u'Stuff')
+    @form.action(u'Stuff')
     def handle_stuff(self, action, data):
         pass
 
