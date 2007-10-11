@@ -77,3 +77,13 @@ class IGSCoreProfile(Interface):
       description=u'A desciption of you.',
       required=False)
 
+# Marker interfaces
+
+class IGSRequestPasswordResetMarker(Interface):
+    """Marker interface for the request password reset page.
+    """
+
+class IGSRequestRegistrationMarker(Interface):
+    """Marker interface for the request registration page.
+    """
+

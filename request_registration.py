@@ -10,7 +10,7 @@ from Products.GSProfile.interfaces import *
 class RequestRegistrationForm(PageForm):
     form_fields = form.Fields(IGSRequestRegistration)
     label = u'Register'
-    pageTemplateFileName = 'browser/templates/request_registration.pt'
+    pageTemplateFileName = 'browser/templates/request_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     # --=mpj17=--

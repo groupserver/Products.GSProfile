@@ -14,23 +14,40 @@
   <five:traversable 
     class="OFS.Folder.Folder" />
   
+  <!-- Form schemas -->
+  
   <interface 
     interface=".interfaces.IGSSetPassword" />
-    
   <interface 
     interface=".interfaces.IGSEmailAddressEntry" />
-
   <interface 
     interface=".interfaces.IGSRequestPasswordReset" />
-
   <interface 
     interface=".interfaces.IGSRequestRegistration" />
-
   <interface 
     interface=".interfaces.IGSResendVerification" />
-
   <interface 
     interface=".interfaces.IGSCoreProfile" />
+  
+  <!-- Marker interfaces and views -->
 
+  <interface 
+    interface=".interfaces.IGSRequestPasswordResetMarker" 
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSRequestPasswordResetMarker"
+    name="index.html"
+    class=".request_password_reset.RequestPasswordResetForm"
+    permission="zope2.View" />
+ 
+  <interface 
+    interface=".interfaces.IGSRequestRegistrationMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSRequestRegistrationMarker"
+    name="index.html"
+    class=".request_registration.RequestRegistrationForm"
+    permission="zope2.View" />
+ 
 </configure>
 
