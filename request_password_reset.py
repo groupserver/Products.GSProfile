@@ -2,6 +2,7 @@
 '''Implementation of the Reset Password Request form.
 '''
 from Products.Five.formlib.formbase import PageForm
+from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
@@ -12,6 +13,10 @@ class RequestPasswordResetForm(PageForm):
     label = u'Reset Password'
     pageTemplateFileName = 'browser/templates/request_password_reset.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+    def __init__(self, context, request):
+        PageForm.__init__(self, context, request)
+        self.siteInfo = createObject('groupserver.SiteInfo', context)
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with

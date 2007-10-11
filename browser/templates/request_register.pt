@@ -3,9 +3,10 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
-  xmlns:metal="http://xml.zope.org/namespaces/metal">
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
-    <title >
+    <title metal:fill-slot="title">
       <span tal:replace="view/label">
         Register
       </span>
@@ -20,6 +21,7 @@
     -->
   </head>
   <body>
+    <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL">
         
@@ -89,6 +91,7 @@
           </tal:block>
         </div><!--buttons-->
       </form>
+    </tal:block>
   </body>
 </html>
 

@@ -2,6 +2,7 @@
 '''Implementation of the Request Registration form.
 '''
 from Products.Five.formlib.formbase import PageForm
+from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
@@ -12,6 +13,10 @@ class RequestRegistrationForm(PageForm):
     label = u'Register'
     pageTemplateFileName = 'browser/templates/request_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+    def __init__(self, context, request):
+        PageForm.__init__(self, context, request)
+        self.siteInfo = createObject('groupserver.SiteInfo', context)
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
