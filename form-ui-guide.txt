@@ -1,0 +1,61 @@
+= GroupServer Form UI Guide =
+
+- Titles -
+  
+  The title of the page, and the primary heading on the page, will be 
+  written in the form Verb Noun (action object). For example
+    * Reset Password
+    * Add Friend
+    * Play Thermonuclear War
+
+  
+- Elements -
+  
+  All elements should have an associated label. The label should be a noun:
+    * Email Address
+    * Message
+    * Biography 
+
+  
+- Buttons -
+
+  The primary, or only, button for a form shall be labelled with a verb. 
+  The button label should be taken from the title of the page:
+    * Reset
+    * Add
+    * Play
+  If there is a secondary button, it shall also be labelled with a verb,
+  with the accompanying help text giving further information, such as a
+  "Preview" button.
+
+  All buttons shall be placed at the bottom of the form.
+
+  There shall never be a button for clearing (resetting) the form. See
+  Jakob Nielsen's Alertbox article
+    http://www.useit.com/alertbox/20000416.html
+
+
+- Help Text - 
+  
+  Help text should be provided for the entire form, and each form element.
+  
+  The help text for the form should state
+    * The purpose of the form,
+    * What will be disclosed (if anything), and
+    * What will happen when the form is submitted.
+  When a button is referred to in the help text, it should be referred to
+  as “the <samp class="button">verb</samp> button”. A link is referred to
+  by just the link-text.
+  
+  All form elements should have some help text. This text should describe 
+  how the element fits into the wider context of the system.
+
+
+- Error Messages -
+
+  Error messages must state:
+    * What happened, and
+    * What the user should do about it.
+  See the guidelines for the GNOME Error Alerts:
+    http://developer.gnome.org/projects/gup/hig/2.0/windows-alert.html#alerts-error
+

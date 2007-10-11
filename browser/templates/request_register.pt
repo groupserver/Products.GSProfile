@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal">
+  <head>
+    <title >
+      <span tal:replace="view/label">
+        Register
+      </span>
+    </title>
+    <!--=mpj17=-->
+    <!--
+      All forms submit to themselves, as the view handles the data, as it
+      does with the XForms in GroupServer 0.9. We always post, as the form
+      may have a side-effect.
+      
+      2007-08-10
+    -->
+  </head>
+  <body>
+      <form enctype="multipart/form-data"  method="post" action="."
+        tal:attributes="action request/URL">
+        
+        <h1 tal:content="view/label">Register</h1>
+        
+        <p class="form-status" tal:condition="view/status" 
+          tal:content="view/status"/>
+          
+        <p tal:condition="not:view/status">
+          To register with this site, enter your email address below, and
+          click the 
+          <samp class="button" 
+            tal:define="action python:view.avaliableActions[0].label"
+            tal:content="label">Big R</samp> 
+          button.
+          Afterwards, the following will happen.
+        </p>
+        <ol>
+          <li>You will be sent a message, to confirm that the email 
+            address you entered is correct.</li>
+          <li>While waiting for the message to arrive, you will
+            be given a chance to fill out your profile.</li>
+          <li>Finally, you will get to set a password, which you 
+            will use to log in to this site.</li>
+        </ol>
+          
+        <p>By registering with this site, you agree to adhere to the 
+          terms and conditions.
+          Your privacy is important to us, and will be maintained 
+          according to the privacy policy of this site.</p>
+          
+        <tal:block repeat="widget view/widgets">
+          <div class="form-widget" id="widget-abc123" 
+            tal:define="style python:widget.required and 'required' or ''"
+            tal:attributes="id string:widget-${widget/name};
+              class string:form-widget ${widget/type} ${style}">
+            
+            <label for="abc123" title="The hint for the widget"
+              tal:attributes="for widget/name; title widget/hint"
+              tal:define="reqMark python:widget.required and '*' or ''"
+              tal:content="string:${reqMark} ${widget/label}">
+              A label
+            </label>
+            
+            <p class="hint" tal:content="widget/hint" />
+            
+            <p class="error" tal:condition="widget/error"
+              tal:content="structure widget/error">
+              Error message
+            </p>
+            
+            <span id="abc123" tal:replace="structure widget">Widget</span>
+          </div><!--form-widget-->
+        </tal:block>
+        
+        <p class="note">
+          <strong>Add <code class="email">validation@valid.valid</code>
+          to your email address book</strong>, to ensure that you receive
+          the verification message.
+        </p>
+        
+        <div class="buttons" tal:condition="view/availableActions">
+          <tal:block repeat="action view/actions">
+            <div class="formelementbutton">
+              <span tal:replace="structure action/render">Button</span>
+            </div>
+          </tal:block>
+        </div><!--buttons-->
+      </form>
+  </body>
+</html>
+

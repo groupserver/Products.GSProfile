@@ -43,7 +43,7 @@ def test_posting():
       >>> from Products.GSProfile.interfaces import *
 
     Create the test form
-      >>> from Products.GSProfile.request_reset_password import RequestPasswordResetForm
+      >>> from Products.GSProfile.request_password_reset import RequestPasswordResetForm
       >>> len(RequestPasswordResetForm.form_fields)
       1
       
@@ -67,6 +67,17 @@ def test_posting():
       >>> testPage = RequestPasswordResetForm(self.folder, request)
       >>> testPage = testPage.__of__(self.folder.testoid) 
       >>> testPage.update()
+      >>> widgets = [w for w in testPage.widgets]
+      >>> len(widgets)
+      1
+      >>> widgets[0].label
+      u'Email Address'
+      >>> widgets[0].name
+      'form.email'
+      >>> len(testPage.availableActions())
+      1
+      >>> testPage.availableActions()[0].label
+      u'Reset'      
       >>> print testPage() # doctest: +NORMALIZE_WHITESPACE
       <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
       ...
@@ -74,20 +85,16 @@ def test_posting():
           Reset Password
       </title>
       ...
-      <h1>Reset Password</h1>
-      ...
       <label for="form.email"
          title="Your email address.">* Email Address</label>
       ...
       <input class="textType" id="form.email" name="form.email" size="20" 
       type="text" value=""  />
       ...
-      <div class="buttons">
-      ...
       <input type="submit" id="form.actions.reset" 
         name="form.actions.reset" value="Reset" class="button" />
       ...
-            
+
     Clean up:
       >>> tearDown()
       
