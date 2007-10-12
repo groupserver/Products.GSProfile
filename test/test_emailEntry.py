@@ -53,7 +53,7 @@ def test_posting():
       True
 
     Create a test request, which will validate
-      >>> okRequest1 = RequestPasswordReset(u'mpj17@onlinegroups.net')
+      >>> okRequest1 = RequestPasswordReset('mpj17@onlinegroups.net')
       
     Validate the request
       >>> IGSRequestPasswordReset.providedBy(okRequest1)
@@ -63,7 +63,7 @@ def test_posting():
 
     Create a test request, which will validate even though the address
     does not exist
-      >>> okRequest2 = RequestPasswordReset(u'foo@wibble.bar')
+      >>> okRequest2 = RequestPasswordReset('foo@wibble.bar')
       
     Validate the request
       >>> IGSRequestPasswordReset.providedBy(okRequest2)
@@ -73,7 +73,7 @@ def test_posting():
 
     Create a test request, which is invalid because the address is 
     incorrect
-      >>> badRequest1 = RequestPasswordReset(u'foo@bar')
+      >>> badRequest1 = RequestPasswordReset('foo@bar')
       
     Validate the request
       >>> IGSRequestPasswordReset.providedBy(badRequest1)
@@ -99,7 +99,7 @@ def test_posting():
       
     Create a test request, which is invalid because the address contains
     an illegal character
-      >>> badRequest3 = RequestPasswordReset(u'foo#blarg@wibble.bar')
+      >>> badRequest3 = RequestPasswordReset('foo#blarg@wibble.bar')
       
     Validate the request
       >>> IGSRequestPasswordReset.providedBy(badRequest3)
