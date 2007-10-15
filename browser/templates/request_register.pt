@@ -23,7 +23,8 @@
   <body>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action request/URL"
+        tal:define="siteName view/siteInfo/get_name">
         
         <h1 tal:content="view/label">Register</h1>
         
@@ -34,7 +35,7 @@
           To receive email messages and add posts, you must be a registered
           user of this site. 
           To register with 
-          <span class="site">this site</span>,
+          <span class="site" tal:content="siteName">this site</span>,
           enter your email address below, and click the 
           <samp class="button" 
             tal:define="action python:[a for a in view.actions][0].label"
@@ -50,7 +51,7 @@
           <li>You will be given a chance to fill out your profile, while
             waiting for the verification message to arrive.</li>
           <li>You will set a password, which you  will use to log in to
-            <span class="site">this site</span>.</li>
+            <span class="site" tal:content="siteName">this site</span>.</li>
         </ol>
         
         <div id="tc" class="disclosureWidget">
@@ -58,7 +59,7 @@
             <a class="disclosureButton" id="tc-button"
               href="javascript:showHideDisclosure('tc')">By registering 
               with
-              <span class="site">this site</span>,
+              <span class="site" tal:content="siteName">this site</span>,
               you agree to the  terms and conditions.</a>
           </p>
           <div class="disclosureShowHide" style="display: none;">
@@ -72,7 +73,7 @@
               href="javascript:showHideDisclosure('privacy')">Your privacy is
               important, and will be maintained  according to the privacy
               policy of 
-              <span class="site">this site</span>.</a>
+              <span class="site" tal:content="siteName">this site</span>.</a>
           </p>
           <div class="disclosureShowHide" style="display: none;">
             <div id="privacy-content">Loading&#8230;</div>
