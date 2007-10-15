@@ -31,8 +31,11 @@
           tal:content="view/status"/>
           
         <p tal:condition="not:view/status">
-          To register with this site, enter your email address below, and
-          click the 
+          To receive email messages and add posts, you must be a registered
+          user of this site. 
+          To register with 
+          <span class="site">this site</span>,
+          enter your email address below, and click the 
           <samp class="button" 
             tal:define="action python:[a for a in view.actions][0].label"
             tal:content="action">Big R</samp> 
@@ -40,19 +43,42 @@
           Afterwards, the following will happen.
         </p>
         <ol>
-          <li>You will be sent a message, to confirm that the email 
-            address you entered is correct.</li>
-          <li>While waiting for the message to arrive, you will
-            be given a chance to fill out your profile.</li>
-          <li>Finally, you will get to set a password, which you 
-            will use to log in to this site.</li>
+          <li>You will be sent an email message, to verify that the
+            address you entered is correct.
+            (If it is not correct, you will be given a chance to correct 
+            it.)</li>
+          <li>You will be given a chance to fill out your profile, while
+            waiting for the verification message to arrive.</li>
+          <li>You will set a password, which you  will use to log in to
+            <span class="site">this site</span>.</li>
         </ol>
-          
-        <p>By registering with this site, you agree to adhere to the 
-          terms and conditions.
-          Your privacy is important to us, and will be maintained 
-          according to the privacy policy of this site.</p>
-          
+        
+        <div id="tc" class="disclosureWidget">
+          <p>
+            <a class="disclosureButton" id="tc-button"
+              href="javascript:showHideDisclosure('tc')">By registering 
+              with
+              <span class="site">this site</span>,
+              you agree to the  terms and conditions.</a>
+          </p>
+          <div class="disclosureShowHide" style="display: none;">
+            <div id="tc-content">Loading&#8230;</div>
+          </div>
+        </div>
+       
+        <div id="privacy" class="disclosureWidget">
+          <p>
+            <a class="disclosureButton" id="privacy-button"
+              href="javascript:showHideDisclosure('privacy')">Your privacy is
+              important, and will be maintained  according to the privacy
+              policy of 
+              <span class="site">this site</span>.</a>
+          </p>
+          <div class="disclosureShowHide" style="display: none;">
+            <div id="privacy-content">Loading&#8230;</div>
+          </div>
+        </div>
+        
         <tal:block repeat="widget view/widgets">
           <div class="form-widget" id="widget-abc123" 
             tal:define="style python:widget.required and 'required' or ''"
@@ -61,12 +87,9 @@
             
             <label for="abc123" title="The hint for the widget"
               tal:attributes="for widget/name; title widget/hint"
-              tal:define="reqMark python:widget.required and '*' or ''"
-              tal:content="string:${reqMark} ${widget/label}">
+              tal:content="widget/label">
               A label
             </label>
-            
-            <p class="hint" tal:content="widget/hint" />
             
             <p class="error" tal:condition="widget/error"
               tal:content="structure widget/error">
@@ -78,7 +101,8 @@
         </tal:block>
         
         <p class="note">
-          <strong>Add <code class="email">validation@valid.valid</code>
+          <strong>Add 
+          <code class="email">validation@valid.valid</code>
           to your email address book</strong>, to ensure that you receive
           the verification message.
         </p>
@@ -92,6 +116,18 @@
         </div><!--buttons-->
       </form>
     </tal:block>
+    <script type="text/javascript" metal:fill-slot="javascript">
+      Event.observe($('tc-button'), 'click', function () {
+        new Ajax.Updater('tc-content',
+          '/help/participation/get_started/content_en',
+          {method: 'get'});
+      });
+      Event.observe($('privacy-button'), 'click', function () {
+        new Ajax.Updater('privacy-content',
+          '/help/participation/get_started/content_en',
+          {method: 'get'});
+      });
+    </script>
   </body>
 </html>
 

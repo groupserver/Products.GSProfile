@@ -14,7 +14,12 @@
   All elements should have an associated label. The label should be a noun:
     * Email Address
     * Message
-    * Biography 
+    * Biography
+    
+  The label for a required element should start with an asterisk, and the
+  form-widget division element should use the "register" class. If there is
+  only one form element on the page, then it is not necessary to mark it as
+  required.
 
   
 - Buttons -
@@ -40,15 +45,20 @@
   Help text should be provided for the entire form, and each form element.
   
   The help text for the form should state
-    * The purpose of the form,
-    * What will be disclosed (if anything), and
+    * Why it is necessary to fill out the form,
+    * How to fill out the form, and
     * What will happen when the form is submitted.
-  When a button is referred to in the help text, it should be referred to
-  as “the <samp class="button">verb</samp> button”. A link is referred to
-  by just the link-text.
+  If private information is disclosed after the form is submitted, this
+  must be stated.
+    
+  When a button is referred to in the help text, it must be referred to as
+  “the <samp class="button">verb</samp> button”. A link is referred to by
+  just the link-text.
   
-  All form elements should have some help text. This text should describe 
-  how the element fits into the wider context of the system.
+  Individual elements should have some help text. This text should describe 
+  how the element fits into the wider context of the system. The help text
+  may be presented as the element title, if it is short, or with JavaScript
+  popups, if the text is longer.
 
 
 - Error Messages -
