@@ -103,10 +103,25 @@
         </tal:block>
         
         <p class="note">
-          <strong>Add 
-          <code class="email">validation@valid.valid</code>
-          to your email address book</strong>, to ensure that you receive
-          the verification message.
+          Before clicking the
+          <samp class="button" 
+            tal:define="action python:[a for a in view.actions][0].label"
+            tal:content="action">Big R</samp> 
+          button,
+          <strong>add the contact
+          <code class="email">validation@valid.valid</code></strong>
+          to your email address book, to ensure that you receive the
+          verification message.
+          (Help with
+          <a title="How do I add people to my Contacts list? GMail Help Center"
+            href="http://mail.google.com/support/bin/answer.py?answer=8933&amp;topic=1530"
+            class="weblink">GMail</a>, 
+          <a title="How do I add a contact? Yahoo! Address Book" 
+            href="http://help.yahoo.com/l/us/yahoo/addressbook/updating/updating-02.html"
+            class="weblink">Yahoo! Mail</a>, 
+          <a title="Add a contact: MSN Hotmail Help"
+            href="http://help.msn.com/(ZmlsdGVyPURIX0ZSRUUmcHJvamVjdD1ob3RtYWlscGltdjEwJm1hcmtldD1lbi1VUyZjdT0mdG10PUhvdG1haWxQSU12MTAma2M9JmZvcm1hdD0=)/Help.aspx?market=en-US&amp;project=HotmailPIMv10&amp;querytype=topic&amp;query=PIM_PROC_AddContact.htm"
+            class="weblink">MSN Hotmail</a>.)
         </p>
         
         <div class="buttons" tal:condition="view/availableActions">
