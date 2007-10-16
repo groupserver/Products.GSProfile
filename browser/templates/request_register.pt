@@ -46,10 +46,8 @@
         </p>
         <ol>
           <li>You will be sent an email message, to verify that the
-            address you entered is correct.
-            (You will be able to correct it later, if it is 
-            incorrect.)</li>
-          <li>You will be given a chance to fill out your profile, while
+            address you entered is correct.</li>
+          <li>You will be able to fill out your profile, while
             waiting for the verification message to arrive.</li>
           <li>You will set a password, which you  will use to log in to
             <span class="site" tal:content="siteName">this site</span>.</li>
