@@ -23,6 +23,7 @@
   <body>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
+        id="register.form"
         tal:attributes="action request/URL"
         tal:define="siteName view/siteInfo/get_name">
         
@@ -110,16 +111,21 @@
           <code class="email">validation@valid.valid</code></strong>
           to your email address book, to ensure that you receive the
           verification message.
-          (Help with
-          <a title="How do I add people to my Contacts list? GMail Help Center"
-            href="http://mail.google.com/support/bin/answer.py?answer=8933&amp;topic=1530"
-            class="weblink">GMail</a>, 
-          <a title="How do I add a contact? Yahoo! Address Book" 
-            href="http://help.yahoo.com/l/us/yahoo/addressbook/updating/updating-02.html"
-            class="weblink">Yahoo! Mail</a>, 
-          <a title="Add a contact: MSN Hotmail Help"
-            href="http://help.msn.com/(ZmlsdGVyPURIX0ZSRUUmcHJvamVjdD1ob3RtYWlscGltdjEwJm1hcmtldD1lbi1VUyZjdT0mdG10PUhvdG1haWxQSU12MTAma2M9JmZvcm1hdD0=)/Help.aspx?market=en-US&amp;project=HotmailPIMv10&amp;querytype=topic&amp;query=PIM_PROC_AddContact.htm"
-            class="weblink">MSN Hotmail</a>.)
+          <strong id="addressBookHelp" style="display:none;">
+            Help with
+            <a id="gmail"
+              title="How do I add people to my Contacts list? GMail Help Center"
+              href="http://mail.google.com/support/bin/answer.py?answer=8933&amp;topic=1530"
+              class="weblink">GMail</a>
+            <a id="yahoo"
+              title="How do I add a contact? Yahoo! Address Book" 
+              href="http://help.yahoo.com/l/us/yahoo/addressbook/updating/updating-02.html"
+              class="weblink">Yahoo! Mail</a>
+            <a id="hotmail"
+              title="Add a contact: MSN Hotmail Help"
+              href="http://help.msn.com/(ZmlsdGVyPURIX0ZSRUUmcHJvamVjdD1ob3RtYWlscGltdjEwJm1hcmtldD1lbi1VUyZjdT0mdG10PUhvdG1haWxQSU12MTAma2M9JmZvcm1hdD0=)/Help.aspx?market=en-US&amp;project=HotmailPIMv10&amp;querytype=topic&amp;query=PIM_PROC_AddContact.htm"
+              class="weblink">MSN Hotmail</a>
+          </strong><!--addressbook-->
         </p>
         
         <div class="buttons" tal:condition="view/availableActions">
@@ -131,18 +137,47 @@
         </div><!--buttons-->
       </form>
     </tal:block>
-    <script type="text/javascript" metal:fill-slot="javascript">
-      Event.observe($('tc-button'), 'click', function () {
-        new Ajax.Updater('tc-content',
-          '/help/participation/get_started/content_en',
-          {method: 'get'});
-      });
-      Event.observe($('privacy-button'), 'click', function () {
-        new Ajax.Updater('privacy-content',
-          '/help/participation/get_started/content_en',
-          {method: 'get'});
-      });
-    </script>
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript">
+        Event.observe($('tc-button'), 'click', function () {
+          new Ajax.Updater('tc-content',
+            '/help/participation/get_started/content_en',
+            {method: 'get'});
+        });
+        Event.observe($('privacy-button'), 'click', function () {
+          new Ajax.Updater('privacy-content',
+            '/help/participation/get_started/content_en',
+            {method: 'get'});
+        });
+      </script>
+      
+      <script type="text/javascript" 
+        src="/++resource++jquery-1.2.1.min.js">&#160;</script>
+      <script type="text/javascript">
+        jQuery.noConflict()
+        jQuery("#form\\.email").blur(function() {
+            addr = this.value.toLowerCase();
+            if ( addr.match('gmail.com') ) {
+              jQuery("#addressBookHelp").css({display: "inline"});
+              jQuery("#gmail").css({display: "inline"});
+              jQuery("#yahoo").css({display: "none"});
+              jQuery("#hotmail").css({display: "none"});
+            }
+            else if ( addr.match('mail.yahoo.com') ) {
+              jQuery("#addressBookHelp").css({display: "inline"});
+              jQuery("#gmail").css({display: "none"});
+              jQuery("#yahoo").css({display: "inline"});
+              jQuery("#hotmail").css({display: "none"});            
+            }
+            else if ( addr.match('hotmail.com') ) {
+              jQuery("#addressBookHelp").css({display: "inline"});
+              jQuery("#gmail").css({display: "none"});
+              jQuery("#yahoo").css({display: "none"});
+              jQuery("#hotmail").css({display: "inline"});
+            }
+        });
+      </script>
+    </tal:block>
   </body>
 </html>
 
