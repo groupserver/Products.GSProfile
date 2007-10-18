@@ -138,8 +138,6 @@
       </form>
     </tal:block>
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript" 
-        src="/++resource++jquery-1.2.1.min.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict()
                 
