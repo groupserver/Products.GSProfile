@@ -138,24 +138,11 @@
       </form>
     </tal:block>
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript">
-        Event.observe($('tc-button'), 'click', function () {
-          new Ajax.Updater('tc-content',
-            '/help/participation/get_started/content_en',
-            {method: 'get'});
-        });
-        Event.observe($('privacy-button'), 'click', function () {
-          new Ajax.Updater('privacy-content',
-            '/help/participation/get_started/content_en',
-            {method: 'get'});
-        });
-      </script>
-      
       <script type="text/javascript" 
         src="/++resource++jquery-1.2.1.min.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict()
-        
+                
         gs_check_for_webmail = function (addr) {
             shown = jQuery("#addressBookHelp").css("display") != "none";
             if ( addr.match('@gmail.') ) {
@@ -181,7 +168,6 @@
             }
         }
         
-        jQuery("#form\\.actions\\.register").attr("disabled","disabled");
         gs_check_address = function (addr) {
             // Check the email address  to see if it is valid.
             // --=mpj17=-- It would be good if we could get the following
@@ -196,10 +182,22 @@
         }
         
         jQuery(document).ready( function () {
+            jQuery("#form\\.actions\\.register").attr("disabled","disabled");
+
             jQuery("#form\\.email").keyup(function(e) {
                 addr = this.value.toLowerCase();
                 gs_check_for_webmail(addr);
                 gs_check_address(addr);
+            });
+            
+            jQuery("#privacy-button").click( function () {
+                uri = "/help/participation/get_started/content_en";
+                jQuery("#privacy-content").load(uri);
+            });
+
+            jQuery("#tc-button").click( function () {
+                uri = "/help/participation/get_started/content_en";
+                jQuery("#tc-content").load(uri);
             });
         });
       </script>
