@@ -49,5 +49,13 @@
     class=".request_registration.RequestRegistrationForm"
     permission="zope2.View" />
  
+  <interface 
+    interface=".interfaces.IGSSetPasswordMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSSetPasswordMarker"
+    name="index.html"
+    class=".set_password.SetPasswordForm"
+    permission="zope2.View" />
 </configure>
 

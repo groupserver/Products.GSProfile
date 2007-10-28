@@ -87,3 +87,7 @@ class IGSRequestRegistrationMarker(Interface):
     """Marker interface for the request registration page.
     """
 
+class IGSSetPasswordMarker(Interface):
+    """Marker interface for the set password page.
+    """
+
