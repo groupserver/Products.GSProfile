@@ -57,5 +57,9 @@
     name="index.html"
     class=".set_password.SetPasswordForm"
     permission="zope2.View" />
+  <browser:resource name="check_password-20071101.js" 
+    file="browser/javascript/check_password.js"
+    permission="zope2.Public" />
+
 </configure>
 
