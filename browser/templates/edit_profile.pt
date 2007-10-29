@@ -33,7 +33,7 @@
         <p tal:condition="not:view/status">
 
         </p>
-          
+                
         <tal:block repeat="widget view/widgets">
           <div class="form-widget" id="widget-abc123" 
             tal:define="style python:widget.required and 'required' or ''"
@@ -68,9 +68,18 @@
       <script type="text/javascript" 
         src="++resource++jquery-1.2.1.min.js">&#160;</script>  
       <script type="text/javascript"
-        src="++resource++check_email-20071101.js">&#160;</script>
-      <script type="text/javascript">
-          // Stuff
+        src="++resource++check_required-20071101.js">&#160;</script>
+      <script type="text/javascript"
+        tal:define="rws python:[w for w in view.widgets if w.required];
+          rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
+          arr python:'%s' % ', '.join(rwIds);">
+        jQuery.noConflict()
+        jQuery(document).ready( function () {
+            var requiredWidgets = new Array(<span tal:replace="arr" />);
+            GSCheckRequired.init(
+              requiredWidgets, 
+              '#form\\.actions\\.edit');
+        });
       </script>
     </tal:block>
   </body>
