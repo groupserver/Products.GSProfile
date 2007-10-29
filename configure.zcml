@@ -39,6 +39,9 @@
     name="index.html"
     class=".request_password_reset.RequestPasswordResetForm"
     permission="zope2.View" />
+  <browser:resource name="check_email-20071101.js" 
+    file="browser/javascript/check_email.js"
+    permission="zope2.Public" />
  
   <interface 
     interface=".interfaces.IGSRequestRegistrationMarker"

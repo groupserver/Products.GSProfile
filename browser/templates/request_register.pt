@@ -139,57 +139,19 @@
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript" 
-        src="++resource++jquery-1.2.1.min.js">&#160;</script>      
+        src="++resource++jquery-1.2.1.min.js">&#160;</script>  
+      <script type="text/javascript"
+        src="++resource++check_email-20071101.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict()
-                
-        gs_check_for_webmail = function (addr) {
-            shown = jQuery("#addressBookHelp").css("display") != "none";
-            if ( addr.match('@gmail.') ) {
-                jQuery("#addressBookHelp").fadeIn("slow");
-                jQuery("#gmail").css({display: "inline"});
-                jQuery("#yahoo").css({display: "none"});
-                jQuery("#hotmail").css({display: "none"});
-            }
-            else if ( addr.match('@yahoo.') ) {
-                jQuery("#addressBookHelp").fadeIn("slow");
-                jQuery("#gmail").css({display: "none"});
-                jQuery("#yahoo").css({display: "inline"});
-                jQuery("#hotmail").css({display: "none"});            
-            }
-            else if ( addr.match('@hotmail.') ) {
-                jQuery("#addressBookHelp").fadeIn("slow");
-                jQuery("#gmail").css({display: "none"});
-                jQuery("#yahoo").css({display: "none"});
-                jQuery("#hotmail").css({display: "inline"});
-            }
-            else if ( shown ) {
-                jQuery("#addressBookHelp").fadeOut("slow");
-            }
-        }
-        
-        gs_check_address = function (addr) {
-            // Check the email address  to see if it is valid.
-            // --=mpj17=-- It would be good if we could get the following
-            //    regular expression from the interface module.
-            regexp = /[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}/;
-            elem = jQuery("#form\\.actions\\.register")
-            if ( regexp.test(addr) ) {
-                elem.attr("disabled",""); //Enable the element
-            } else {
-                elem.attr("disabled","disabled"); //Disable the element
-            }
-        }
-        
         jQuery(document).ready( function () {
-            jQuery("#form\\.actions\\.register").attr("disabled","disabled");
-
-            jQuery("#form\\.email").keyup(function(e) {
-                addr = this.value.toLowerCase();
-                gs_check_for_webmail(addr);
-                gs_check_address(addr);
-            });
-            
+            var webmail = new Array('gmail', 'hotmail', 'yahoo');
+            GSCheckEmailAddress.init(
+                '#form\\.email',
+                '#form\\.actions\\.register',
+                '#addressBookHelp',
+                webmail);
+        
             jQuery("#privacy-button").click( function () {
                 uri = "/help/participation/get_started/content_en";
                 jQuery("#privacy-content").load(uri);
