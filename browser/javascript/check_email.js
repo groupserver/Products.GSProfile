@@ -14,8 +14,10 @@ GSCheckEmailAddress = function () {
     // Private methods
     var check = function () {
         var addr = jQuery(email).val().toLowerCase();
-        check_for_webmail(addr);
         check_address(addr);
+        if ( help != null ) {
+            check_for_webmail(addr);
+        }
     }
     
     var check_for_webmail = function(addr) {
