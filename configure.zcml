@@ -14,6 +14,11 @@
   <five:traversable 
     class="OFS.Folder.Folder" />
   
+  <!-- Generic resources -->
+  <browser:resource name="check_email-20071101.js" 
+    file="browser/javascript/check_email.js"
+    permission="zope2.Public" />
+
   <!-- Form schemas -->
   
   <interface 
@@ -39,10 +44,7 @@
     name="index.html"
     class=".request_password_reset.RequestPasswordResetForm"
     permission="zope2.View" />
-  <browser:resource name="check_email-20071101.js" 
-    file="browser/javascript/check_email.js"
-    permission="zope2.Public" />
- 
+
   <interface 
     interface=".interfaces.IGSRequestRegistrationMarker"
     type="zope.app.content.interfaces.IContentType" />
@@ -63,6 +65,15 @@
   <browser:resource name="check_password-20071101.js" 
     file="browser/javascript/check_password.js"
     permission="zope2.Public" />
+
+  <interface 
+    interface=".interfaces.IGSEditProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSEditProfileMarker"
+    name="index.html"
+    class=".edit_profile.EditProfileForm"
+    permission="zope2.View" />
 
 </configure>
 

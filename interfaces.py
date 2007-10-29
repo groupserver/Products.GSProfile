@@ -91,3 +91,7 @@ class IGSSetPasswordMarker(Interface):
     """Marker interface for the set password page.
     """
 
+class IGSEditProfileMarker(Interface):
+    """Marker interface for the edit profile page.
+    """
+
