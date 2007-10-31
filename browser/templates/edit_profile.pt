@@ -29,11 +29,31 @@
         
         <p class="form-status" tal:condition="view/status" 
           tal:content="view/status"/>
-          
-        <p tal:condition="not:view/status">
-
-        </p>
-                
+        <tal:block tal:condition="not:view/status">
+          <p>
+            A message has been sent to
+            <code class="email">your@email.address</code>
+            to verify that it is, in fact, your email address.
+            While waiting for the verification message to arrive in your 
+            inbox, you can edit your profile.
+            Your profile lets other group members get to know who
+            you are and provides people with the chance to contact you 
+            outside your online groups.
+          </p>
+          <p>
+            After editing your profile, click the
+            <samp class="button"
+              tal:define="action python:[a for a in view.actions][0].label"
+              tal:content="action">Big R</samp>
+            button, and your profile will be updated.
+            If you have verified
+            <code>your@email.address</code>,
+            you will then see the <cite class="page">Set Password</cite> 
+            page, otherwise you will see the
+            <cite class="page">Wait for Verification</cite> page.
+          </p>
+        </tal:block>
+                      
         <tal:block repeat="widget view/widgets">
           <div class="form-widget" id="widget-abc123" 
             tal:define="style python:widget.required and 'required' or ''"
