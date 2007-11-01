@@ -21,6 +21,9 @@
   <browser:resource name="check_required-20071101.js" 
     file="browser/javascript/check_required.js"
     permission="zope2.Public" />
+  <browser:resource name="popup_help-20071101.js" 
+    file="browser/javascript/popup_help.js"
+    permission="zope2.Public" />
 
   <!-- Form schemas -->
   

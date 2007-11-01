@@ -23,7 +23,7 @@
   <body>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action request/URL" id="edit-profile">
         
         <h1 tal:content="view/label">Reset Password</h1>
         
@@ -86,9 +86,11 @@
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript" 
-        src="++resource++jquery-1.2.1.min.js">&#160;</script>  
+        src="/++resource++jquery-1.2.1.min.js">&#160;</script>  
       <script type="text/javascript"
-        src="++resource++check_required-20071101.js">&#160;</script>
+        src="/++resource++check_required-20071101.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++popup_help-20071101.js">&#160;</script>
       <script type="text/javascript"
         tal:define="rws python:[w for w in view.widgets if w.required];
           rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
@@ -99,6 +101,8 @@
             GSCheckRequired.init(
               requiredWidgets, 
               '#form\\.actions\\.edit');
+              
+            GSPopupFormHelp.init('#edit-profile');
         });
       </script>
     </tal:block>

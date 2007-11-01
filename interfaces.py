@@ -55,7 +55,8 @@ class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
     
     displayName = TextLine(title=u'Display Name',
-      description=u'The name that you want other to see',
+      description=u'The name that you want others to see on your profile '
+      u'and posts.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
