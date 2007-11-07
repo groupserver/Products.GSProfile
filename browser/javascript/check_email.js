@@ -3,6 +3,33 @@ jQuery.noConflict();
 GSCheckEmailAddress = function () {
     /* GroupServer Check Email Address
     
+    xhtml markup
+      Most of the markup is needed for the optional help-text, which is 
+      shown when the user types in the address of a webmail provider. There
+      should be one block, for the main text, that contains entries for
+      each of the webmail providers.
+        
+        <p id="webmailHelp">
+          This is some help for Webmail.
+          <span id="gmail">
+            This is some specific help for GMail.
+          </span>
+          <span id="yahoo">
+            This is some specific help for Yahoo!
+          </span>
+          <span id="hotmail">
+            This is some specific help for MSN Hotmail.
+          </span>
+        </p>
+        
+      The identifiers for each of the webmail providers should be single
+      words. They will be used to form the expression that checks the email
+      address that the user types in.
+    
+    FUNCTIONS
+      "init":   Add the code to check the email-addresses to the 
+                entry widget.
+    
     */
 
     // Private variables
@@ -63,6 +90,17 @@ GSCheckEmailAddress = function () {
     // Public methods and properties
     return {
         init: function (e, b, h, w) {
+            /* Add the address-checking code to the correct widgets
+            
+            ARGUMENTS
+              e:  String containing the ID of the email-entry widget
+              b:  String containing the ID of the submit button for the 
+                  form
+              h:  String containing the ID of the help-text for the entry.
+                  Can be "null".
+              w:  Dictionary of the webmail services that are supported by
+                  the help-text, as "ID": null pairs. Can be "null".
+            */
             email = e;
             button = b;
             help = h;
