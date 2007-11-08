@@ -110,7 +110,8 @@
             tal:content="action">Big R</samp> 
           button,
           <strong>add the contact
-          <code class="email">validation@valid.valid</code></strong>
+          <code tal:content="view/verificationEmailAddress"
+            class="email">validation@valid.valid</code></strong>
           to your email address book, to ensure that you receive the
           verification message.
           <strong id="addressBookHelp" style="display:none;">

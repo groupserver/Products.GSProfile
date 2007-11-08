@@ -7,6 +7,7 @@ from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Products.GSProfile.interfaces import *
+from Products.XWFCore import XWFUtils
 
 class RequestRegistrationForm(PageForm):
     form_fields = form.Fields(IGSRequestRegistration)
@@ -17,6 +18,13 @@ class RequestRegistrationForm(PageForm):
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
+
+    @property
+    def verificationEmailAddress(self):
+        retval = XWFUtils.getOption(self.context, 'userVerificationEmail')
+        assert type(retval) == str
+        assert '@' in retval
+        return retval
 
     def validate(self, action, data):
       return (form.getWidgetsData(self.widgets, self.prefix, data) +
