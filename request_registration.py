@@ -18,6 +18,10 @@ class RequestRegistrationForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
+    def validate(self, action, data):
+      return (form.getWidgetsData(self.widgets, self.prefix, data) +
+        form.checkInvariants(self.form_fields, data))
+
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_reset" set to the success handler,
@@ -25,22 +29,30 @@ class RequestRegistrationForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Register', failure='handle_reset_action_failure ')
-    def handle_reset(self, action, data):
+    @form.action(label=u'Register', 
+      failure='handle_register_action_failure', 
+      validator='validate')
+    def handle_register(self, action, data):
         assert self.context
         assert self.form_fields
-        if form.applyChanges(self.context, self.form_fields, data):
-            # Do stuff
-            self.status = u'Registration started.'
+        assert action
+        assert data
+        
+        if self.address_exists(data['email']):
+            self.status = u'We should go to the Password Reset page'
         else:
-            self.status = u'Could not start the registration porcess, '\
-              u'as the changes could not be applied to the form. Please '\
-              u'contact the system administrator.'
-              # Log something, so the system administrator can figure out
-              #   what has gone wrong.
+            self.status = u'We should go to the Edit Profile page.'
+        
         assert self.status
         assert type(self.status) == unicode
 
-    def handle_reset_action_failure(self, action, data, errors):
+    def handle_register_action_failure(self, action, data, errors):
         pass
+
+    def address_exists(self, emailAddress):
+        acl_users = self.context.site_root().acl_users
+        retval = acl_users.get_userIdByEmail(emailAddress) != None
+        
+        assert type(retval) == bool
+        return retval
 

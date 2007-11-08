@@ -31,28 +31,30 @@
         
         <p class="form-status" tal:condition="view/status" 
           tal:content="view/status"/>
-          
-        <p tal:condition="not:view/status">
-          To receive email messages and add posts, you must be a registered
-          user of 
-          <span class="site" tal:content="siteName">this site</span>.
-          To register with 
-          <span class="site" tal:content="siteName">this site</span>,
-          enter your email address below, and click the 
-          <samp class="button" 
-            tal:define="action python:[a for a in view.actions][0].label"
-            tal:content="action">Big R</samp> 
-          button.
-          Afterwards, the following will happen.
-        </p>
-        <ol>
-          <li>You will be sent an email message, to verify that the
-            address you entered is correct.</li>
-          <li>You will be able to fill out your profile, while
-            waiting for the verification message to arrive.</li>
-          <li>You will set a password, which you  will use to log in to
-            <span class="site" tal:content="siteName">this site</span>.</li>
-        </ol>
+        
+        <tal:block tal:condition="not:view/status">
+          <p>
+            To receive email messages and add posts, you must be a registered
+            user of 
+            <span class="site" tal:content="siteName">this site</span>.
+            To register with 
+            <span class="site" tal:content="siteName">this site</span>,
+            enter your email address below, and click the 
+            <samp class="button" 
+              tal:define="action python:[a for a in view.actions][0].label"
+              tal:content="action">Big R</samp> 
+            button.
+            Afterwards, the following will happen.
+          </p>
+          <ol>
+            <li>You will be sent an email message, to verify that the
+              address you entered is correct.</li>
+            <li>You will be able to fill out your profile, while
+              waiting for the verification message to arrive.</li>
+            <li>You will set a password, which you  will use to log in to
+              <span class="site" tal:content="siteName">this site</span>.</li>
+          </ol>
+        </tal:block>
         
         <div id="tc" class="disclosureWidget">
           <p>

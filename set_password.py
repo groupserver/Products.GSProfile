@@ -38,7 +38,6 @@ class SetPasswordForm(PageForm):
         assert data
         
         user = self.request.AUTHENTICATED_USER
-        assert user
         user.set_password(data['password1'])
         
         self.status = u'Your password has been changed.'
