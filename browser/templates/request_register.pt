@@ -161,7 +161,7 @@
             });
 
             jQuery("#tc-button").click( function () {
-                var uri = "/help/participation/get_started/content_en";
+                var uri = "/about/policies/aup/ #aup";
                 jQuery("#tc-content").load(uri);
             });
         });
