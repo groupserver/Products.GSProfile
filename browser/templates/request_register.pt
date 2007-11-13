@@ -156,12 +156,12 @@
                 webmail);
         
             jQuery("#privacy-button").click( function () {
-                uri = "/help/participation/get_started/content_en";
+                var uri = "/about/policies/privacy/ #privacy";
                 jQuery("#privacy-content").load(uri);
             });
 
             jQuery("#tc-button").click( function () {
-                uri = "/help/participation/get_started/content_en";
+                var uri = "/help/participation/get_started/content_en";
                 jQuery("#tc-content").load(uri);
             });
         });
