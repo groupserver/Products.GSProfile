@@ -62,7 +62,7 @@
               href="javascript:showHideDisclosure('tc')">By registering 
               with
               <span class="site" tal:content="siteName">this site</span>,
-              you agree to the  terms and conditions.</a>
+              you agree to the acceptable use policy.</a>
           </p>
           <div class="disclosureShowHide" style="display: none;">
             <div id="tc-content">Loading&#8230;</div>
