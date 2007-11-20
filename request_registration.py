@@ -1,6 +1,7 @@
 # coding=utf-8
 '''Implementation of the Request Registration form.
 '''
+import time, md5
 from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
@@ -49,8 +50,9 @@ class RequestRegistrationForm(PageForm):
         if self.address_exists(data['email']):
             self.status = u'We should go to the Password Reset page'
         else:
-            self.status = u'We should go to the Edit Profile page.'
-        
+            user = self.create_user_from_email(data['email'])
+            self.status = u'Created user %s' % user.getId()
+            
         assert self.status
         assert type(self.status) == unicode
 
@@ -59,8 +61,28 @@ class RequestRegistrationForm(PageForm):
 
     def address_exists(self, emailAddress):
         acl_users = self.context.site_root().acl_users
-        retval = acl_users.get_userIdByEmail(emailAddress) != None
+        user = acl_users.get_userIdByEmail(emailAddress)
+        retval = user != None
         
         assert type(retval) == bool
         return retval
+
+    def create_user_from_email(self, email):
+        assert email
+        
+        userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
+        userId = str(XWFUtils.convert_int2b62(userNum))
+
+        # Ensure that the user ID is unique. There is also has a race 
+        #   condition, and the loop is non-deterministic.
+        acl_users = self.context.site_root().acl_users
+        while (acl_users.getUserById(userId)):
+            userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
+            userId = str(XWFUtils.convert_int2b62(userNum))
+            
+        displayName = email.split('@')[0]
+        
+        user = acl_users.simple_register_user(email, userId, displayName)
+        assert user
+        return user
 
