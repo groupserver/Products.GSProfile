@@ -24,8 +24,8 @@ class SetPasswordForm(PageForm):
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
-    #   "handle_reset" set to the success handler,
-    #   "handle_reset_action_failure" as the failure handler, and adds the
+    #   "handle_set" set to the success handler,
+    #   "handle_set_action_failure" as the failure handler, and adds the
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
@@ -37,7 +37,8 @@ class SetPasswordForm(PageForm):
         assert action
         assert data
         
-        user = self.request.AUTHENTICATED_USER
+        loggedInUser = self.request.AUTHENTICATED_USER
+        user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
         
         self.status = u'Your password has been changed.'
