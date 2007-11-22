@@ -70,7 +70,7 @@
     permission="zope2.View" />
   <browser:resource name="check_password-20071101.js" 
     file="browser/javascript/check_password.js"
-    permission="zope2.Public" />
+    permission="zope2.View" />
 
   <interface 
     interface=".interfaces.IGSEditProfileMarker"
@@ -81,5 +81,14 @@
     class=".edit_profile.EditProfileForm"
     permission="zope2.View" />
 
+  <interface 
+    interface=".interfaces.IGSUserProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSUserProfileMarker"
+    name="index.html"
+    class=".view_profile.GSProfileView"
+    template="browser/templates/view_profile.pt"
+    permission="zope2.View" />
 </configure>
 

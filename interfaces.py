@@ -96,3 +96,7 @@ class IGSEditProfileMarker(Interface):
     """Marker interface for the edit profile page.
     """
 
+class IGSUserProfileMarker(Interface):
+    """Marker interface for the user's profile page.
+    """
+

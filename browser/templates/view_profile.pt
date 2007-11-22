@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      Profile of 
+      <span tal:replace="view/userName">
+        A. Person
+      </span>
+    </title>
+  </head>
+  <body>
+    <tal:block metal:fill-slot="body">
+      <h1>Profile of 
+        <span class="fn" tal:content="view/userName">A. Person</span>
+      </h1>
+      
+      <dl tal:define="properties view/properties">
+        <tal:block tal:repeat="prop python:properties.keys()">
+          <dt tal:content="python:properties[prop]"/>
+          <dd tal:content="python:view.get_property(prop)"/>
+        </tal:block>
+      </dl>
+      
+    </tal:block>
+  </body>
+</html>
+
