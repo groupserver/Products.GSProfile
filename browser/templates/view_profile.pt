@@ -25,15 +25,18 @@
             title string:Image of ${view/userName}"/>
       </div>
       
-      <dl id="profileAtributes"
-        tal:define="properties view/properties">
-        <tal:block tal:repeat="prop python:properties.keys()">
-          <dt tal:content="python:properties[prop]"/>
-          <dd tal:content="python:view.get_property(prop)"/>
-        </tal:block>
-      </dl>
-
-      <div class="cols">      
+      <table id="profileAtributes">
+        <tbody tal:define="properties view/properties">
+          <tal:block tal:repeat="prop python:properties.keys()">
+            <tr>
+              <th tal:content="python:properties[prop]"/>
+              <td tal:content="python:view.get_property(prop)"/>
+            </tr>
+          </tal:block>
+        </tbody>
+      </table>
+      
+      <div class="cols">
         <div id="files" class="rightColumn">
           <h2>Latest Files</h2>
           <div id="latestFiles"><img src="/++resource++anim/wait.gif"/>
@@ -43,7 +46,7 @@
           <p>
             <a title="More files by A. Person"
               href="#"
-              tal:attributes="href string:/s/p=0&amp;t=0&amp;f=1&amp;a=${view/userId};
+              tal:attributes="href string:/s/?p=0&amp;t=0&amp;f=1&amp;a=${view/userId};
                 title string:More files by ${view/userName};">More&#8230;</a>
           </p>
         </div><!--Files-->
@@ -56,7 +59,7 @@
           <p>
             <a title="More posts by A. Person"
               href="#"
-              tal:attributes="href string:/s/p=1&amp;t=0&amp;a=${view/userId};
+              tal:attributes="href string:/s/?p=1&amp;t=0&amp;a=${view/userId};
                 title string:More posts by ${view/userName};">More&#8230;</a>
           </p>
         </div><!--Posts-->
