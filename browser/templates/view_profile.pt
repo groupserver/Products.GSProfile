@@ -30,7 +30,13 @@
           <tal:block tal:repeat="prop python:properties.keys()">
             <tr>
               <th tal:content="python:properties[prop]"/>
-              <td tal:content="python:view.get_property(prop)"/>
+              <td tal:define="val python:view.get_property(prop)">
+                <a tal:condition="python:val[:7]=='http://'"
+                  tal:content="val" 
+                  tal:attributes="class prop; href val;"/>
+                <span tal:condition="python:val[:7]!='http://'"
+                  tal:content="val" tal:attributes="class prop"/>
+              </td>
             </tr>
           </tal:block>
         </tbody>
