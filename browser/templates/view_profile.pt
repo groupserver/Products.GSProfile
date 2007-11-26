@@ -44,10 +44,10 @@
         tal:condition="authenticated">
         <tbody tal:define="properties view/properties">
           <tal:block tal:repeat="prop python:properties.keys()">
-            <tr>
+            <tr tal:define="val python:view.get_property(prop)"
+              tal:condition="val">
               <th tal:content="python:properties[prop]"/>
-              <td tal:define="val python:view.get_property(prop)"
-                tal:attributes="class prop">
+              <td tal:attributes="class prop">
                 <a tal:condition="python:val[:7]=='http://'" class="val"
                   tal:content="val" tal:attributes="href val;"/>
                 <div tal:condition="python:val[:7]!='http://'" class="val"
