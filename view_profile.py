@@ -23,9 +23,9 @@ class GSProfileView(BrowserView):
         
     def __properties_dict(self):
         retval = ODict()
-        retval['displayName'] = 'Display Name'
+        retval['fn'] = 'Name'
         retval['nickname'] = 'Nickname'
-        retval['timezone'] = 'Timezone'
+        retval['tz'] = 'Timezone'
         retval['biography'] = 'Biography'
 
         site_root = self.context.site_root()
@@ -74,9 +74,30 @@ class GSProfileView(BrowserView):
         return retval
 
     @property
+    def userUrl(self):
+        retval = '/contacts/%s' % self.userId
+        assert type(retval) == str
+        assert retval
+        return retval
+
+    @property
     def userImageUrl(self):
         retval = self.__get_user().get_image()
         assert type(retval) == str
         return retval
         
+    def emailVisibility(self):
+        config = self.context.GlobalConfiguration
+        retval = config.getProperty('showEmailAddressTo', 'nobody')
+        retval = retval.lower()
+        assert type(retval) == str
+        assert retval
+        assert retval in ('nobody', 'request', 'everybody')
+        return retval
+
+    def userEmailAddresses(self):
+        retval = self.__get_user().get_emailAddresses()
+        assert type(retval) == list
+        assert retval
+        return retval
 

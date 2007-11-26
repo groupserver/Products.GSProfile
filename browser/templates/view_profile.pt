@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  metal:use-macro="context/@@groupserver_layout/page">
   <head>
     <title metal:fill-slot="title">
       Profile of 
@@ -14,7 +14,22 @@
     </title>
   </head>
   <body>
-    <tal:block metal:fill-slot="body">
+    <tal:block metal:fill-slot="contextnavigation">
+      <div id="contextnav" class="xhtml2-nl">
+        <p class="label">
+          <a href="#" title="Profile of A. User" class="fn"
+            tal:attributes="href view/userUrl;
+              title string:Profile of ${view/userName};">Profile</a>
+        </p>
+        <ul>
+          <li>Edit Profile</li>
+          <li>Edit Email Settings</li>
+          <li>Set Password</li>
+        </ul>
+      </div>
+    </tal:block>  
+    <tal:block metal:fill-slot="body"
+      tal:define="authenticated python:user.has_role('Authenticated')">
       <h1>Profile of 
         <span class="fn" tal:content="view/userName">A. Person</span>
       </h1>
@@ -25,22 +40,41 @@
             title string:Image of ${view/userName}"/>
       </div>
       
-      <table id="profileAtributes">
+      <table id="profileAtributes" class="vcard" 
+        tal:condition="authenticated">
         <tbody tal:define="properties view/properties">
           <tal:block tal:repeat="prop python:properties.keys()">
             <tr>
               <th tal:content="python:properties[prop]"/>
-              <td tal:define="val python:view.get_property(prop)">
-                <a tal:condition="python:val[:7]=='http://'"
-                  tal:content="val" 
-                  tal:attributes="class prop; href val;"/>
-                <span tal:condition="python:val[:7]!='http://'"
-                  tal:content="val" tal:attributes="class prop"/>
+              <td tal:define="val python:view.get_property(prop)"
+                tal:attributes="class prop">
+                <a tal:condition="python:val[:7]=='http://'" class="val"
+                  tal:content="val" tal:attributes="href val;"/>
+                <div tal:condition="python:val[:7]!='http://'" class="val"
+                  tal:content="structure val"/>
               </td>
             </tr>
           </tal:block>
         </tbody>
       </table>
+      
+      <div id="emailContact" tal:define="vis view/emailVisibility">
+        <h2 tal:condition="python:vis != 'nobody'">Email</h2>
+        <p tal:condition="python:vis == 'request'">
+          <a href="#">Request email contact with
+            <span class="fn" 
+              tal:content="view/userName">A. Person</span></a>
+        </p>
+        <ul tal:condition="python:vis == 'everybody'">
+          <tal:block repeat="address view/userEmailAddresses">
+            <li>
+              <a href="#" class="email emaillink" 
+                tal:content="address" 
+                tal:attributes="href string:mailto:${address};"/>
+            </li>
+          </tal:block>
+        </ul>
+      </div>
       
       <div class="cols">
         <div id="files" class="rightColumn">
