@@ -46,7 +46,10 @@
           <tal:block tal:repeat="prop python:properties.keys()">
             <tr tal:define="val python:view.get_property(prop)"
               tal:condition="val">
-              <th tal:content="python:properties[prop]"/>
+              <th tal:define="propField python:properties[prop]">
+                <abbr tal:attributes="title propField/description"
+                  tal:content="propField/title"/>
+              </th>
               <td tal:attributes="class prop">
                 <a tal:condition="python:val[:7]=='http://'" class="val"
                   tal:content="val" tal:attributes="href val;"/>

@@ -4,10 +4,14 @@ from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.component import createObject
 from zope.interface import implements
+from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
 import Products.GSContent.interfaces
 from Products.XWFCore import XWFUtils
 from Products.XWFCore.odict import ODict
+import zope.app.apidoc.interface # 
+
+from interfaces import *
 
 class GSProfileView(BrowserView):
     '''View object for standard GroupServer User-Profile Instances'''
@@ -23,21 +27,29 @@ class GSProfileView(BrowserView):
         
     def __properties_dict(self):
         retval = ODict()
-        retval['fn'] = 'Name'
-        retval['nickname'] = 'Nickname'
-        retval['tz'] = 'Timezone'
-        retval['biography'] = 'Biography'
-
+        profileSchema = self.__get_schema()
+        ifs = zope.app.apidoc.interface.getFieldsInOrder(profileSchema)
+        for interface in ifs:
+            retval[interface[0]] = interface[1]
+        return retval
+        
+    def __get_schema(self):
+        retval = IGSCoreProfile
+        
         site_root = self.context.site_root()
-        assert hasattr(site_root, 'UserProperties')
-        siteUserProperties = site_root.UserProperties
-        for prop in siteUserProperties.objectValues():
-            retval[prop.getId()] = prop.title_or_id()
+        assert hasattr(site_root, 'GlobalConfiguration')
+        config = site_root.GlobalConfiguration
+        interfaceName = config.getProperty('profileInterface', '')
+        if interfaceName:
+            retval = eval(interfaceName)
+
+        assert retval
+        assert type(retval) == InterfaceClass
         return retval
         
     def __get_user(self):
         assert self.context
-         
+        
         userId = self.context.getId()
         site_root = self.context.site_root()
         assert site_root
