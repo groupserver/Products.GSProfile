@@ -24,6 +24,7 @@ class GSProfileView(BrowserView):
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         
         self.props = self.__properties_dict()
+        self.__user = self.__get_user()
         
     def __properties_dict(self):
         retval = ODict()
@@ -63,7 +64,7 @@ class GSProfileView(BrowserView):
     @property
     def userName(self):
         retval = u''
-        retval = XWFUtils.get_user_realnames(self.__get_user())
+        retval = XWFUtils.get_user_realnames(self.__user)
 
         return retval
 
@@ -78,12 +79,7 @@ class GSProfileView(BrowserView):
         return self.props            
         
     def get_property(self, propertyId, default=''):
-        retval = default
-
-        if propertyId in self.props.keys():
-            retval = self.__get_user().getProperty(propertyId, default)
-            
-        return retval
+        return self.props[propertyId].query(self.__user, default)
 
     @property
     def userUrl(self):
@@ -94,7 +90,7 @@ class GSProfileView(BrowserView):
 
     @property
     def userImageUrl(self):
-        retval = self.__get_user().get_image()
+        retval = self.__user.get_image()
         assert type(retval) == str
         return retval
         
@@ -108,7 +104,7 @@ class GSProfileView(BrowserView):
         return retval
 
     def userEmailAddresses(self):
-        retval = self.__get_user().get_emailAddresses()
+        retval = self.__user.get_emailAddresses()
         assert type(retval) == list
         assert retval
         return retval
