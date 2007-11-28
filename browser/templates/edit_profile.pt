@@ -8,7 +8,7 @@
   <head>
     <title metal:fill-slot="title">
       <span tal:replace="view/label">
-        Reset Password
+        Edit Profile
       </span>
     </title>
     <!--=mpj17=-->
@@ -25,7 +25,7 @@
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="edit-profile">
         
-        <h1 tal:content="view/label">Reset Password</h1>
+        <h1 tal:content="view/label">Edit Profile</h1>
         
         <p class="form-status" tal:condition="view/status" 
           tal:content="view/status"/>

@@ -9,7 +9,6 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.GSProfile.interfaces import *
 
 class EditProfileForm(PageForm):
-    form_fields = form.Fields(IGSCoreProfile)
     label = u'Edit Profile'
     pageTemplateFileName = 'browser/templates/edit_profile.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
@@ -18,6 +17,13 @@ class EditProfileForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
+        self.form_fields = form.Fields(IGSCoreProfile)
+        site_root = context.site_root()
+        assert hasattr(site_root, 'GlobalConfiguration')
+        config = site_root.GlobalConfiguration
+        interface = config.getProperty('profileInterface', '')
+        if interface:
+            self.form_fields = form.Fields(eval(interface))
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_reset" set to the success handler,

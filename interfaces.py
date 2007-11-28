@@ -54,7 +54,7 @@ def display_name_not_nul(text):
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
     
-    displayName = TextLine(title=u'Display Name',
+    fn = TextLine(title=u'Name',
       description=u'The name that you want others to see on your profile '
       u'and posts.',
       required=True,
@@ -68,7 +68,7 @@ class IGSCoreProfile(Interface):
       required=False,
       min_length=1)
 
-    timezone = Choice(title=u'Timezone',
+    tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
       required=False,
       default=u'UTC',
@@ -76,6 +76,40 @@ class IGSCoreProfile(Interface):
     
     biography = Text(title=u'Biography',
       description=u'A desciption of you.',
+      required=False)
+
+class IOGNProfile(IGSCoreProfile):
+
+    primary_language = TextLine(title=u'Primary Language',
+      description=u'Your primary spoken language.',
+      required=False)
+      
+    city = TextLine(title=u'City/Locality',
+      description=u'The city or locality that you live in.',
+      required=False)
+      
+    country = TextLine(title=u'Country',
+      description=u'The country you work in.',
+      required=False)
+      
+    url = URI(title=u'Personal URL',
+      description=u'Your personal website, blog or podcast URL.',
+      required=False)
+      
+    skypeId = TextLine(title=u'Skype User ID',
+      description=u'The user ID you use for Skype, if you use Skype.',
+      required=False)
+      
+    org = TextLine(title=u'Organisation',
+      description=u'The organisation that you are involved with.',
+      required=False)
+      
+    org_url = URI(title=u'Organisation Website',
+      description=u'URL for the organisation you are involved with.',
+      required=False)
+      
+    org_role = TextLine(title=u'Roles',
+      description=u'Your roles in organisations and the world.',
       required=False)
 
 # Marker interfaces
