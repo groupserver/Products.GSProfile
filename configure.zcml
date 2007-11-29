@@ -38,7 +38,9 @@
   <interface 
     interface=".interfaces.IGSResendVerification" />
   <interface 
-    interface=".interfaces.IGSCoreProfile" />
+    interface=".interfaceCoreProfile.IGSCoreProfile" />
+  
+   <include files="*-site.zcml" />
   
   <!-- Marker interfaces and views -->
 

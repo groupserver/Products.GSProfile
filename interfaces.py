@@ -4,6 +4,13 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 
+from interfaceCoreProfile import IGSCoreProfile
+try:
+    # The site profile may not exist.
+    from interfaceSiteProfile import *
+except ImportError, e:
+    pass
+
 class IGSSetPassword(Interface):
     """Schema for setting the user's password. The password is entered
       twice by the user, to confirm that it is correct."""
@@ -45,72 +52,6 @@ class IGSResendVerification(IGSEmailAddressEntry):
     """Schema use to define the user-interface that the user uses to
     resend his or her verification email, while in the middle of 
     registration."""
-    
-def display_name_not_nul(text):
-    retval = text.strip() != u''
-    assert type(retval) == bool
-    return retval
-
-class IGSCoreProfile(Interface):
-    """Schema use to defile the core profile of a GroupServer user."""
-    
-    fn = TextLine(title=u'Name',
-      description=u'The name that you want others to see on your profile '
-      u'and posts.',
-      required=True,
-      min_length=1,
-      constraint=display_name_not_nul)
-      
-    nickname = DottedName(title=u'Nickname',
-      description=u'The name you wish to give your profile. It should be '
-        u'a short name, that contains just letters or numbers. If you do '
-        u'not set a nickname, one will be created from your display name.',
-      required=False,
-      min_length=1)
-
-    tz = Choice(title=u'Timezone',
-      description=u'The timezone you wish to use',
-      required=False,
-      default=u'UTC',
-      vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
-    
-    biography = Text(title=u'Biography',
-      description=u'A desciption of you.',
-      required=False)
-
-class IOGNProfile(IGSCoreProfile):
-
-    primary_language = TextLine(title=u'Primary Language',
-      description=u'Your primary spoken language.',
-      required=False)
-      
-    city = TextLine(title=u'City/Locality',
-      description=u'The city or locality that you live in.',
-      required=False)
-      
-    country = TextLine(title=u'Country',
-      description=u'The country you work in.',
-      required=False)
-      
-    url = URI(title=u'Personal URL',
-      description=u'Your personal website, blog or podcast URL.',
-      required=False)
-      
-    skypeId = TextLine(title=u'Skype User ID',
-      description=u'The user ID you use for Skype, if you use Skype.',
-      required=False)
-      
-    org = TextLine(title=u'Organisation',
-      description=u'The organisation that you are involved with.',
-      required=False)
-      
-    org_url = URI(title=u'Organisation Website',
-      description=u'URL for the organisation you are involved with.',
-      required=False)
-      
-    org_role = TextLine(title=u'Roles',
-      description=u'Your roles in organisations and the world.',
-      required=False)
 
 # Marker interfaces
 

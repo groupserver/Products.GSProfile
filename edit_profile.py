@@ -24,12 +24,13 @@ class EditProfileForm(PageForm):
         interface = config.getProperty('profileInterface', '')
         if interface:
             self.form_fields = form.Fields(eval(interface))
+    
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_reset" set to the success handler,
     #   "handle_reset_action_failure" as the failure handler, and adds the
     #   action to the "actions" instance variable (creating it if 
-    #   necessary). I did not need to explicitly state that "Reset" is the 
+    #   necessary). I did not need to explicitly state that "Edit" is the 
     #   label, but it helps with readability.
     @form.action(label=u'Edit', failure='self.handle_set_action_failure ')
     def handle_reset(self, action, data):
