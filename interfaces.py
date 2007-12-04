@@ -1,3 +1,4 @@
+# coding=utf-8
 """Interfaces for the registration and password-reset pages."""
 import re, pytz
 from zope.interface.interface import Interface, Invalid, invariant
@@ -30,7 +31,6 @@ class IGSSetPassword(Interface):
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
 
-
 EMAIL_RE = r'[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}'
 check_email = re.compile(EMAIL_RE).match
 
@@ -53,11 +53,21 @@ class IGSResendVerification(IGSEmailAddressEntry):
     resend his or her verification email, while in the middle of 
     registration."""
 
+class VID(ASCII):
+    def constraint(self, value):
+        acl_users = self.context.site_root().acl_users
+        assert acl_users
+        
+        userId = acl_users.get_userIdByVerificationId(value)
+        print '"%s" ⇨ "%s"' % (value, userId) 
+        retval = userId != ''
+        return retval
+
 class IGSVerifyAddress(Interface):
     """Schema used to define the user interface for the verify 
     email-address form."""
     
-    vid = ASCII(title=u'Verification Identifier',
+    vid = VID(title=u'Verification Identifier',
       description=u'The indentifier for the email address that '\
         u'is being identified',
       required=True,
