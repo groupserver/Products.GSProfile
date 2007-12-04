@@ -53,6 +53,17 @@ class IGSResendVerification(IGSEmailAddressEntry):
     resend his or her verification email, while in the middle of 
     registration."""
 
+class IGSVerifyAddress(Interface):
+    """Schema used to define the user interface for the verify 
+    email-address form."""
+    
+    vid = ASCII(title=u'Verification Identifier',
+      description=u'The indentifier for the email address that '\
+        u'is being identified',
+      required=True,
+      min_length=23,
+      max_length=23)
+      
 # Marker interfaces
 
 class IGSRequestPasswordResetMarker(Interface):
@@ -73,5 +84,8 @@ class IGSEditProfileMarker(Interface):
 
 class IGSUserProfileMarker(Interface):
     """Marker interface for the user's profile page.
+    """
+class IGSVerifyAddressMarker(Interface):
+    """Marker interface for the verify email address page.
     """
 

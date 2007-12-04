@@ -2,11 +2,11 @@
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
-
 from interfaceCoreProfile import IGSCoreProfile
 
 class IOGNProfile(IGSCoreProfile):
-
+    """Profile for a user of OnlineGroups.Net
+    """
     primary_language = TextLine(title=u'Primary Language',
       description=u'Your primary spoken language.',
       required=False)

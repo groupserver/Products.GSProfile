@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="view/label">
+        Reset Password
+      </span>
+    </title>
+    <!--=mpj17=-->
+    <!--
+      All forms submit to themselves, as the view handles the data, as it
+      does with the XForms in GroupServer 0.9. We always post, as the form
+      may have a side-effect.
+      
+      2007-08-10
+    -->
+  </head>
+  <body>
+    <tal:block metal:fill-slot="body">
+      <form enctype="multipart/form-data"  method="post" action="."
+        tal:attributes="action request/URL">
+        
+        <h1 tal:content="view/label">Reset Password</h1>
+        
+        <p class="form-status" tal:condition="view/status" 
+          tal:content="view/status"/>
+          
+        <p tal:condition="not:view/status">
+          To verify the email address
+          <code class="email">my@email.address</code>
+        </p>
+          
+        <tal:block repeat="widget view/widgets">
+            <p class="error" tal:condition="widget/error"
+              tal:content="structure widget/error">
+              Error message
+            </p>
+            <span tal:replace="structure widget/hidden">Widget</span>
+        </tal:block>
+        
+        <div class="buttons" tal:condition="view/availableActions">
+          <tal:block repeat="action view/actions">
+            <div class="formelementbutton">
+              <span tal:replace="structure action/render">Button</span>
+            </div>
+          </tal:block>
+        </div><!--buttons-->
+      </form>
+    </tal:block>
+  </body>
+</html>
+
