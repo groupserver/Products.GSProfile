@@ -32,11 +32,18 @@ class VerifyAddressForm(PageForm):
         assert action
         assert data
         
-        user = self.context.acl_users. get_userByVerificationId(data['vid'])
+        user = self.context.acl_users.get_userByVerificationId(data['vid'])
         # Log in
-        user.verify_emailAddress(data['vid'])
+        emailAddress = user.verify_emailAddress(data['vid'])
         
-        self.status = u'Stuff.'
+        self.status = u'''The email address
+        <code class="email">%(emailAddress)s</code>
+        has been verified.
+        You can now send messages from
+        <code class="email">%(emailAddress)s</code> to your groups, and
+        messages from your groups can be sent to 
+        <code class="email">%(emailAddress)s</code>.''' % \
+        {'emailAddress': emailAddress}
         assert self.status
         assert type(self.status) == unicode
 

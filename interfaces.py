@@ -53,15 +53,24 @@ class IGSResendVerification(IGSEmailAddressEntry):
     resend his or her verification email, while in the middle of 
     registration."""
 
-class VID(ASCII):
+class VIDNotFound(ValidationError):
+    """Verification identifier not found"""
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return 'Verification identifier %s not found' % repr(self.value)
+    def doc(self):
+        return self.__str__()
+        
+class VID(ASCIILine):
     def constraint(self, value):
         acl_users = self.context.site_root().acl_users
         assert acl_users
         
         userId = acl_users.get_userIdByVerificationId(value)
-        print '"%s" ⇨ "%s"' % (value, userId) 
-        retval = userId != ''
-        return retval
+        if userId == '':
+            raise VIDNotFound(value)
+        return True
 
 class IGSVerifyAddress(Interface):
     """Schema used to define the user interface for the verify 
