@@ -112,8 +112,11 @@ class GSProfileView(BrowserView):
 
     def groupMembership(self):
         u = self.__get_user()
-        authU = self.request.AUTHENTICATED_USER
-        groups = self.groupsInfo.get_member_groups_for_user(u, authU)
+        au = self.request.AUTHENTICATED_USER
+        authUser = None
+        if (au.getId() != None):
+            authUser = self.context.site_root().acl_users.getUser(au.getId())
+        groups = self.groupsInfo.get_member_groups_for_user(u, authUser)
         retval = [createObject('groupserver.GroupInfo', g) for g in groups]
         assert type(retval) == list
         return retval
