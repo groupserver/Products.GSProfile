@@ -109,3 +109,12 @@ class GSProfileView(BrowserView):
         assert retval
         return retval
 
+
+    def groupMembership(self):
+        u = self.__get_user()
+        authU = self.request.AUTHENTICATED_USER
+        groups = self.groupsInfo.get_member_groups_for_user(u, authU)
+        retval = [createObject('groupserver.GroupInfo', g) for g in groups]
+        assert type(retval) == list
+        return retval
+

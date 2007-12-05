@@ -79,6 +79,19 @@
         </ul>
       </div>
       
+      <div id="groups" 
+        tal:define="groups view/groupMembership"
+        tal:condition="groups">
+        <h2>Group Membership</h2>
+        <ul>
+          <tal:block repeat="group groups">
+            <li><a href="#" class="group"
+              tal:content="group/get_name" 
+              tal:attributes="href group/get_url">Group!</a></li>
+          </tal:block>
+        </ul>
+      </div><!--groups-->
+      
       <div class="cols">
         <div id="files" class="rightColumn">
           <h2>Latest Files</h2>
