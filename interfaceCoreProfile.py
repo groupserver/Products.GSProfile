@@ -40,18 +40,6 @@ class IGSCoreProfile(Interface):
     biography = Text(title=u'Biography',
       description=u'A desciption of you.',
       required=False)
-      
-    # groupMembership = List(text=u'Group Membership'
-    #  description=u'The groups that you belong to'
-    #  required=False,
-    #  unique=True,
-    #  value_type=Choice())
-
-    #jonableGroups = Set(text=u'Joinable Groups',
-    #  description=u'The groups you can join.',
-    #  required=False,
-    #  unique=True,
-    #  value_type=Choice(title=u'Group', vocabulary=u'Joinable Groups'))
 
 class IGSGroupMembership(Interface):
     groups = Iterable(title=u'Group Membership.',
