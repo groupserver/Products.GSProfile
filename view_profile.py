@@ -90,7 +90,7 @@ class GSProfileView(BrowserView):
 
     @property
     def userImageUrl(self):
-        retval = self.__user.get_image()
+        retval = self.__user.get_image() or ''
         assert type(retval) == str
         return retval
         
