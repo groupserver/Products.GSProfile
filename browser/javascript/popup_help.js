@@ -19,7 +19,7 @@ GSPopupFormHelp = function () {
     // Private methods
     var create_popups = function (f) {
         var foo = 1;
-        var elements = jQuery(f).children('.'+formWidgetClass);
+        var elements = jQuery(f).find('.'+formWidgetClass);
         elements.each(create_popup);
         elements.children(':input').focus(show_popup).blur(hide_popup);
     }

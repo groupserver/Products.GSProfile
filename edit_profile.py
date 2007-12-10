@@ -5,8 +5,11 @@ from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-
+from zope.app.form.browser import RadioWidget, SelectWidget
 from Products.GSProfile.interfaces import *
+
+def select_widget(field, request):
+    return SelectWidget(field, field.vocabulary, request)
 
 class EditProfileForm(PageForm):
     label = u'Edit Profile'
@@ -17,14 +20,14 @@ class EditProfileForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
-        self.form_fields = form.Fields(IGSCoreProfile)
         site_root = context.site_root()
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
         interface = config.getProperty('profileInterface', '')
         if interface:
             self.form_fields = form.Fields(eval(interface))
-    
+        self.form_fields['tz'].custom_widget = select_widget
+        
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_reset" set to the success handler,
