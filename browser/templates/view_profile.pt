@@ -22,7 +22,7 @@
               title string:Profile of ${view/userName};">Profile</a>
         </p>
         <ul>
-          <li><a href="usermemail.xml">Change Email Settings</a></li>
+          <li><a href="useremail.xml">Change Email Settings</a></li>
           <li><a href="userimage.xml">Change Image</a></li>
           <li><a href="userprofile.xml">Change Profile</a></li>
           <li><a href="userpassword.xml">Change Image</a></li>
