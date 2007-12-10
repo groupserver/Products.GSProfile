@@ -31,55 +31,56 @@
     </tal:block>  
     <tal:block metal:fill-slot="body"
       tal:define="authenticated python:user.has_role('Authenticated')">
-      <h1>Profile of 
-        <span class="fn" tal:content="view/userName">A. Person</span>
-      </h1>
+      <div class="vcard">
+        <h1>Profile of 
+          <span class="fn" tal:content="view/userName">A. Person</span>
+        </h1>
+        <div class="userimage photo">
+          <img src="/foo" title="Image of A. Person"
+            tal:attributes="src string:/${view/userImageUrl};
+              title string:Image of ${view/userName}"/>
+        </div>
+        
+        <table id="profileAtributes"
+          tal:condition="authenticated">
+          <tbody tal:define="properties view/properties">
+            <tal:block tal:repeat="prop python:properties.keys()">
+              <tr tal:define="val python:view.get_property(prop)"
+                tal:condition="val">
+                <th tal:define="propField python:properties[prop]">
+                  <abbr tal:attributes="title propField/description"
+                    tal:content="propField/title"/>
+                </th>
+                <td class="property"
+                  tal:attributes="class python:' '.join(prop.split('_'))">
+                  <a tal:condition="python:val[:7]=='http://'" class="val"
+                    tal:content="val" tal:attributes="href val;"/>
+                  <div tal:condition="python:val[:7]!='http://'" class="val"
+                    tal:content="structure val"/>
+                </td>
+              </tr>
+            </tal:block>
+          </tbody>
+        </table>
       
-      <div class="userimage">
-        <img src="/foo" title="Image of A. Person"
-          tal:attributes="src string:/${view/userImageUrl};
-            title string:Image of ${view/userName}"/>
-      </div>
-      
-      <table id="profileAtributes" class="vcard" 
-        tal:condition="authenticated">
-        <tbody tal:define="properties view/properties">
-          <tal:block tal:repeat="prop python:properties.keys()">
-            <tr tal:define="val python:view.get_property(prop)"
-              tal:condition="val">
-              <th tal:define="propField python:properties[prop]">
-                <abbr tal:attributes="title propField/description"
-                  tal:content="propField/title"/>
-              </th>
-              <td tal:attributes="class prop">
-                <a tal:condition="python:val[:7]=='http://'" class="val"
-                  tal:content="val" tal:attributes="href val;"/>
-                <div tal:condition="python:val[:7]!='http://'" class="val"
-                  tal:content="structure val"/>
-              </td>
-            </tr>
-          </tal:block>
-        </tbody>
-      </table>
-      
-      <div id="emailContact" tal:define="vis view/emailVisibility">
-        <h2 tal:condition="python:vis != 'nobody'">Email</h2>
-        <p tal:condition="python:vis == 'request'">
-          <a href="user-request-contact.xml">Request email contact with
-            <span class="fn" 
-              tal:content="view/userName">A. Person</span></a>
-        </p>
-        <ul tal:condition="python:vis == 'everybody'">
-          <tal:block repeat="address view/userEmailAddresses">
-            <li>
-              <a href="#" class="email emaillink" 
-                tal:content="address" 
-                tal:attributes="href string:mailto:${address};"/>
-            </li>
-          </tal:block>
-        </ul>
-      </div>
-      
+        <div id="emailContact" tal:define="vis view/emailVisibility">
+          <h2 tal:condition="python:vis != 'nobody'">Email</h2>
+          <p tal:condition="python:vis == 'request'">
+            <a href="user-request-contact.xml">Request email contact with
+              <span class="fn" 
+                tal:content="view/userName">A. Person</span></a>
+          </p>
+          <ul tal:condition="python:vis == 'everybody'">
+            <tal:block repeat="address view/userEmailAddresses">
+              <li>
+                <a href="#" class="email emaillink" 
+                  tal:content="address" 
+                  tal:attributes="href string:mailto:${address};"/>
+              </li>
+            </tal:block>
+          </ul>
+        </div>
+      </div><!--vcard-->      
       <div id="groups" 
         tal:define="groups view/groupMembership"
         tal:condition="groups">
