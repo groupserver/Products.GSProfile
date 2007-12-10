@@ -92,6 +92,9 @@
     class=".edit_profile.EditProfileForm"
     permission="zope2.View" />
 
+  <interface 
+    interface=".interfaces.IGSUserProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="index.html"

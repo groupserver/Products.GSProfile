@@ -22,9 +22,10 @@
               title string:Profile of ${view/userName};">Profile</a>
         </p>
         <ul>
-          <li>Edit Profile</li>
-          <li>Edit Email Settings</li>
-          <li>Set Password</li>
+          <li><a href="usermemail.xml">Change Email Settings</a></li>
+          <li><a href="userimage.xml">Change Image</a></li>
+          <li><a href="userprofile.xml">Change Profile</a></li>
+          <li><a href="userpassword.xml">Change Image</a></li>
         </ul>
       </div>
     </tal:block>  
