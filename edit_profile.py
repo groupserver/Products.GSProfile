@@ -5,14 +5,14 @@ from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget
+from zope.app.form.browser import MultiSelectWidget, SelectWidget
 from interfaces import *
 
 def select_widget(field, request):
     return SelectWidget(field, field.vocabulary, request)
 
 def multi_check_box_widget(field, request):
-    return MultiCheckBoxWidget(field, field.value_type.vocabulary, request)
+    return MultiSelectWidget(field, field.value_type.vocabulary, request)
 
 class EditProfileForm(PageForm):
     label = u'Edit Profile'
