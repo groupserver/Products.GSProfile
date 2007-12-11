@@ -12,7 +12,7 @@ def select_widget(field, request):
     return SelectWidget(field, field.vocabulary, request)
 
 def multi_check_box_widget(field, request):
-    return MultiCheckBoxWidget(field, field.vocabulary, request)
+    return MultiCheckBoxWidget(field, field.value_type.vocabulary, request)
 
 class EditProfileForm(PageForm):
     label = u'Edit Profile'

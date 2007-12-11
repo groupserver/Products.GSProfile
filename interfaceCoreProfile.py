@@ -41,8 +41,9 @@ class IGSCoreProfile(Interface):
       description=u'A desciption of you.',
       required=False)
 
-    joinable_groups = Choice(title=u'Joinable Groups',
+    joinable_groups = List(title=u'Joinable Groups',
       description=u'Groups the user can join',
-      required=False,
-      vocabulary='JoinableGroups')
+      required=True,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True)
 
