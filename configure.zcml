@@ -90,7 +90,7 @@
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="edit.html"
     class=".edit_profile.EditProfileForm"
-    permission="zope2.View" />
+    permission="zope2.ManageProperties" />
 
   <interface 
     interface=".interfaces.IGSUserProfileMarker"
