@@ -43,8 +43,6 @@
 
   <interface 
     interface=".interfaceCoreProfile.IGSCoreProfile" />
-  <interface 
-    interface=".interfaceCoreProfile.IGSJoinableGroups" />
 
   <include files="*-site.zcml" />
 
@@ -89,8 +87,8 @@
     interface=".interfaces.IGSEditProfileMarker"
     type="zope.app.content.interfaces.IContentType" />
    <browser:page 
-    for=".interfaces.IGSEditProfileMarker"
-    name="index.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="edit.html"
     class=".edit_profile.EditProfileForm"
     permission="zope2.View" />
 

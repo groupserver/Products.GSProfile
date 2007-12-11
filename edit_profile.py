@@ -5,11 +5,14 @@ from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import RadioWidget, SelectWidget
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget
 from Products.GSProfile.interfaces import *
 
 def select_widget(field, request):
     return SelectWidget(field, field.vocabulary, request)
+
+def multi_check_box_widget(field, request):
+    return MultiCheckBoxWidget(field, field.vocabulary, request)
 
 class EditProfileForm(PageForm):
     label = u'Edit Profile'
@@ -27,6 +30,8 @@ class EditProfileForm(PageForm):
         if interface:
             self.form_fields = form.Fields(eval(interface))
         self.form_fields['tz'].custom_widget = select_widget
+        self.form_fields['joinable_groups'].custom_widget = \
+          multi_check_box_widget
         
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with

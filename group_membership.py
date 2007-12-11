@@ -24,8 +24,9 @@ class JoinableGroupsForSite(object):
 
     def __iter__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
-        groups = self.__groups.get_joinable_groups_for_user(self.context)
-        return iter([GroupTerm(g.get_name(), g.get_id())
+        for g in self.groups:
+            print g.get_name() + g.get_id()
+        return iter([GroupTerm(g.get_id(), g.get_name())
                      for g in self.groups])
 
     def __len__(self):
@@ -47,21 +48,20 @@ class JoinableGroupsForSite(object):
         """See zope.schema.interfaces.IBaseVocabulary"""
         for group in self.groups:
             if group.get_id() == value:
-                return GroupTerm(group.get_name(), group.get_id())
+                return GroupTerm(group.get_id(), group.get_name())
         raise LookupError, value
 
     def getTermByToken(self, token):
         """See zope.schema.interfaces.IVocabularyTokenized"""
         for group in self.groups:
             if group.get_name() == token:
-                return GroupTerm(group.get_name(), group.get_id())
+                return GroupTerm(group.get_id(), group.get_name())
         raise LookupError, token
 
     @property
     def groups(self):
         assert self.context
-        assert self.user
-        assert self.groupsInfo
+        assert self.__groupsInfo
         
         if self.__groups == None:
             userId = self.context.getId()

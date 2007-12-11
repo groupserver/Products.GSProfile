@@ -83,7 +83,7 @@
               tal:define="req widget/required;
                 style python:req and 'required' or 'not-required'"
               tal:attributes="id string:widget-${widget/name};
-                class string:form-widget ${widget/type} ${style}">
+                class string:form-widget ${style}">
               <label for="abc123" title="The hint for the widget"
                 tal:attributes="for widget/name; title widget/hint"
                 tal:content="widget/label">

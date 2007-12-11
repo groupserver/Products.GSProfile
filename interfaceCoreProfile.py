@@ -41,11 +41,8 @@ class IGSCoreProfile(Interface):
       description=u'A desciption of you.',
       required=False)
 
-class IGSGroupMembership(Interface):
-    groups = Iterable(title=u'Group Membership.',
-      description=u'The groups that you belong to.')
-
-class IGSJoinableGroups(Interface):
-    groups = Iterable(title=u'Joinable Groups',
-      description=u'The list of groups on this site')
+    joinable_groups = Choice(title=u'Joinable Groups',
+      description=u'Groups the user can join',
+      required=False,
+      vocabulary='JoinableGroups')
 
