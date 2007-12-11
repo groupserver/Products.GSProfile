@@ -25,7 +25,7 @@
           <li><a href="useremail.xml">Change Email Settings</a></li>
           <li><a href="userimage.xml">Change Image</a></li>
           <li><a href="userprofile.xml">Change Profile</a></li>
-          <li><a href="userpassword.xml">Change Image</a></li>
+          <li><a href="userpassword.xml">Change Password</a></li>
         </ul>
       </div>
     </tal:block>  
