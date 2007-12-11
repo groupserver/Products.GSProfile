@@ -24,8 +24,6 @@ class JoinableGroupsForSite(object):
 
     def __iter__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
-        for g in self.groups:
-            print g.get_name() + g.get_id()
         return iter([GroupTerm(g.get_id(), g.get_name())
                      for g in self.groups])
 

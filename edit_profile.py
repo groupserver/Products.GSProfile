@@ -6,7 +6,7 @@ from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget
-from Products.GSProfile.interfaces import *
+from interfaces import *
 
 def select_widget(field, request):
     return SelectWidget(field, field.vocabulary, request)
