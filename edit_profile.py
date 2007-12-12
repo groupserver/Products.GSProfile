@@ -7,7 +7,7 @@ from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget
 from zope.security.interfaces import Forbidden
-from interfaces import *
+import interfaces
 
 def select_widget(field, request):
     return SelectWidget(field, field.vocabulary, request)
@@ -28,9 +28,10 @@ class EditProfileForm(PageForm):
         site_root = context.site_root()
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
-        interface = config.getProperty('profileInterface', '')
-        if interface:
-            self.form_fields = form.Fields(eval(interface))# FIX
+        interfaceName = config.getProperty('profileInterface', '')
+        if interfaceName:
+            interface = getattr(interfaces, interfaceName)
+            self.form_fields = form.Fields(interface)
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
