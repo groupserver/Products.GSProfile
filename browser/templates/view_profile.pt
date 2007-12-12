@@ -22,10 +22,10 @@
               title string:Profile of ${view/userName};">Profile</a>
         </p>
         <ul>
-          <li><a href="useremail.xml">Change Email Settings</a></li>
-          <li><a href="userimage.xml">Change Image</a></li>
-          <li><a href="userprofile.xml">Change Profile</a></li>
-          <li><a href="userpassword.xml">Change Password</a></li>
+          <li><a href="useremail">Change Email Settings</a></li>
+          <li><a href="userimage">Change Image</a></li>
+          <li><a href="userprofile">Change Profile</a></li>
+          <li><a href="userpassword">Change Password</a></li>
         </ul>
       </div>
     </tal:block>  
@@ -63,10 +63,12 @@
           </tbody>
         </table>
       
-        <div id="emailContact" tal:define="vis view/emailVisibility">
+        <div id="emailContact" 
+          tal:condition="authenticated"
+          tal:define="vis view/emailVisibility">
           <h2 tal:condition="python:vis != 'nobody'">Email</h2>
           <p tal:condition="python:vis == 'request'">
-            <a href="user-request-contact.xml">Request email contact with
+            <a href="user-request-contact">Request email contact with
               <span class="fn" 
                 tal:content="view/userName">A. Person</span></a>
           </p>
