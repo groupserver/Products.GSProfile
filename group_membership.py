@@ -1,10 +1,11 @@
 # coding=utf-8
-from zope.interface import implements, alsoProvides
+from zope.interface import implements, alsoProvides, providedBy
 from zope.component import getUtility, createObject
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.interfaces import ITokenizedTerm, IVocabulary,\
-  IVocabularyTokenized 
+  IVocabularyTokenized, ITitledTokenizedTerm
 from zope.interface.common.mapping import IEnumerableMapping 
+
 class JoinableGroupsForSite(object):
     implements(IVocabulary, IVocabularyTokenized)
     __used_for__ = IEnumerableMapping
@@ -18,8 +19,13 @@ class JoinableGroupsForSite(object):
 
     def __iter__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
-        return iter([SimpleTerm(g.get_id(), g.get_name(), g.get_name())
-                     for g in self.groups])
+        retval = [SimpleTerm(g.get_id(), g.get_id(), g.get_name())
+                  for g in self.groups]
+        for term in retval:
+            assert term
+            assert ITitledTokenizedTerm in providedBy(term)
+            assert term.token == term.value
+        return iter(retval)
 
     def __len__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
@@ -38,16 +44,17 @@ class JoinableGroupsForSite(object):
 
     def getTerm(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
-        for g in self.groups:
-            if g.get_id() == value:
-                return SimpleTerm(g.get_id(), g.get_name(), g.get_name())
-        raise LookupError, value
-
+        return self.getTermByToken(value)
+        
     def getTermByToken(self, token):
         """See zope.schema.interfaces.IVocabularyTokenized"""
         for g in self.groups:
-            if g.get_name() == token:
-                return SimpleTerm(g.get_id(), g.get_name(), g.get_name())
+            if g.get_id() == token:
+                retval = SimpleTerm(g.get_id(), g.get_id(), g.get_name())
+                assert retval
+                assert ITitledTokenizedTerm in providedBy(retval)
+                assert retval.token == retval.value
+                return retval
         raise LookupError, token
 
     @property

@@ -5,14 +5,15 @@ from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiSelectWidget, SelectWidget
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget
+from zope.security.interfaces import Forbidden
 from interfaces import *
 
 def select_widget(field, request):
     return SelectWidget(field, field.vocabulary, request)
 
 def multi_check_box_widget(field, request):
-    return MultiSelectWidget(field, field.value_type.vocabulary, request)
+    return MultiCheckBoxWidget(field, field.value_type.vocabulary, request)
 
 class EditProfileForm(PageForm):
     label = u'Edit Profile'
@@ -20,6 +21,7 @@ class EditProfileForm(PageForm):
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
+    
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
@@ -28,7 +30,7 @@ class EditProfileForm(PageForm):
         config = site_root.GlobalConfiguration
         interface = config.getProperty('profileInterface', '')
         if interface:
-            self.form_fields = form.Fields(eval(interface))
+            self.form_fields = form.Fields(eval(interface))# FIX
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
@@ -40,22 +42,26 @@ class EditProfileForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Edit" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Edit', failure='self.handle_set_action_failure ')
+    @form.action(label=u'Edit', failure='handle_set_action_failure')
     def handle_reset(self, action, data):
         assert self.context
         assert self.form_fields
-        if form.applyChanges(self.context, self.form_fields, data):
-            # Do stuff
-            self.status = u'The password has been set.'
-        else:
-            self.status = u'Could not reset the password, '\
-              u'as the changes could not be applied to the form. Please '\
-              u'contact the system administrator.'
-              # Log something, so the system administrator can figure out
-              #   what has gone wrong.
+        
+        loggedInUser = self.request.AUTHENTICATED_USER
+        user = self.context.acl_users.getUserById(loggedInUser.getId())
+        print 'Woot!'
+        for i in data:
+            print '%s\t%s' % (i, data[i])
+        print 'Wode!'
+        
+        self.status = u"My God, it's full of stars!"
         assert self.status
         assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):
-        pass
+        print action
+        for i in data:
+            print '%s\t%s' % (i, data[i])
+        for error in errors:
+            print error
 
