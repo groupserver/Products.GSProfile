@@ -22,7 +22,8 @@ class IGSCoreProfile(Interface):
     image = Bytes(title=u'Image',
       description=u'The image you want others to see on your profile '
         u'and posts. It is usually a photograph.',
-      required=False)
+      required=False,
+      default=None)
       
     nickname = DottedName(title=u'Nickname',
       description=u'The name you wish to give your profile. It should be '
@@ -39,11 +40,14 @@ class IGSCoreProfile(Interface):
     
     biography = Text(title=u'Biography',
       description=u'A desciption of you.',
-      required=False)
+      required=False,
+      default=u'')
 
+class IGSRegisterCoreProfile(IGSCoreProfile):
     joinable_groups = List(title=u'Joinable Groups',
       description=u'Groups the user can join',
-      required=True,
+      required=False,
       value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True)
+      unique=True,
+      default=[])
 

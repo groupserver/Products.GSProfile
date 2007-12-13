@@ -21,106 +21,54 @@
     -->
   </head>
   <body>
+    <div metal:fill-slot="messages" tal:condition="view/status" 
+      class="message-error"
+      tal:define="e view/errors"
+      tal:attributes="class python:e and 'message-error' or 'message-result'">
+      <p class="form-status" tal:content="structure view/status"/>
+      <dl tal:condition="view/errors">
+        <tal:block repeat="widget view/widgets">
+          <dt tal:content="widget/label">Widget Name</dt>
+          <dd class="error" tal:condition="widget/error"
+            tal:content="structure widget/error">Error message</dd>
+        </tal:block>
+      </dl>
+    </div>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="edit-profile">
         
         <h1 tal:content="view/label">Edit Profile</h1>
-        
-        <p class="form-status" tal:condition="view/status" 
-          tal:content="view/status"/>
-        <tal:block tal:condition="not:view/status">
-          <p>
-            A message has been sent to
-            <code class="email">your@email.address</code>
-            to verify that it is, in fact, your email address.</p>
+        <p>
+          Most of your profile properties are only visible to other
+          logged in users of
+          <span class="site" 
+            tal:content="view/siteInfo/get_name">this site</span>.
+          However, if you post to a public group, then your name and 
+          image will be visible to all visitors to that group, even if
+          they are not logged in.
+        </p>
+        <tal:block repeat="widget view/widgets">
+          <div class="form-widget" id="widget-abc123" 
+            tal:define="req widget/required;
+              style python:req and 'required' or 'not-required'"
+            tal:attributes="id string:widget-${widget/name};
+              class string:form-widget ${style}">
+            <label for="abc123" title="The hint for the widget"
+              tal:attributes="for widget/name; title widget/hint"
+              tal:content="widget/label">
+              A label
+            </label>
             
-          <p>
-            While waiting for the verification message to arrive in your
-            inbox, you can edit your profile.
-            Your profile lets other group members get to know you
-            better, which should lead to trust between members.
-          </p>
-          <div id="privacy" class="disclosureWidget">
-            <p>
-              <a class="disclosureButton" id="privacy-button"
-                href="javascript:showHideDisclosure('privacy')">Your 
-                profile is covered by the privacy policy of 
-                <span class="site" 
-                  tal:content="siteName">this site</span>.</a>
+            <p class="error" tal:condition="widget/error"
+              tal:content="structure widget/error">
+              Error message
             </p>
-            <div class="disclosureShowHide" style="display: none;">
-              <div id="privacy-content">Loading&#8230;</div>
-            </div>
-          </div>
-
-          <p>
-            After editing your profile, click the
-            <samp class="button"
-              tal:define="action python:[a for a in view.actions][0].label"
-              tal:content="action">Big R</samp>
-            button, and your profile will be updated.
-            If you have verified
-            <code>your@email.address</code>,
-            you will then see the <cite class="page">Set Password</cite> 
-            page, otherwise you will see the
-            <cite class="page">Wait for Verification</cite> page.
-          </p>
+            
+            <span id="abc123" 
+              tal:replace="structure widget">Widget</span>
+          </div><!--form-widget-->
         </tal:block>
-        <div id="properties" class="xhtml2-section">
-          <h2>Profile Properties</h2>
-          <p>
-            Most of your profile properties are only visible to other
-            logged in users of
-            <span class="site" 
-              tal:content="view/siteInfo/get_name">this site</span>.
-            However, if you post to a public group, then your name and 
-            photo will be visible to all visitors to that group, even if
-            they are not logged in.
-          </p>
-          <tal:block repeat="widget view/widgets">
-            <div class="form-widget" id="widget-abc123" 
-              tal:define="req widget/required;
-                style python:req and 'required' or 'not-required'"
-              tal:attributes="id string:widget-${widget/name};
-                class string:form-widget ${style}">
-              <label for="abc123" title="The hint for the widget"
-                tal:attributes="for widget/name; title widget/hint"
-                tal:content="widget/label">
-                A label
-              </label>
-              
-              <p class="error" tal:condition="widget/error"
-                tal:content="structure widget/error">
-                Error message
-              </p>
-              
-              <span id="abc123" 
-                tal:replace="structure widget">Widget</span>
-            </div><!--form-widget-->
-          </tal:block>
-        </div><!--properties-->
-        <div id="groups" class="xhtml2-section">
-          <h2>Group Membership</h2>
-          <p>
-            You must belong to a group to post to the group, and receive
-            email messages from the group.
-            If the group is <em class="wordasword">private</em>
-            (the group is visible, but the posts are only shown to group
-            members)
-            then your membership is only visible to other group members.
-            If the group is <em class="wordasword">public</em>
-            (the group and posts are visible to everyone)
-            then your group membership remains confidential to you and 
-            the group administators &#8212; until you make a post, when
-            your membership will be visible to everyone.
-          </p>
-          
-          <div id="joinableGroups" class="xhtml2-section">
-            <h3>Joinable Groups</h3>
-          </div>
-          
-        </div>
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
             <div class="formelementbutton">
@@ -132,7 +80,7 @@
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
-        src="/++resource++check_required-20071101.js">&#160;</script>
+        src="/++resource++check_required-20071213.js">&#160;</script>
       <script type="text/javascript"
         src="/++resource++popup_help-20071101.js">&#160;</script>
       <script type="text/javascript"

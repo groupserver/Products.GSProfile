@@ -20,7 +20,7 @@ GSCheckRequired = function () {
         var checksOut = true; // Uncharastic optimisim
         var i = 0;
         for ( i in widgets ) {
-            checksOut = checksOut && (jQuery(widgets[i]).val() != '');
+            checksOut = checksOut && check_widget(widgets[i]);
         }
         if ( checksOut ) {
             jQuery(button).attr("disabled", "");
@@ -28,7 +28,13 @@ GSCheckRequired = function () {
             jQuery(button).attr("disabled", "disabled");
         }
     }
-        
+
+    var check_widget = function(widget) {
+        var retval = false;
+        retval = jQuery(widget).val() != '';
+        return retval;
+    }
+
     // Public methods and properties
     return {
         init: function (w, b) {
@@ -47,7 +53,7 @@ GSCheckRequired = function () {
                     check();
                 });
             }
-            jQuery(b).attr("disabled", "disabled");
+            check();
         }
     };
 }(); // GSCheckRequired

@@ -18,7 +18,7 @@
   <browser:resource name="check_email-20071101.js" 
     file="browser/javascript/check_email.js"
     permission="zope2.Public" />
-  <browser:resource name="check_required-20071101.js" 
+  <browser:resource name="check_required-20071213.js"
     file="browser/javascript/check_required.js"
     permission="zope2.Public" />
   <browser:resource name="popup_help-20071101.js" 
@@ -111,6 +111,11 @@
     class=".verify_address.VerifyAddressForm"
     template="browser/templates/verify_address.pt"
     permission="zope2.View" />
+
+  <!--adapter 
+    factory=".edit_profile.Foo"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    permission="zope2.ManageProperties"/-->
 
 </configure>
 
