@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="view/label">
+        Edit Profile
+      </span>
+    </title>
+    <!--=mpj17=-->
+    <!--
+      All forms submit to themselves, as the view handles the data, as it
+      does with the XForms in GroupServer 0.9. We always post, as the form
+      may have a side-effect.
+      
+      2007-08-10
+    -->
+  </head>
+  <body>
+    <tal:block metal:fill-slot="body">
+      <form enctype="multipart/form-data"  method="post" action="."
+        tal:attributes="action request/URL" id="edit-profile">
+        
+        <h1 tal:content="view/label">Edit Profile</h1>
+        
+        <p class="form-status" tal:condition="view/status" 
+          tal:content="view/status"/>
+        <tal:block tal:condition="not:view/status">
+          <p>
+            A message has been sent to
+            <code class="email">your@email.address</code>
+            to verify that it is, in fact, your email address.</p>
+            
+          <p>
+            While waiting for the verification message to arrive in your
+            inbox, you can edit your profile.
+            Your profile lets other group members get to know you
+            better, which should lead to trust between members.
+          </p>
+          <div id="privacy" class="disclosureWidget">
+            <p>
+              <a class="disclosureButton" id="privacy-button"
+                href="javascript:showHideDisclosure('privacy')">Your 
+                profile is covered by the privacy policy of 
+                <span class="site" 
+                  tal:content="siteName">this site</span>.</a>
+            </p>
+            <div class="disclosureShowHide" style="display: none;">
+              <div id="privacy-content">Loading&#8230;</div>
+            </div>
+          </div>
+
+          <p>
+            After editing your profile, click the
+            <samp class="button"
+              tal:define="action python:[a for a in view.actions][0].label"
+              tal:content="action">Big R</samp>
+            button, and your profile will be updated.
+            If you have verified
+            <code>your@email.address</code>,
+            you will then see the <cite class="page">Set Password</cite> 
+            page, otherwise you will see the
+            <cite class="page">Wait for Verification</cite> page.
+          </p>
+        </tal:block>
+        <div id="properties" class="xhtml2-section">
+          <h2>Profile Properties</h2>
+          <p>
+            Most of your profile properties are only visible to other
+            logged in users of
+            <span class="site" 
+              tal:content="view/siteInfo/get_name">this site</span>.
+            However, if you post to a public group, then your name and 
+            photo will be visible to all visitors to that group, even if
+            they are not logged in.
+          </p>
+          <tal:block repeat="widget view/widgets">
+            <div class="form-widget" id="widget-abc123" 
+              tal:define="req widget/required;
+                style python:req and 'required' or 'not-required'"
+              tal:attributes="id string:widget-${widget/name};
+                class string:form-widget ${style}">
+              <label for="abc123" title="The hint for the widget"
+                tal:attributes="for widget/name; title widget/hint"
+                tal:content="widget/label">
+                A label
+              </label>
+              
+              <p class="error" tal:condition="widget/error"
+                tal:content="structure widget/error">
+                Error message
+              </p>
+              
+              <span id="abc123" 
+                tal:replace="structure widget">Widget</span>
+            </div><!--form-widget-->
+          </tal:block>
+        </div><!--properties-->
+        <div id="groups" class="xhtml2-section">
+          <h2>Group Membership</h2>
+          <p>
+            You must belong to a group to post to the group, and receive
+            email messages from the group.
+            If the group is <em class="wordasword">private</em>
+            (the group is visible, but the posts are only shown to group
+            members)
+            then your membership is only visible to other group members.
+            If the group is <em class="wordasword">public</em>
+            (the group and posts are visible to everyone)
+            then your group membership remains confidential to you and 
+            the group administators &#8212; until you make a post, when
+            your membership will be visible to everyone.
+          </p>
+          
+          <div id="joinableGroups" class="xhtml2-section">
+            <h3>Joinable Groups</h3>
+          </div>
+          
+        </div>
+        <div class="buttons" tal:condition="view/availableActions">
+          <tal:block repeat="action view/actions">
+            <div class="formelementbutton">
+              <span tal:replace="structure action/render">Button</span>
+            </div>
+          </tal:block>
+        </div><!--buttons-->
+      </form>
+    </tal:block>
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript"
+        src="/++resource++check_required-20071213.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++popup_help-20071101.js">&#160;</script>
+      <script type="text/javascript"
+        tal:define="rws python:[w for w in view.widgets if w.required];
+          rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
+          arr python:'%s' % ', '.join(rwIds);">
+        jQuery.noConflict()
+        jQuery(document).ready( function () {
+            var requiredWidgets = new Array(<span tal:replace="arr" />);
+            GSCheckRequired.init(
+              requiredWidgets, 
+              '#form\\.actions\\.edit');
+              
+            GSPopupFormHelp.init('#edit-profile');
+
+            jQuery("#privacy-button").click( function () {
+                var uri = "/about/policies/privacy/ #privacy";
+                jQuery("#privacy-content").load(uri);
+            });
+        });
+      </script>
+    </tal:block>
+  </body>
+</html>
+
