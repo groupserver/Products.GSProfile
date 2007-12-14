@@ -19,19 +19,12 @@ class IGSCoreProfile(Interface):
       min_length=1,
       constraint=display_name_not_nul)
 
-    image = Bytes(title=u'Image',
-      description=u'The image you want others to see on your profile '
-        u'and posts. It is usually a photograph.',
-      required=False,
-      default=None)
+    #image = Bytes(title=u'Image',
+    #  description=u'The image you want others to see on your profile '
+    #    u'and posts. It is usually a photograph.',
+    #  required=False,
+    #  default=None)
       
-    nickname = DottedName(title=u'Nickname',
-      description=u'The name you wish to give your profile. It should be '
-        u'a short name, that contains just letters or numbers. If you do '
-        u'not set a nickname, one will be created from your display name.',
-      required=False,
-      min_length=1)
-
     tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
       required=False,
@@ -44,6 +37,13 @@ class IGSCoreProfile(Interface):
       default=u'')
 
 class IGSRegisterCoreProfile(IGSCoreProfile):
+    nickname = DottedName(title=u'Nickname',
+      description=u'The name you wish to give your profile. It should be '
+        u'a short name, that contains just letters or numbers. If you do '
+        u'not set a nickname, one will be created from your display name.',
+      required=False,
+      min_length=1)
+
     joinable_groups = List(title=u'Joinable Groups',
       description=u'Groups the user can join',
       required=False,

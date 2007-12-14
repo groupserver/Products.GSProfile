@@ -7,9 +7,11 @@ from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
+  TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
+from Products.XWFCore import XWFUtils
 import interfaces
 from Products.CustomUserFolder.interfaces import ICustomUser
 
@@ -20,6 +22,11 @@ def select_widget(field, request):
 
 def multi_check_box_widget(field, request):
     return MultiCheckBoxWidget(field, field.value_type.vocabulary, request)
+    
+def wym_editor_widget(field, request):
+    retval = TextAreaWidget(field, request)
+    retval.cssClass = 'wymeditor'
+    return retval
 
 class EditProfileForm(PageForm):
     label = u'Edit Profile'
@@ -43,10 +50,43 @@ class EditProfileForm(PageForm):
         self.form_fields = form.Fields(interface, render_context=True)
 
         self.form_fields['tz'].custom_widget = select_widget
+        self.form_fields['biography'].custom_widget = wym_editor_widget
         #self.form_fields['joinable_groups'].custom_widget = \
         #  multi_check_box_widget
-          
-        alsoProvides(context, interface)
+        self.enforce_schema(context, interface)
+        
+    def enforce_schema(self, inputData, schema):
+        """
+        SIDE EFFECTS
+          * "inputData" is stated to provide the "schema" interface
+          * "inputData" will provide all the properties defined in "schema"
+        """
+        from zope.schema import *
+        typeMap = {
+          Text:      'ulines',
+          TextLine:  'ustring',
+          ASCII:     'lines',
+          ASCIILine: 'string',
+          URI:       'string',
+          Bool:      'bool',
+          Float:     'float',
+          Int:       'int',
+          Datetime:  'date',
+          Date:      'date',
+        }
+        fields = [field[0] for field in getFieldsInOrder(schema)]
+        for field in fields:
+            if not hasattr(inputData, field):
+                default = schema.get(field).default or ''
+                t = typeMap.get(type(schema.get(field)), 'ustring')
+                inputData.manage_addProperty(field, default, t)
+        alsoProvides(inputData, schema)
+
+    @property
+    def userName(self):
+        retval = u''
+        retval = XWFUtils.get_user_realnames(self.context)
+        return retval
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with

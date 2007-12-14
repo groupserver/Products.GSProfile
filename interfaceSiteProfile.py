@@ -9,15 +9,18 @@ class IOGNProfile(IGSCoreProfile):
     """
     primary_language = TextLine(title=u'Primary Language',
       description=u'Your primary spoken language.',
-      required=False)
+      required=False,
+      default=u'')
       
     city = TextLine(title=u'City/Locality',
       description=u'The city or locality that you live in.',
-      required=False)
+      required=False,
+      default=u'')
       
     country = TextLine(title=u'Country',
       description=u'The country you work in.',
-      required=False)
+      required=False,
+      default=u'')
       
     url = URI(title=u'Personal URL',
       description=u'Your personal website, blog or podcast URL.',
@@ -25,11 +28,13 @@ class IOGNProfile(IGSCoreProfile):
       
     skypeId = TextLine(title=u'Skype User ID',
       description=u'The user ID you use for Skype, if you use Skype.',
-      required=False)
+      required=False,
+      default=u'')
       
     org = TextLine(title=u'Organisation',
       description=u'The organisation that you are involved with.',
-      required=False)
+      required=False,
+      default=u'')
       
     org_url = URI(title=u'Organisation Website',
       description=u'URL for the organisation you are involved with.',
@@ -37,5 +42,6 @@ class IOGNProfile(IGSCoreProfile):
       
     org_role = TextLine(title=u'Roles',
       description=u'Your roles in organisations and the world.',
-      required=False)
+      required=False,
+      default=u'')
 
