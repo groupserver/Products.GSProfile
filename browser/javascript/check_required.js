@@ -19,8 +19,11 @@ GSCheckRequired = function () {
     var check = function () {
         var checksOut = true; // Uncharastic optimisim
         var i = 0;
-        for ( i in widgets ) {
-            checksOut = checksOut && check_widget(widgets[i]);
+        var widget = null;
+        var numWidgets = widgets.length;
+        for (i=0; i < numWidgets; i++) {
+            widget = widgets[i];
+            checksOut = checksOut && check_widget(widget);
         }
         if ( checksOut ) {
             jQuery(button).attr("disabled", "");

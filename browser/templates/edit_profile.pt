@@ -7,18 +7,15 @@
   metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="view/label">
+      <span tal:replace="string:${view/label}: ${view/userName}: ${view/siteInfo/get_name}">
         Edit Profile
       </span>
     </title>
-    <!--=mpj17=-->
-    <!--
-      All forms submit to themselves, as the view handles the data, as it
-      does with the XForms in GroupServer 0.9. We always post, as the form
-      may have a side-effect.
-      
-      2007-08-10
-    -->
+    <tal:block metal:fill-slot="style">
+     <link rel="stylesheet" 
+      type="text/css" media="screen" 
+      href="/++resource++wymeditor/skins/default/screen.css" />
+    </tal:block>
   </head>
   <body>
     <div metal:fill-slot="messages" tal:condition="view/status" 
@@ -80,7 +77,7 @@
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
-        src="/++resource++check_required-20071213.js">&#160;</script>
+        src="/++resource++check_required-20071214.js">&#160;</script>
       <script type="text/javascript"
         src="/++resource++popup_help-20071101.js">&#160;</script>
       <script type="text/javascript"
@@ -89,19 +86,25 @@
           arr python:'%s' % ', '.join(rwIds);">
         jQuery.noConflict()
         jQuery(document).ready( function () {
-            var requiredWidgets = new Array(<span tal:replace="arr" />);
+            var gsRequiredWidgets = new Array(<span tal:replace="arr" />);
             GSCheckRequired.init(
-              requiredWidgets, 
+              gsRequiredWidgets, 
               '#form\\.actions\\.edit');
               
             GSPopupFormHelp.init('#edit-profile');
 
             jQuery("#privacy-button").click( function () {
-                var uri = "/about/policies/privacy/ #privacy";
-                jQuery("#privacy-content").load(uri);
+                var gsUri = "/about/policies/privacy/ #privacy";
+                jQuery("#privacy-content").load(gsUri);
             });
         });
       </script>
+      <script type="text/javascript" 
+        src="/++resource++jquery-1.2.1.min.js">&#160;</script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor/jquery.wymeditor.pack.js">&#160;</script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor/init.js">&#160;</script>
     </tal:block>
   </body>
 </html>
