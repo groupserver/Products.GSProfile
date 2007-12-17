@@ -88,6 +88,18 @@ class EditProfileForm(PageForm):
         retval = XWFUtils.get_user_realnames(self.context)
         return retval
 
+    @property
+    def userId(self):
+        userId = self.context.getId()
+        return userId
+    
+    @property
+    def userUrl(self):
+        retval = '/contacts/%s' % self.userId
+        assert type(retval) == str
+        assert retval
+        return retval
+
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_reset" set to the success handler,

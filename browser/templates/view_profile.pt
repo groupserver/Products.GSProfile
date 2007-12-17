@@ -24,13 +24,13 @@
         <ul 
           tal:define="authenticated python:user.has_role('Authenticated')"
           tal:condition="python:authenticated and (view.context.getId() == user.getId())">
+          <li><a href="userprofile">Edit Profile</a></li>
           <li><a href="useremail">Change Email Settings</a></li>
           <li><a href="userimage">Change Image</a></li>
-          <li><a href="userprofile">Change Profile</a></li>
           <li><a href="userpassword">Change Password</a></li>
         </ul>
       </div>
-    </tal:block>  
+    </tal:block>
     <tal:block metal:fill-slot="body"
       tal:define="authenticated python:user.has_role('Authenticated')">
       <div class="vcard">
