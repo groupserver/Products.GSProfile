@@ -17,12 +17,15 @@ class IGSSetPassword(Interface):
       twice by the user, to confirm that it is correct."""
       
     password1 = Password(title=u'Password',
-        description=u'Enter your password.',
+        description=u'Your new password. For security, your password '\
+          u'should contain a mixture of letters and numbers.',
         required=True,
         min_length=4)
         
     password2 = Password(title=u'Confirm Password',
-        description=u'Confirm your password',
+        description=u'Confirm your new password by repeating it here.'\
+          u'What you type in this field must match what you type in the '\
+          u'Password field.',
         required=True,
         min_length=4)
 

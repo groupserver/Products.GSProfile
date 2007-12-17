@@ -33,7 +33,7 @@ GSPopupFormHelp = function () {
         var helpTitle = helpDiv.append('<h3>Help</h3>').children('h3');
         helpTitle.text(elem.children('label').text());
         if ( elem.hasClass('required') ) {
-            helpTitle.append('<span class="required">(required)</span>');
+            helpTitle.append(' <span class="required">(required)</span>');
         }
 
         var helpText = helpDiv.append('<p/>').children('p');

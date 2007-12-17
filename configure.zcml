@@ -24,6 +24,9 @@
   <browser:resource name="popup_help-20071101.js" 
     file="browser/javascript/popup_help.js"
     permission="zope2.Public" />
+  <browser:resource name="check_password-20071101.js" 
+    file="browser/javascript/check_password.js"
+    permission="zope2.View" />
 
   <!-- Form schemas -->
   
@@ -71,17 +74,11 @@
     class=".request_registration.RequestRegistrationForm"
     permission="zope2.View" />
  
-  <interface 
-    interface=".interfaces.IGSSetPasswordMarker"
-    type="zope.app.content.interfaces.IContentType" />
    <browser:page 
-    for=".interfaces.IGSSetPasswordMarker"
-    name="index.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="password.html"
     class=".set_password.SetPasswordForm"
-    permission="zope2.View" />
-  <browser:resource name="check_password-20071101.js" 
-    file="browser/javascript/check_password.js"
-    permission="zope2.View" />
+    permission="zope2.ManageProperties" />
 
   <interface 
     interface=".interfaces.IGSEditProfileMarker"
@@ -111,11 +108,6 @@
     class=".verify_address.VerifyAddressForm"
     template="browser/templates/verify_address.pt"
     permission="zope2.View" />
-
-  <!--adapter 
-    factory=".edit_profile.Foo"
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    permission="zope2.ManageProperties"/-->
 
 </configure>
 

@@ -5,7 +5,7 @@ from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-
+from Products.XWFCore import XWFUtils
 from Products.GSProfile.interfaces import *
 
 class SetPasswordForm(PageForm):
@@ -17,6 +17,24 @@ class SetPasswordForm(PageForm):
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
+
+    @property
+    def userName(self):
+        retval = u''
+        retval = XWFUtils.get_user_realnames(self.context)
+        return retval
+
+    @property
+    def userId(self):
+        userId = self.context.getId()
+        return userId
+    
+    @property
+    def userUrl(self):
+        retval = '/contacts/%s' % self.userId
+        assert type(retval) == str
+        assert retval
+        return retval
 
     def validate(self, action, data):
       return (form.getWidgetsData(self.widgets, self.prefix, data) +
@@ -41,7 +59,7 @@ class SetPasswordForm(PageForm):
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
         
-        self.status = u'Your password has been changed.'
+        self.status = u'Your password has been set.'
         assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):

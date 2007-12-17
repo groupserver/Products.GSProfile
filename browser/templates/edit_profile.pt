@@ -44,7 +44,7 @@
           <li><a href="edit.html" class="current">Edit Profile</a></li>
           <li><a href="useremail">Change Email Settings</a></li>
           <li><a href="userimage">Change Image</a></li>
-          <li><a href="userpassword">Change Password</a></li>
+          <li><a href="password.html">Set Password</a></li>
         </ul>
       </div>
     </tal:block>
