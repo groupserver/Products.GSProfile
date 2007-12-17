@@ -4,7 +4,7 @@ import re, pytz
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
-
+from zope.contentprovider.interfaces import IContentProvider
 from interfaceCoreProfile import IGSCoreProfile
 try:
     # The site profile may not exist.
@@ -110,4 +110,15 @@ class IGSUserProfileMarker(Interface):
 class IGSVerifyAddressMarker(Interface):
     """Marker interface for the verify email address page.
     """
+class IGSProfileContextMenuContentProvider(IContentProvider):
+    """The content provider for the context menu"""
+    
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'menu.',
+      required=False,
+      default=u"browser/templates/profileContextMenu.pt")
+      
+    pages = Dict(title=u'Pages in the Profile',
+      description=u'The pages that are in the context of the profile.')
 

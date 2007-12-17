@@ -32,21 +32,10 @@
       </dl>
     </div>
     <tal:block metal:fill-slot="contextnavigation">
-      <div id="contextnav" class="xhtml2-nl">
-        <p class="label">
-          <a href="#" title="Profile of A. User" class="fn"
-            tal:attributes="href view/userUrl;
-              title string:Profile of ${view/userName};">Profile</a>
-        </p>
-        <ul 
-          tal:define="authenticated python:user.has_role('Authenticated')"
-          tal:condition="python:authenticated and (view.context.getId() == user.getId())">
-          <li><a href="edit.html" class="current">Edit Profile</a></li>
-          <li><a href="useremail">Change Email Settings</a></li>
-          <li><a href="userimage">Change Image</a></li>
-          <li><a href="password.html">Set Password</a></li>
-        </ul>
-      </div>
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
     </tal:block>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."

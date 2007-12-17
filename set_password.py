@@ -18,24 +18,6 @@ class SetPasswordForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
-    @property
-    def userName(self):
-        retval = u''
-        retval = XWFUtils.get_user_realnames(self.context)
-        return retval
-
-    @property
-    def userId(self):
-        userId = self.context.getId()
-        return userId
-    
-    @property
-    def userUrl(self):
-        retval = '/contacts/%s' % self.userId
-        assert type(retval) == str
-        assert retval
-        return retval
-
     def validate(self, action, data):
       return (form.getWidgetsData(self.widgets, self.prefix, data) +
         form.checkInvariants(self.form_fields, data))

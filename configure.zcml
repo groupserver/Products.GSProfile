@@ -43,6 +43,9 @@
   <interface 
     interface=".interfaces.IGSVerifyAddress" />
 
+  <interface 
+    interface=".interfaces.IGSProfileContextMenuContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
 
   <interface 
     interface=".interfaceCoreProfile.IGSCoreProfile" />
@@ -74,13 +77,13 @@
     class=".request_registration.RequestRegistrationForm"
     permission="zope2.View" />
  
-   <browser:page 
+   <browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="password.html"
     class=".set_password.SetPasswordForm"
     permission="zope2.ManageProperties" />
 
-  <interface 
+  <interface
     interface=".interfaces.IGSEditProfileMarker"
     type="zope.app.content.interfaces.IContentType" />
    <browser:page 
