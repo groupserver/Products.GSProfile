@@ -15,21 +15,10 @@
   </head>
   <body>
     <tal:block metal:fill-slot="contextnavigation">
-      <div id="contextnav" class="xhtml2-nl">
-        <p class="label">
-          <a href="#" title="Profile of A. User" class="fn"
-            tal:attributes="href view/userUrl;
-              title string:Profile of ${view/userName};">Profile</a>
-        </p>
-        <ul 
-          tal:define="authenticated python:user.has_role('Authenticated')"
-          tal:condition="python:authenticated and (view.context.getId() == user.getId())">
-          <li><a href="userprofile">Edit Profile</a></li>
-          <li><a href="useremail">Change Email Settings</a></li>
-          <li><a href="userimage">Change Image</a></li>
-          <li><a href="userpassword">Change Password</a></li>
-        </ul>
-      </div>
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
     </tal:block>
     <tal:block metal:fill-slot="body"
       tal:define="authenticated python:user.has_role('Authenticated')">
@@ -37,12 +26,8 @@
         <h1>Profile of 
           <span class="fn" tal:content="view/userName">A. Person</span>
         </h1>
-        <div class="userimage photo">
-          <img src="/foo" title="Image of A. Person"
-            tal:attributes="src string:/${view/userImageUrl};
-              title string:Image of ${view/userName}"/>
-        </div>
-        
+        <div tal:define="user view/context"
+          tal:replace="structure provider:groupserver.UserImage" />
         <table id="profileAtributes"
           tal:condition="authenticated">
           <tbody tal:define="properties view/properties">

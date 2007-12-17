@@ -25,9 +25,11 @@
       <p class="form-status" tal:content="structure view/status"/>
       <dl tal:condition="view/errors">
         <tal:block repeat="widget view/widgets">
-          <dt tal:content="widget/label">Widget Name</dt>
-          <dd class="error" tal:condition="widget/error"
-            tal:content="structure widget/error">Error message</dd>
+          <tal:block tal:condition="widget/error">
+            <dt tal:content="widget/label">Widget Name</dt>
+            <dd class="error" 
+              tal:content="structure widget/error">Error message</dd>
+          </tal:block>
         </tal:block>
       </dl>
     </div>

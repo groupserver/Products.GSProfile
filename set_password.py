@@ -18,9 +18,11 @@ class SetPasswordForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
-    def validate(self, action, data):
-      return (form.getWidgetsData(self.widgets, self.prefix, data) +
-        form.checkInvariants(self.form_fields, data))
+    @property
+    def userName(self):
+        retval = u''
+        retval = XWFUtils.get_user_realnames(self.context)
+        return retval
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
@@ -29,8 +31,7 @@ class SetPasswordForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Set', failure='handle_set_action_failure', 
-      validator='validate')
+    @form.action(label=u'Set', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
         assert self.form_fields
@@ -45,5 +46,8 @@ class SetPasswordForm(PageForm):
         assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):
-        pass
+        if len(errors) == 1:
+            self.status=u'<p>%s</p>' % errors[0]
+        else:
+            self.status = u'<p>There were errors:</p>'
 

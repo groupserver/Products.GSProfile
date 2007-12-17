@@ -128,9 +128,8 @@ class EditProfileForm(PageForm):
         assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):
-        print action
-        for i in data:
-            print '%s\t%s' % (i, data[i])
-        for error in errors:
-            print error
+        if len(errors) == 1:
+            self.status = u'<p>There is an error:</p>'
+        else:
+            self.status = u'<p>There are errors:</p>'
 

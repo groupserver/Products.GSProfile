@@ -46,6 +46,9 @@
   <interface 
     interface=".interfaces.IGSProfileContextMenuContentProvider"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <interface 
+    interface=".interfaces.IGSUserImage"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
 
   <interface 
     interface=".interfaceCoreProfile.IGSCoreProfile" />
@@ -101,6 +104,12 @@
     class=".view_profile.GSProfileView"
     template="browser/templates/view_profile.pt"
     permission="zope2.View" />
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="image.html"
+    class=".edit_image.GSEditImageForm"
+    permission="zope2.ManageProperties" />
 
   <interface 
     interface=".interfaces.IGSVerifyAddressMarker"

@@ -7,18 +7,10 @@
   metal:use-macro="context/@@groupserver_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="view/label">
-        Set password
+      <span tal:replace="string:${view/label}: ${view/userName}: ${view/siteInfo/get_name}">
+        Edit Image
       </span>
     </title>
-    <!--=mpj17=-->
-    <!--
-      All forms submit to themselves, as the view handles the data, as it
-      does with the XForms in GroupServer 0.9. We always post, as the form
-      may have a side-effect.
-      
-      2007-08-23
-    -->
   </head>
   <body>
     <div metal:fill-slot="messages" tal:condition="view/status" 
@@ -44,28 +36,28 @@
     </tal:block>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
-        id="set-password" tal:attributes="action request/URL"
-        tal:define="siteName view/siteInfo/get_name">
-        <h1 tal:content="view/label">Set Password</h1>
-        <p>
-          To set your password, enter it in the entry below, repeat
-          it in the entry below that, and click
-          the
-          <samp class="button"
-            tal:define="action python:[a for a in view.actions][0].label"
-            tal:content="action">Big R</samp>
-          button.
-          After your password has been set, you will be able to use your
-          new password to log into
-          <span class="site" tal:content="siteName">this site</span>.
-        </p>
+        tal:attributes="action request/URL" id="edit-profile">
         
+        <h1 tal:content="view/label">Edit Image</h1>
+        <div tal:define="user view/context;
+          showImageRegardlessOfUserSetting python:True"
+          tal:replace="structure provider:groupserver.UserImage" />
+        <p>
+          Your image is typically a photograph that others use to quickly
+          identify posts that you make.
+          It must be in JPEG-image (<code>.jpg</code>) and can be no wider
+          than 150 pixels, and no higher than 200 pixels.
+          Your image normally appears on your profile all posts
+          that you make, but you can hide your image by unchecking the
+          <samp class="field">Show Image</samp> field.
+        </p>
+        <div style="clear: both;"/>
         <tal:block repeat="widget view/widgets">
           <div class="form-widget" id="widget-abc123" 
-            tal:define="style python:widget.required and 'required' or ''"
+            tal:define="req widget/required;
+              style python:req and 'required' or 'not-required'"
             tal:attributes="id string:widget-${widget/name};
-              class string:form-widget ${widget/type} ${style}">
-            
+              class string:form-widget ${style}">
             <label for="abc123" title="The hint for the widget"
               tal:attributes="for widget/name; title widget/hint"
               tal:content="widget/label">
@@ -77,10 +69,10 @@
               Error message
             </p>
             
-            <span id="abc123" tal:replace="structure widget">Widget</span>
+            <span id="abc123" 
+              tal:replace="structure widget">Widget</span>
           </div><!--form-widget-->
         </tal:block>
-        
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
             <div class="formelementbutton">
@@ -91,20 +83,35 @@
       </form>
     </tal:block>
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript" 
-        src="++resource++jquery-1.2.1.min.js">&#160;</script>      
-      <script type="text/javascript" 
-        src="++resource++check_password-20071101.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++check_required-20071214.js">&#160;</script>
       <script type="text/javascript"
         src="/++resource++popup_help-20071101.js">&#160;</script>
-      <script type="text/javascript">
-          jQuery.noConflict();
-          jQuery(document).ready( function () {
-              GSCheckPassword.init('#form\\.password1', 
-                  '#form\\.password2', '#form\\.actions\\.set');
-              GSPopupFormHelp.init('#set-password');
-          });
+      <script type="text/javascript"
+        tal:define="rws python:[w for w in view.widgets if w.required];
+          rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
+          arr python:'%s' % ', '.join(rwIds);">
+        jQuery.noConflict()
+        jQuery(document).ready( function () {
+            var gsRequiredWidgets = new Array(<span tal:replace="arr" />);
+            GSCheckRequired.init(
+              gsRequiredWidgets, 
+              '#form\\.actions\\.edit');
+              
+            GSPopupFormHelp.init('#edit-profile');
+
+            jQuery("#privacy-button").click( function () {
+                var gsUri = "/about/policies/privacy/ #privacy";
+                jQuery("#privacy-content").load(gsUri);
+            });
+        });
       </script>
+      <script type="text/javascript" 
+        src="/++resource++jquery-1.2.1.min.js">&#160;</script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor/jquery.wymeditor.pack.js">&#160;</script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor/init.js">&#160;</script>
     </tal:block>
   </body>
 </html>

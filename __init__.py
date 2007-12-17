@@ -1,2 +1,2 @@
-import profileContextMenu
+import profileContextMenu, userImage
 

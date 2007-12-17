@@ -18,7 +18,8 @@ class IGSSetPassword(Interface):
       
     password1 = Password(title=u'Password',
         description=u'Your new password. For security, your password '\
-          u'should contain a mixture of letters and numbers.',
+          u'should contain a mixture of letters and numbers, and '\
+          u'must be over four letters long.',
         required=True,
         min_length=4)
         
@@ -122,3 +123,22 @@ class IGSProfileContextMenuContentProvider(IContentProvider):
     pages = Dict(title=u'Pages in the Profile',
       description=u'The pages that are in the context of the profile.')
 
+class IGSUserImage(IContentProvider):
+    """User Image"""
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'menu.',
+      required=False,
+      default=u"browser/templates/userImage.pt")
+
+    user = Field(title=u'User Instance',
+        description=u'An instance of the CustomUser Class',
+        required=True)
+        
+    showImageRegardlessOfUserSetting = Bool(
+      title=u'Show Image Regardles of User Setting',
+      description=u"Show the user's image, regardless of the value of "
+        u"the showImage property. This should be used with extreme "
+        u"caution, as it can violate the user's privacy.",
+      required=False,
+      default=False)
