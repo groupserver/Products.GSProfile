@@ -11,6 +11,7 @@ from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
   TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
+from zope.schema import *
 from Products.XWFCore import XWFUtils
 import interfaces
 from Products.CustomUserFolder.interfaces import ICustomUser
@@ -51,8 +52,7 @@ class EditProfileForm(PageForm):
 
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
-        #self.form_fields['joinable_groups'].custom_widget = \
-        #  multi_check_box_widget
+            
         self.enforce_schema(context, interface)
         
     def enforce_schema(self, inputData, schema):
@@ -61,7 +61,6 @@ class EditProfileForm(PageForm):
           * "inputData" is stated to provide the "schema" interface
           * "inputData" will provide all the properties defined in "schema"
         """
-        from zope.schema import *
         typeMap = {
           Text:      'ulines',
           TextLine:  'ustring',
