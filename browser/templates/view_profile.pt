@@ -10,7 +10,8 @@
       Profile of 
       <span tal:replace="view/userName">
         A. Person
-      </span>
+      </span>:
+      <span tal:replace="view/siteInfo/get_name">A Site</span>
     </title>
   </head>
   <body>
