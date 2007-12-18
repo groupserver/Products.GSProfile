@@ -86,7 +86,7 @@
       <script type="text/javascript"
         src="/++resource++check_required-20071214.js">&#160;</script>
       <script type="text/javascript"
-        src="/++resource++popup_help-20071101.js">&#160;</script>
+        src="/++resource++popup_help-20071218.js">&#160;</script>
       <script type="text/javascript"
         tal:define="rws python:[w for w in view.widgets if w.required];
           rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];

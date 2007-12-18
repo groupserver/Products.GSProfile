@@ -9,7 +9,7 @@
       tal:define="viewingUser view/viewingUser;
         authenticated python:viewingUser.has_role('Authenticated')"
       tal:condition="python:authenticated and (view.userId == viewingUser.getId())">
-      <tal:block repeat="page view/pages">
+      <tal:block repeat="page python:view.pages.keys()">
         <li>
           <a href="#" tal:attributes="href page; 
               class python:view.pageClass(page);"
@@ -19,3 +19,4 @@
     </ul>
   </div><!--contextnav-->
 </tal:block>
+

@@ -1,11 +1,9 @@
 from zope.component import createObject
-import zope.app.pagetemplate.viewpagetemplatefile
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 import zope.interface, zope.component, zope.publisher.interfaces
 import zope.viewlet.interfaces, zope.contentprovider.interfaces 
 from Products.XWFCore import XWFUtils, ODict
 from interfaces import *
-
 
 class GSProfileContextMenuContentProvider(object):
     """GroupServer context-menu for the user profile area.
@@ -19,12 +17,12 @@ class GSProfileContextMenuContentProvider(object):
     def __init__(self, context, request, view):
         self.__parent__ = self.view = view
         self.__updated = False
-
-        self.__pages__ = {
-          'edit.html':     'Edit Profile',
-          'image.html':    'Edit Image',
-          'email.html':    'Edit Email Settings',
-          'password.html': 'Set Password'}
+        pages = ODict()
+        pages['edit.html']     = 'Edit Profile'
+        pages['image.html']    = 'Edit Image'
+        pages['useremail']     = 'Edit Email Settings'
+        pages['password.html'] = 'Set Password'
+        self.__pages__ = pages
 
         self.context = context
         self.request = request
@@ -36,6 +34,10 @@ class GSProfileContextMenuContentProvider(object):
           self.context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', 
           self.context)
+
+        self.requestBase = self.request.URL.split('/')[-1]
+        self.userId = self.context.getId()
+        self.userName = XWFUtils.get_user_realnames(self.context)
 
     def render(self):
         if not self.__updated:
@@ -53,16 +55,6 @@ class GSProfileContextMenuContentProvider(object):
         assert hasattr(self.request, 'AUTHENTICATED_USER')
         retval = self.request.AUTHENTICATED_USER
         return retval
-    @property
-    def userName(self):
-        retval = u''
-        retval = XWFUtils.get_user_realnames(self.context)
-        return retval
-
-    @property
-    def userId(self):
-        userId = self.context.getId()
-        return userId
     
     @property
     def userUrl(self):
@@ -76,8 +68,7 @@ class GSProfileContextMenuContentProvider(object):
         return self.__pages__
         
     def page_is_current(self, pageId):
-        requestBase = self.request.URL.split('/')[-1]
-        return requestBase == pageId
+        return self.requestBase == pageId
 
     def pageClass(self, pageId):
         if self.page_is_current(pageId):
