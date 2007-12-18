@@ -163,11 +163,6 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    #adr = Text(title=u'Biography',
-    #  description=u'A desciption of you.',
-    #  required=False,
-    #  default=u'')
-
     tel = ASCIILine(title=u'Telephone Number',
       description=u'Your telephone number (including the country code).',
       required=False,
@@ -178,7 +173,7 @@ class IDoWireProfile(IGSCoreProfile):
         u'for your cellular telephone or mobile.',
       required=False,
       default='')
-    
+
     url = URI(title=u'Your Website',
       description=u'The URL for your website, or page on the Web.',
       required=False)
@@ -246,4 +241,11 @@ class IDoWireProfile(IGSCoreProfile):
       description=u'The languages you can hold a conversation in.',
       required=False,
       default=u'')
+
+class FieldThatShouldBeInDoWireButKillsTheFormForNoClearReason(object):
+    postal_adr = Text(title=u'Postal Address',
+      description=u'Your address where you receive mail',
+      required=False,
+      default=u'')
+
 
