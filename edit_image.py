@@ -53,7 +53,7 @@ class GSEditImageForm(PageForm):
         #   "image" is set using 
         assert self.context
         assert self.form_fields
-
+        
         alteredFields = [datum[0] 
                          for datum in getFieldsInOrder(IGSProfileImage)
                          if data[datum[0]] != getattr(self.context, datum[0])]

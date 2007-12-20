@@ -224,7 +224,7 @@ class IDoWireProfile(IGSCoreProfile):
 
     org_type = TextLine(title=u'Organisation Type',
       description=u'The type organisation that you are primarily engaged '
-        u'with.',
+        u'with.', 
       required=False,
       default=u'')
     

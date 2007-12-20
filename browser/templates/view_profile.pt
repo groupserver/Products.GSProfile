@@ -13,6 +13,17 @@
       </span>:
       <span tal:replace="view/siteInfo/get_name">A Site</span>
     </title>
+    
+    <tal:block metal:fill-slot="metadata">
+      <link rel="alternate" type="application/atom+xml"
+        href="#" title="Posts"
+        tal:attributes="href string:/s/search.atom?a=${view/userId}&amp;t=0&amp;p=1;
+          title string:All posts by ${view/userName}: ${view/siteInfo/get_name}"/>
+      <link rel="alternate" type="application/atom+xml"
+        href="#" title="Files"
+        tal:attributes="href string:/s/search.atom?a=${view/userId}&amp;t=0&amp;f=1;
+          title string:All files by ${view/userName}: ${view/siteInfo/get_name}"/>
+    </tal:block>
   </head>
   <body>
     <tal:block metal:fill-slot="contextnavigation">
@@ -21,7 +32,7 @@
         Context Menu
       </span>
     </tal:block>
-    <tal:block metal:fill-slot="body"
+    <div metal:fill-slot="body" class="userProfile"
       tal:define="authenticated python:user.has_role('Authenticated')">
       <div class="vcard">
         <h1>Profile of 
@@ -112,7 +123,7 @@
           </p>
         </div><!--Posts-->
       </div><!--cols-->
-    </tal:block>
+    </div><!--profile-->
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript">
         jQuery.noConflict();

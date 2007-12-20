@@ -60,11 +60,12 @@
             tal:attributes="id string:widget-${widget/name};
               class string:form-widget ${style}">
             <label for="abc123" title="The hint for the widget"
+              tal:condition="python:(not hasattr(widget, 'type')) or widget.type != 'checkbox'"
               tal:attributes="for widget/name; title widget/hint"
               tal:content="widget/label">
               A label
             </label>
-            
+                        
             <p class="error" tal:condition="widget/error"
               tal:content="structure widget/error">
               Error message
@@ -72,6 +73,13 @@
             
             <span id="abc123" 
               tal:replace="structure widget">Widget</span>
+              
+            <label for="abc123" title="The hint for the widget"
+              tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
+              tal:attributes="for widget/name; title widget/hint"
+              tal:content="widget/label">
+              A label
+            </label>
           </div><!--form-widget-->
         </tal:block>
         <div class="buttons" tal:condition="view/availableActions">
