@@ -71,9 +71,14 @@
               Error message
             </p>
             
-            <span id="abc123" 
+            <span
+              tal:condition="python:hasattr(widget, 'tag')"
               tal:replace="structure widget">Widget</span>
               
+            <span class="readonlyWidget"
+              tal:condition="python:not(hasattr(widget, 'tag'))"
+              tal:content="structure widget"/>
+            
             <label for="abc123" title="The hint for the widget"
               tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
               tal:attributes="for widget/name; title widget/hint"
