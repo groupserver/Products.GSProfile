@@ -25,6 +25,9 @@ class GSEditImageForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         context.image = None
+
+        if not(hasattr(context, 'showImage')):
+            context.manage_addProperty('showImage', False, 'bool')
         alsoProvides(context, IGSProfileImage)
 
     @property
