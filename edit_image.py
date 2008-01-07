@@ -27,7 +27,7 @@ class GSEditImageForm(PageForm):
         context.image = None
 
         if not(hasattr(context, 'showImage')):
-            context.manage_addProperty('showImage', False, 'bool')
+            context.manage_addProperty('showImage', True, 'boolean')
         alsoProvides(context, IGSProfileImage)
 
     @property
