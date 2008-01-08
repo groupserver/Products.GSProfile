@@ -17,15 +17,10 @@ class GSProfileContextMenuContentProvider(object):
     def __init__(self, context, request, view):
         self.__parent__ = self.view = view
         self.__updated = False
-        pages = ODict()
-        pages['edit.html']     = 'Edit Profile'
-        pages['image.html']    = 'Edit Image'
-        pages['useremail']     = 'Edit Email Settings'
-        pages['password.html'] = 'Set Password'
-        self.__pages__ = pages
 
         self.context = context
         self.request = request
+
         
     def update(self):
         self.__updated = True
@@ -34,6 +29,8 @@ class GSProfileContextMenuContentProvider(object):
           self.context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', 
           self.context)
+
+        self.__pages__ = self.get_pages()
 
         self.requestBase = self.request.URL.split('/')[-1]
         self.userId = self.context.getId()
@@ -49,6 +46,28 @@ class GSProfileContextMenuContentProvider(object):
     #########################################
     # Non standard methods below this point #
     #########################################
+    def get_pages(self):
+      if (self.viewingUser.has_role('Authenticated') 
+          and (self.view.userId == self.viewingUser.getId())):
+          return self.get_edit_pages()
+      elif self.viewingUser.has_role('Authenticated'):
+          return self.get_request_pages()
+      else:
+          return ODict()
+        
+    def get_edit_pages(self):
+        pages = ODict()
+        pages['edit.html']     = 'Edit Profile'
+        pages['image.html']    = 'Edit Image'
+        pages['useremail']     = 'Edit Email Settings'
+        pages['password.html'] = 'Set Password'
+        return pages        
+
+    def get_request_pages(self):
+        pages = ODict()
+        pages['userrequestcontact']     = 'Edit Profile'
+        return pages
+        
     @property
     def viewingUser(self):
         assert hasattr(self, 'request')
