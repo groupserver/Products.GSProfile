@@ -325,7 +325,7 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default='')
 
-    street_address = Text(title=u'Street Address (Hidden)',
+    street_address = TextLine(title=u'Street Address (Hidden)',
       description=u'Your street address. '\
        u'The street address number is required by some groups for admin '\
        u'purposes, and is only shown to the site-administrators of '\
