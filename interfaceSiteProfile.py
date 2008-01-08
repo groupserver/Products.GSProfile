@@ -242,8 +242,7 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-class FieldThatShouldBeInDoWireButKillsTheFormForNoClearReason(object):
-    postal_adr = Text(title=u'Postal Address',
+    postal_adr = TextLine(title=u'Postal Address',
       description=u'Your address where you receive mail',
       required=False,
       default=u'')
