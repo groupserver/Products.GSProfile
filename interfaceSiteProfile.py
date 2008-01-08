@@ -258,12 +258,12 @@ class IEDemProfile(IGSCoreProfile):
     givenName = TextLine(title=u'First Name',
       description=u'The name that you are commonly called, that is given '
         u'to you by your parents.',
-      required=False)
+      required=True)
     
     familyName = TextLine(title=u'Last Name',
       description=u'The name that you inherit by birth, or aquire by '
         u'marrage.',
-      required=False)
+      required=True)
     
     biography = Text(title=u'Biography',
       description=u'A desciption of you.',
