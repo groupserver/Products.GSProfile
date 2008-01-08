@@ -248,4 +248,88 @@ class FieldThatShouldBeInDoWireButKillsTheFormForNoClearReason(object):
       required=False,
       default=u'')
 
+class IEDemProfile(IGSCoreProfile):
+    fn = TextLine(title=u'Name',
+      description=u'The name that you want others to see on your profile '
+        u'and posts.',
+      required=True,
+      min_length=1,
+      constraint=display_name_not_nul)
+      
+    givenName = TextLine(title=u'First Name',
+      description=u'The name that you are commonly called, that is given '
+        u'to you by your parents.',
+      required=False)
+    
+    familyName = TextLine(title=u'Last Name',
+      description=u'The name that you inherit by birth, or aquire by '
+        u'marrage.',
+      required=False)
+    
+    biography = Text(title=u'Biography',
+      description=u'A desciption of you.',
+      required=False,
+      default=u'')
+
+    articles = Text(title=u'Recent Articles',
+      description=u'List your recent articles, books, presentations '
+        u'about e-democracy, e-government, democracy, etc. with links '
+        u'if available.',
+      required=False,
+      default=u'')
+
+    tz = Choice(title=u'Timezone',
+      description=u'The timezone you wish to use',
+      required=False,
+      default=u'UTC',
+      vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
+
+    neighbourhood = TextLine(title=u'Neighbourhood',
+      description=u'The neighbourhood or village where you live.',
+      required=False,
+      default=u'')
+
+    region = TextLine(title=u'City',
+      description=u'The area where you live.',
+      required=False,
+      default=u'')
+
+    locality = TextLine(title=u'State or Province',
+      description=u'The state or province you live in.',
+      required=False,
+      default=u'')
+      
+    countryName = TextLine(title=u'Country',
+      description=u'The country where you live.',
+      required=False,
+      default=u'')
+
+    url = URI(title=u'Personal Website or Blog URL',
+      description=u'The URL for your website, or weblog.',
+      required=False)
+
+    org = TextLine(title=u'Organisation',
+      description=u'The organisation that you are primarily engaged with.',
+      required=False,
+      default=u'')
+
+    org_url = URI(title=u'Organisation Website',
+      description=u'The Web page for your organisation.',
+      required=False)
+
+    tel = ASCIILine(title=u'Telephone Number (Hidden)',
+      description=u'Your telephone number (including the country code). '\
+       u'The phone number is required by some groups for admin purposes,'\
+       u'and is only shown to the site-administrators of '\
+       u'e-democracy.org. Contact your forum manager for more information.',
+      required=False,
+      default='')
+
+    street_address = Text(title=u'Street Address (Hidden)',
+      description=u'Your street address. '\
+       u'The street address number is required by some groups for admin '\
+       u'purposes, and is only shown to the site-administrators of '\
+       u'e-democracy.org.Contact your forum manager for more information.',
+      required=False,
+      default=u'')
 

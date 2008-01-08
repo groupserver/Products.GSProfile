@@ -25,18 +25,30 @@ class GSProfileView(BrowserView):
         
         self.props = self.__properties_dict()
         self.__user = self.__get_user()
+
+    def __get_global_config(self):
+        site_root = self.context.site_root()
+        assert hasattr(site_root, 'GlobalConfiguration')
+        config = site_root.GlobalConfiguration
+        assert config
+        return config
         
     def __properties_dict(self):
         retval = ODict()
+        config = self.__get_global_config()
+        hiddenFields = getattr(config, 'hiddenFields', [])
+        
         profileSchema = self.__get_schema()
         ifs = zope.app.apidoc.interface.getFieldsInOrder(profileSchema)
         for interface in ifs:
-            retval[interface[0]] = interface[1]
+            if interface[0] not in hiddenFields:
+                retval[interface[0]] = interface[1]
         return retval
         
     def __get_schema(self):
         retval = IGSCoreProfile
-        
+        config = self.__get_global_config()
+        interfaceName = config.getProperty('profileInterface', '')
         site_root = self.context.site_root()
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
