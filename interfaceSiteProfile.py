@@ -270,13 +270,6 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    articles = Text(title=u'Recent Articles',
-      description=u'List your recent articles, books, presentations '
-        u'about e-democracy, e-government, democracy, etc. with links '
-        u'if available.',
-      required=False,
-      default=u'')
-
     tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
       required=False,
@@ -288,7 +281,7 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    region = TextLine(title=u'City',
+    region = TextLine(title=u'City or Local Authority',
       description=u'The area where you live.',
       required=False,
       default=u'')
@@ -318,17 +311,17 @@ class IEDemProfile(IGSCoreProfile):
 
     tel = ASCIILine(title=u'Telephone Number (Hidden)',
       description=u'Your telephone number (including the country code). '\
-       u'The phone number is required by some groups for admin purposes,'\
-       u'and is only shown to the site-administrators of '\
+       u'The phone number is required by some groups for admin purposes, '\
+       u'but it is only shown to the site-administrators of '\
        u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default='')
 
-    street_address = TextLine(title=u'Street Address (Hidden)',
+    streetAddress = TextLine(title=u'Street Address (Hidden)',
       description=u'Your street address. '\
        u'The street address number is required by some groups for admin '\
-       u'purposes, and is only shown to the site-administrators of '\
-       u'e-democracy.org.Contact your forum manager for more information.',
+       u'purposes, but it is only shown to the site-administrators of '\
+       u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default=u'')
 
