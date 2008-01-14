@@ -56,7 +56,7 @@ class GSProfileContextMenuContentProvider(object):
             and (self.context.getId() == self.viewingUser.getId())):
             return self.get_edit_pages()
         elif (self.viewingUser.has_role('Authenticated')
-            and (showEmail == request)):
+            and (showEmail == 'request')):
             return self.get_request_pages()
         else:
             return ODict()
@@ -77,7 +77,7 @@ class GSProfileContextMenuContentProvider(object):
 
     def get_request_pages(self):
         pages = ODict()
-        pages['userrequestcontact']     = 'Edit Profile'
+        pages['user-request-contact'] = 'Request Contact'
         return pages
         
     @property
