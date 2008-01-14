@@ -92,7 +92,7 @@
     permission="zope2.View" />
 
   <browser:pages
-    for="Products.GSContent.interfaces.IGSSiteHomepageFolder"
+    for="Products.GSContent.interfaces.IGSSiteFolder"
     class=".view_reset_password.GSResetPasswordRedirect"
     permission="zope2.View">
     <browser:page
