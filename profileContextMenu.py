@@ -47,12 +47,13 @@ class GSProfileContextMenuContentProvider(object):
     # Non standard methods below this point #
     #########################################
     def get_pages(self):
+        assert self.view
         config = self.__get_global_config()
         showEmail = config.getProperty('showEmailAddressTo','nobody')
         showEmail = showEmail.lower()
         
         if (self.viewingUser.has_role('Authenticated')
-            and (self.view.userId == self.viewingUser.getId())):
+            and (self.context.getId() == self.viewingUser.getId())):
             return self.get_edit_pages()
         elif (self.viewingUser.has_role('Authenticated')
             and (showEmail == request)):
