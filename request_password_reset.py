@@ -42,7 +42,9 @@ class RequestPasswordResetForm(PageForm):
               'with the address <%s>' % data['email']
             log.info(m)
             self.reset_password(data['email'])
-            self.status = u'Password Reset Notification Sent'
+            self.status = u'''Check you email inbox at
+              <code class="email">%s</code>, where instructions on logging 
+              in and setting a new password have been sent.''' % data['email']
             assert self.status
             assert type(self.status) == unicode
         else:
