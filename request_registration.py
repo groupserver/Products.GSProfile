@@ -50,13 +50,22 @@ class RequestRegistrationForm(PageForm):
         assert data
         
         if self.address_exists(data['email']):
-            url = 'request_password.html?form.email=%s' % data['email']
-            m = 'Request Registration: Redirecting from the request '\
-              'registration page to the request password reset page (%s) '\
-              'for the address <%s>' % (url, data['email'])
-            log.info(m)
+            logMsg = 'RequestRegistrationForm: Registration attempted with '\
+              'existing address <%s>' % data['email']
+            log.info(logMsg)
             
-            return self.request.RESPONSE.redirect(url)
+            url = 'request_password.html?form.email=%s' % data['email']
+            m = '''A user with the email address 
+              <code class="email">%s</code> already exists on 
+              <span class="site">%s</span>. Either
+              <ul>
+                <li><strong>Register</strong> another email address,</li>
+                <li><a href="%s"><strong>Reset</strong> your password,</a> 
+                  or</li>
+                <li><a href="/login.html"><strong>Login.</strong></a>
+              </ul>''' % (data['email'], self.siteInfo.get_name(), url)
+            self.status = m
+            self.errors = []
         else:
             m = 'Request Registration: Creating a new user for the '\
               'address <%s>' % data['email']
