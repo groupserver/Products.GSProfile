@@ -10,6 +10,9 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.GSProfile.interfaces import *
 from Products.XWFCore import XWFUtils
 
+import logging
+log = logging.getLogger('GSProfile')
+
 class RequestRegistrationForm(PageForm):
     form_fields = form.Fields(IGSRequestRegistration)
     label = u'Register'
@@ -42,19 +45,27 @@ class RequestRegistrationForm(PageForm):
       failure='handle_register_action_failure', 
       validator='validate')
     def handle_register(self, action, data):
-        assert self.context
         assert self.form_fields
         assert action
         assert data
         
         if self.address_exists(data['email']):
-            self.status = u'We should go to the Password Reset page'
+            url = 'request_password.html?form.email=%s' % data['email']
+            m = 'Request Registration: Redirecting from the request '\
+              'registration page to the request password reset page (%s) '\
+              'for the address <%s>' % (url, data['email'])
+            log.info(m)
+            
+            return self.request.RESPONSE.redirect(url)
         else:
+            m = 'Request Registration: Creating a new user for the '\
+              'address <%s>' % data['email']
+            log.info(m)
             user = self.create_user_from_email(data['email'])
             self.status = u'Created user %s' % user.getId()
             
-        assert self.status
-        assert type(self.status) == unicode
+            assert self.status
+            assert type(self.status) == unicode
 
     def handle_register_action_failure(self, action, data, errors):
         pass

@@ -32,7 +32,8 @@ class VerifyAddressForm(PageForm):
         assert action
         assert data
         
-        user = self.context.acl_users.get_userByVerificationId(data['vid'])
+        vid = data['vid']
+        user = self.context.acl_users.get_userByEmailVerificationId(vid)
         # Log in
         emailAddress = user.verify_emailAddress(data['vid'])
         

@@ -248,25 +248,25 @@ class IDoWireProfile(IGSCoreProfile):
       default=u'')
 
 class IEDemProfile(IGSCoreProfile):
-    fn = TextLine(title=u'Name',
+    givenName = TextLine(title=u'First Name',
+      description=u'The name that you are commonly called, which is given '
+        u'to you by your parents.',
+      required=True)
+    
+    familyName = TextLine(title=u'Last Name',
+      description=u'The name that you inherit by birth, or acquire by '
+        u'marriage.',
+      required=True)
+    
+    fn = TextLine(title=u'Display Name',
       description=u'The name that you want others to see on your profile '
         u'and posts.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
       
-    givenName = TextLine(title=u'First Name',
-      description=u'The name that you are commonly called, that is given '
-        u'to you by your parents.',
-      required=True)
-    
-    familyName = TextLine(title=u'Last Name',
-      description=u'The name that you inherit by birth, or aquire by '
-        u'marrage.',
-      required=True)
-    
     biography = Text(title=u'Biography',
-      description=u'A desciption of you.',
+      description=u'A description of you.',
       required=False,
       default=u'')
 

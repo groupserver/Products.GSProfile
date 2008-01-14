@@ -61,7 +61,45 @@
       factory=".group_membership.JoinableGroupsForSite"/>
 
   <!-- Marker interfaces and views -->
+  <interface 
+    interface=".interfaces.IGSReigstration" 
+    type="zope.app.content.interfaces.IContentType" />
+  <browser:page 
+    for=".interfaces.IGSReigstration"
+    name="request_password.html"
+    class=".request_password_reset.RequestPasswordResetForm"
+    permission="zope2.View" />
+  <browser:page 
+    for=".interfaces.IGSReigstration"
+    name="request_registration.html"
+    class=".request_registration.RequestRegistrationForm"
+    permission="zope2.View"/>
+   <browser:page
+    for=".interfaces.IGSReigstration"
+    name="password.html"
+    class=".set_password.SetPasswordForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for=".interfaces.IGSReigstration"
+    name="edit_profile.html"
+    class=".edit_profile.EditProfileForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for=".interfaces.IGSReigstration"
+    name="verify_address.html"
+    class=".verify_address.VerifyAddressForm"
+    template="browser/templates/verify_address.pt"
+    permission="zope2.View" />
 
+  <browser:pages
+    for="Products.GSContent.interfaces.IGSSiteHomepageFolder"
+    class=".view_reset_password.GSResetPasswordRedirect"
+    permission="zope2.View">
+    <browser:page
+      name="reset_password.html"
+      attribute="login_redirect"/>
+  </browser:pages>
+  
   <interface 
     interface=".interfaces.IGSRequestPasswordResetMarker" 
     type="zope.app.content.interfaces.IContentType" />

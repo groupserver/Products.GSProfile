@@ -32,29 +32,38 @@
         <p class="form-status" tal:condition="view/status" 
           tal:content="view/status"/>
         
-        <tal:block tal:condition="not:view/status">
-          <p>
-            To receive email messages and add posts, you must be a registered
-            user of 
+        <p>Welcome to 
+          <span class="site" tal:content="siteName">this site</span>!
+          You must register with
+          <span class="site" tal:content="siteName">this site</span>
+          to to add posts to topics, receive email messages and join
+          private or secret groups.
+          To register with 
+          <span class="site" tal:content="siteName">this site</span>,
+          enter your email address below, and click the 
+          <samp class="button" 
+            tal:define="action python:[a for a in view.actions][0].label"
+            tal:content="action">Big R</samp> 
+          button.
+          Afterwards, the following will happen.
+        </p>
+        <ol>
+          <li>You will be <strong>sent an email message,</strong> to 
+            verify that the address you entered is correct.</li>
+          <li>You will be able to <strong>fill out your profile,</strong>
+            while waiting for the verification message to arrive in
+            your email inbox.</li>
+          <li>You will <strong>verify your email address.</strong></li>
+          <li>Finally, you will <strong>set a password,</strong> which 
+            you  will use to log in to
             <span class="site" tal:content="siteName">this site</span>.
-            To register with 
-            <span class="site" tal:content="siteName">this site</span>,
-            enter your email address below, and click the 
-            <samp class="button" 
-              tal:define="action python:[a for a in view.actions][0].label"
-              tal:content="action">Big R</samp> 
-            button.
-            Afterwards, the following will happen.
-          </p>
-          <ol>
-            <li>You will be sent an email message, to verify that the
-              address you entered is correct.</li>
-            <li>You will be able to fill out your profile, while
-              waiting for the verification message to arrive.</li>
-            <li>You will set a password, which you  will use to log in to
-              <span class="site" tal:content="siteName">this site</span>.</li>
-          </ol>
-        </tal:block>
+          </li>
+        </ol>
+        
+        <p>Once you complete registration, you will be logged into 
+          <span class="site" tal:content="siteName">this site</span> 
+          &#8212; and you will be able to join groups,
+          post messages, and receive email messages from groups.</p>
         
         <div id="tc" class="disclosureWidget">
           <p>

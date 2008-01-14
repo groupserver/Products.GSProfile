@@ -86,31 +86,7 @@ class IGSVerifyAddress(Interface):
       required=True,
       min_length=23,
       max_length=23)
-      
-# Marker interfaces
 
-class IGSRequestPasswordResetMarker(Interface):
-    """Marker interface for the request password reset page.
-    """
-
-class IGSRequestRegistrationMarker(Interface):
-    """Marker interface for the request registration page.
-    """
-
-class IGSSetPasswordMarker(Interface):
-    """Marker interface for the set password page.
-    """
-
-class IGSEditProfileMarker(Interface):
-    """Marker interface for the edit profile page.
-    """
-
-class IGSUserProfileMarker(Interface):
-    """Marker interface for the user's profile page.
-    """
-class IGSVerifyAddressMarker(Interface):
-    """Marker interface for the verify email address page.
-    """
 class IGSProfileContextMenuContentProvider(IContentProvider):
     """The content provider for the context menu"""
     
@@ -141,4 +117,33 @@ class IGSUserImage(IContentProvider):
         u"the showImage property. This should be used with extreme "
         u"caution, as it can violate the user's privacy.",
       required=False,
-      default=False)
+      default=False)      
+
+# Marker interfaces
+
+class IGSRequestPasswordResetMarker(Interface):
+    """Marker interface for the request password reset page.
+    """
+
+class IGSRequestRegistrationMarker(Interface):
+    """Marker interface for the request registration page.
+    """
+
+class IGSSetPasswordMarker(Interface):
+    """Marker interface for the set password page.
+    """
+
+class IGSEditProfileMarker(Interface):
+    """Marker interface for the edit profile page.
+    """
+
+class IGSUserProfileMarker(Interface):
+    """Marker interface for the user's profile page.
+    """
+class IGSVerifyAddressMarker(Interface):
+    """Marker interface for the verify email address page.
+    """
+class IGSReigstration(Interface):
+    """Marker interface for the entire registration system.
+    """
+
