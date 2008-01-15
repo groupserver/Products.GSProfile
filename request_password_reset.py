@@ -80,6 +80,7 @@ class RequestPasswordResetForm(PageForm):
         n_dict = {}
         n_dict['verificationId'] = verificationId
         n_dict['userId'] = user.getId()
+        n_dict['userFn'] = user.getProperty('fn','')
         n_dict['siteName'] = self.siteInfo.get_name()
         n_dict['siteURL'] = self.siteInfo.get_url()
         user.send_notification('reset_password', 'default', n_dict=n_dict)
