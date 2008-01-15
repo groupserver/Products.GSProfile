@@ -92,14 +92,25 @@
     permission="zope2.View" />
 
   <browser:pages
-    for="Products.GSContent.interfaces.IGSSiteFolder"
+    for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
     class=".view_reset_password.GSResetPasswordRedirect"
     permission="zope2.View">
     <browser:page
-      name="reset_password.html"
+      name="password"
       attribute="login_redirect"/>
   </browser:pages>
-  
+  <browser:pages
+    for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
+    class="Products.GSContent.view.GSContentView"
+    permission="zope2.View">
+    <browser:page
+      name="user-no-id"
+      template="browser/templates/user_no_id.pt" />
+    <browser:page
+      name="user-not-found"
+      template="browser/templates/user_not_found.pt" />
+  </browser:pages>
+
   <interface 
     interface=".interfaces.IGSRequestPasswordResetMarker" 
     type="zope.app.content.interfaces.IContentType" />

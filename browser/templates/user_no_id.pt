@@ -4,13 +4,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_layout/page">
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
-      Profile of 
-      <span tal:replace="view/userName">
-        A. Person
-      </span>:
+      No Verification Identifier Specified:
       <span tal:replace="view/siteInfo/get_name">A Site</span>
     </title>
     
@@ -23,7 +20,7 @@
         was not specified.
         If you followed a link on this site, 
         <a href="#" title="Email Support"
-          tal:attributes="href python:'mailto:%s' % sprt(view.context)/">please
+          tal:attributes="href python:'mailto:%s' % sprt(view.context, view.siteInfo.get_id())">please
           report this error.</a>
       </p>
   </body>
