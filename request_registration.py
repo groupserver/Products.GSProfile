@@ -21,6 +21,8 @@ class RequestRegistrationForm(PageForm):
 
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
+        self.context = context
+        self.request = request
         self.siteInfo = createObject('groupserver.SiteInfo', context)
 
     @property
@@ -67,14 +69,13 @@ class RequestRegistrationForm(PageForm):
             self.status = m
             self.errors = []
         else:
-            m = 'Request Registration: Creating a new user for the '\
-              'address <%s>' % data['email']
-            log.info(m)
             user = self.create_user_from_email(data['email'])
-            self.status = u'Created user %s' % user.getId()
+            self.login(user)
+            self.send_verification_message(user)
             
-            assert self.status
-            assert type(self.status) == unicode
+            # Go to the edit-profile page
+            uri = '/contacts/%s/registration_profile.html' % user.getId()
+            return self.request.RESPONSE.redirect(uri)
 
     def handle_register_action_failure(self, action, data, errors):
         pass
@@ -89,6 +90,9 @@ class RequestRegistrationForm(PageForm):
 
     def create_user_from_email(self, email):
         assert email
+        m = 'Request Registration: Creating a new user for the '\
+          'address <%s>' % email
+        log.info(m)
         
         userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
         userId = str(XWFUtils.convert_int2b62(userNum))
@@ -104,5 +108,41 @@ class RequestRegistrationForm(PageForm):
         
         user = acl_users.simple_register_user(email, userId, displayName)
         assert user
+        m = 'Request Registration: Created a new user "%s"' % user.getId()
+        log.info(m)
         return user
+        
+    def login(self, user):
+        assert self.context
+        assert user
+        site_root = self.context.site_root()
+        site_root.cookie_authentication.credentialsChanged(user,
+          user.getId(), user.get_password())          
+        m = 'Request Registration: Logged in the user "%s"' % user.getId()
+        log.info(m)
+
+    def send_verification_message(self, user):
+        assert user!= None
+        email = user.get_emailAddresses()[0]
+        assert email
+
+        # Let us hope that the verification ID *is* unique
+        vNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
+        verificationId = str(XWFUtils.convert_int2b62(vNum))
+        user.add_emailAddressVerification(verificationId, email)
+        
+        n_dict = {}
+        n_dict['verificationId'] = verificationId
+        n_dict['userId'] = user.getId()
+        n_dict['userFn'] = user.getProperty('fn','')
+        n_dict['siteName'] = self.siteInfo.get_name()
+        n_dict['siteURL'] = self.siteInfo.get_url()
+        user.send_notification(
+          n_type='verify_email_address', 
+          n_id='default',
+          n_dict=n_dict, 
+          email_only=[email])
+        m = 'Request Registration: Sent an email-verification message to '\
+          '<%s> for the user "%s"' % (email, user.getId())
+        log.info(m)
 

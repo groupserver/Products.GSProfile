@@ -132,3 +132,19 @@ class EditProfileForm(PageForm):
         else:
             self.status = u'<p>There are errors:</p>'
 
+class RegisterEditProfileForm(EditProfileForm):
+    
+    label = u'Edit Profile'
+    pageTemplateFileName = 'browser/templates/edit_profile_register.pt'
+    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+    def __init__(self, context, request):
+        EditProfileForm.__init__(self, context, request)
+        
+    @property
+    def userEmail(self):
+        retval = self.context.get_emailAddresses()
+        assert retval
+        return retval
+
+
