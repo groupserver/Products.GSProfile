@@ -84,7 +84,17 @@
     name="verify_address.html"
     class=".verify_address.VerifyAddressForm"
     template="browser/templates/verify_address.pt"
-    permission="zope2.View" />
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_wait.html"
+    class=".verify_wait.VerifyWaitForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_email.ajax"
+    class=".view_address_verified.GSAddressVerifiedView"
+    permission="zope2.ManageProperties" />
 
   <browser:pages
     for="Products.GSRedirect.interfaces.IGSRedirectForFolder"

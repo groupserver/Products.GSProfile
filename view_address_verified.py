@@ -1,0 +1,35 @@
+# coding=utf-8
+import Globals
+from Products.Five import BrowserView
+from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from zope.component import createObject
+from zope.interface import implements
+from zope.interface.interface import InterfaceClass
+from zope.component.interfaces import IFactory
+import Products.GSContent.interfaces
+from Products.XWFCore import XWFUtils
+from Products.XWFCore.odict import ODict
+import zope.app.apidoc.interface # 
+
+from interfaces import *
+
+class GSAddressVerifiedView(BrowserView):
+    '''View object for standard GroupServer User-Profile Instances'''
+    def __init__(self, context, request):
+        assert context
+        assert request
+        self.context = context
+        self.request = request
+    def __call__(self):
+        assert self.request
+        assert self.context
+        
+        assert hasattr(self.request, 'form'), 'No form in request'
+        assert 'email' in self.request.form.keys(), 'No email in form'
+        email = self.request.form['email']
+        verified = self.context.emailAddress_isVerified(email)
+        retval = verified and '1' or '0'
+        print retval
+        return retval       
+
+

@@ -107,7 +107,16 @@ class EditProfileForm(PageForm):
     #   necessary). I did not need to explicitly state that "Edit" is the 
     #   label, but it helps with readability.
     @form.action(label=u'Edit', failure='handle_set_action_failure')
-    def handle_reset(self, action, data):
+    def handle_set(self, action, data):
+        return self.set_data(data)
+        
+    def handle_set_action_failure(self, action, data, errors):
+        if len(errors) == 1:
+            self.status = u'<p>There is an error:</p>'
+        else:
+            self.status = u'<p>There are errors:</p>'
+
+    def set_data(self, data):
         assert self.context
         assert self.form_fields
 
@@ -120,17 +129,12 @@ class EditProfileForm(PageForm):
                       for name in alteredFields]
             f = ' and '.join([i for i in (', '.join(fields[:-1]), fields[-1])
                               if i])
-            self.status = u'Changed %s' % f
+            retval = u'Changed %s' % f
         else:
-            self.status = u"No fields changed."
-        assert self.status
-        assert type(self.status) == unicode
-
-    def handle_set_action_failure(self, action, data, errors):
-        if len(errors) == 1:
-            self.status = u'<p>There is an error:</p>'
-        else:
-            self.status = u'<p>There are errors:</p>'
+            retval = u"No fields changed."
+        assert retval
+        assert type(retval) == unicode
+        return retval
 
 class RegisterEditProfileForm(EditProfileForm):
     
@@ -147,4 +151,18 @@ class RegisterEditProfileForm(EditProfileForm):
         assert retval
         return retval
 
+    @form.action(label=u'Edit', failure='handle_set_action_failure')
+    def handle_set(self, action, data):
+        self.set_data(data)
+        
+        if self.user_has_verified_email():
+            uri = 'register_set_password.html'
+        else:
+            uri = 'register_verify_wait.html'
+        return self.request.RESPONSE.redirect(uri)
+        
+    def user_has_verified_email(self):
+        email = self.context.get_emailAddresses()[0]
+        retval = self.context.emailAddress_isVerified(email)
+        return retval
 

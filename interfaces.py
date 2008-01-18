@@ -57,6 +57,10 @@ class IGSResendVerification(IGSEmailAddressEntry):
     resend his or her verification email, while in the middle of 
     registration."""
 
+class IGSVerifyWait(IGSEmailAddressEntry):
+    """Schema use to define the user-interface presented while the user
+    waits for verification of his or her email address."""
+
 class VIDNotFound(ValidationError):
     """Verification identifier not found"""
     def __init__(self, value):
