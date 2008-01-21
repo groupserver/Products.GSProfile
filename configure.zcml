@@ -27,6 +27,9 @@
   <browser:resource name="check_password-20071101.js" 
     file="browser/javascript/check_password.js"
     permission="zope2.View" />
+  <browser:resource name="check_email_verified-20080118.js" 
+    file="browser/javascript/check_email_verified.js"
+    permission="zope2.View" />
 
   <!-- Form schemas -->
   
@@ -74,6 +77,7 @@
     name="request_registration.html"
     class=".request_registration.RequestRegistrationForm"
     permission="zope2.View"/>
+
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="registration_profile.html"

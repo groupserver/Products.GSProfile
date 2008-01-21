@@ -20,6 +20,7 @@ class GSAddressVerifiedView(BrowserView):
         assert request
         self.context = context
         self.request = request
+        
     def __call__(self):
         assert self.request
         assert self.context
@@ -29,7 +30,6 @@ class GSAddressVerifiedView(BrowserView):
         email = self.request.form['email']
         verified = self.context.emailAddress_isVerified(email)
         retval = verified and '1' or '0'
-        print retval
         return retval       
 
 
