@@ -6,6 +6,8 @@ GSCheckEmailVerified = function () {
     var email = null;
     var button = null;
     var satusUpdate = null;
+    var thingsToCheck = null;
+    
     var ADDRESS = 'verify_email.ajax?email=';
     var TIMEOUT_DELTA = 8000;
     var CHECKING_MSG = '<strong>Checking</strong> verification ' +
@@ -19,17 +21,22 @@ GSCheckEmailVerified = function () {
     // Public methods and properties. The "checkServer" and "checkReturn"
     // methods have to b public, due to oddities with "setTimeout".
     return {
-        init: function (e, b, s) {
+        init: function (e, b, s, c) {
             /* Add the address-checking code to the correct widgets
             
             ARGUMENTS
-              e:  String containing the ID of the email address
-              b:  String containing the ID of the submit button for the 
-                  form
+              e:  String containing the selector for the email address
+              b:  String containing the selector for the submit button 
+                  for the form
+              s:  String containing the selector for the status-update
+                  container.
+              c:  String containing the selector for the Things to Check
+                  section.
             */
             email = e;
             button = b;
             statusUpdate = s;
+            thingsToCheck = c;
             GSCheckEmailVerified.checkServer();
         },
         checkServer: function () {
@@ -40,6 +47,7 @@ GSCheckEmailVerified = function () {
             var verified = data == '1';
             if (verified) {
                 jQuery(button).attr("disabled","");
+                jQuery(thingsToCheck).fadeOut("slow");
                 jQuery(statusUpdate).html(VERIFIED_MSG);
             } else {
                 jQuery(button).attr("disabled","disabled");

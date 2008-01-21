@@ -1,3 +1,4 @@
+
 # coding=utf-8
 '''Implementation of the Reset Password Request form.
 '''
@@ -43,11 +44,16 @@ class VerifyAddressForm(PageForm):
         You can now send messages from
         <code class="email">%(emailAddress)s</code> to your groups, and
         messages from your groups can be sent to 
-        <code class="email">%(emailAddress)s</code>.''' % \
+        <code class="email">%(emailAddress)s</code>.
+        This page can now be closed.''' % \
         {'emailAddress': emailAddress}
         assert self.status
         assert type(self.status) == unicode
 
     def handle_verify_action_failure(self, action, data, errors):
         pass
+
+    @property
+    def userEmail(self):
+        return ''
 

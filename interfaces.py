@@ -75,7 +75,7 @@ class VID(ASCIILine):
         acl_users = self.context.site_root().acl_users
         assert acl_users
         
-        userId = acl_users.get_userIdByVerificationId(value)
+        userId = acl_users.get_userIdByEmailVerificationId(value)
         if userId == '':
             raise VIDNotFound(value)
         return True
@@ -88,8 +88,8 @@ class IGSVerifyAddress(Interface):
       description=u'The indentifier for the email address that '\
         u'is being identified',
       required=True,
-      min_length=23,
-      max_length=23)
+      min_length=22,
+      max_length=24)
 
 class IGSProfileContextMenuContentProvider(IContentProvider):
     """The content provider for the context menu"""

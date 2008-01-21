@@ -73,60 +73,69 @@
               <span tal:replace="structure action/render">Button</span>
             </span>
           </tal:block>
-        </div><!--buttons-->        
-        <h2>Things to Check</h2>
-        <ul>
-          <li><strong>Check your <q>junk</q> or <q>spam</q> folder</strong>
-             for the verification message.</li>
-          <li>Ensure that the address 
-            <code class="email">foo@bar.wibble</code> is in 
-            <strong>your address  book.</strong></li>
-          <li>Confirm that <strong>your email address is correct.</strong>
-            If it is not, you can correct it in the entry below 
-            and click the 
-            <samp class="button" 
-              tal:define="action python:[a for a in view.actions][1].label"
-              tal:content="action">Big R</samp> 
-            button.</li>
-        </ul>
-
-        <tal:block define="widget python:[w for w in view.widgets][0]">
-          <div class="form-widget" id="widget-abc123" 
-            tal:define="req widget/required;
-              style python:req and 'required' or 'not-required'"
-            tal:attributes="id string:widget-${widget/name};
-              class string:form-widget ${style}">
-            <label for="abc123" title="The hint for the widget"
-              tal:condition="python:widget.type != 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-                        
-            <p class="error" tal:condition="widget/error"
-              tal:content="structure widget/error">
-              Error message
-            </p>
-            
-            <span id="abc123" 
-              tal:replace="structure widget">Widget</span>
-              
-            <label for="abc123" title="The hint for the widget"
-              class="checkboxLabel"
-              tal:condition="python:widget.type == 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-          </div><!--form-widget-->
-        </tal:block>
-        <div class="buttons" tal:condition="view/availableActions">
-          <tal:block define="action python:[a for a in view.actions][1]">
-            <div class="formelementbutton">
-              <span tal:replace="structure action/render">Button</span>
-            </div>
-          </tal:block>
         </div><!--buttons-->
+        
+        <div id="thingsToCheck">
+          <h2>Things to Check</h2>
+          <ul>
+            <li><strong>Check your <q>junk</q> or <q>spam</q> folder</strong>
+               for the verification message.</li>
+            <li>Ensure that the address 
+              <code tal:content="view/verificationEmailAddress"
+                class="email">foo@bar.wibble</code> is in 
+              <strong>your address  book.</strong>
+              If it was not, add it, and click the 
+              <samp class="button" 
+                tal:define="action python:[a for a in view.actions][1].label"
+                tal:content="action">Big R</samp> 
+              button to send another email address verification message.</li>
+            <li>Confirm that <strong>your email address is correct.</strong>
+              If it is not, you can correct it in the entry below 
+              and click the 
+              <samp class="button" 
+                tal:define="action python:[a for a in view.actions][1].label"
+                tal:content="action">Big R</samp> 
+              button.</li>
+          </ul>
+
+          <tal:block define="widget python:[w for w in view.widgets][0]">
+            <div class="form-widget" id="widget-abc123" 
+              tal:define="req widget/required;
+                style python:req and 'required' or 'not-required'"
+              tal:attributes="id string:widget-${widget/name};
+                class string:form-widget ${style}">
+              <label for="abc123" title="The hint for the widget"
+                tal:condition="python:widget.type != 'checkbox'"
+                tal:attributes="for widget/name; title widget/hint"
+                tal:content="widget/label">
+                A label
+              </label>
+                          
+              <p class="error" tal:condition="widget/error"
+                tal:content="structure widget/error">
+                Error message
+              </p>
+              
+              <span id="abc123" 
+                tal:replace="structure widget">Widget</span>
+                
+              <label for="abc123" title="The hint for the widget"
+                class="checkboxLabel"
+                tal:condition="python:widget.type == 'checkbox'"
+                tal:attributes="for widget/name; title widget/hint"
+                tal:content="widget/label">
+                A label
+              </label>
+            </div><!--form-widget-->
+          </tal:block>
+          <div class="buttons" tal:condition="view/availableActions">
+            <tal:block define="action python:[a for a in view.actions][1]">
+              <div class="formelementbutton">
+                <span tal:replace="structure action/render">Button</span>
+              </div>
+            </tal:block>
+          </div><!--buttons-->
+        </div><!--thingsToCheck-->
       </form>      
     </tal:block>
     <tal:block metal:fill-slot="javascript">
@@ -135,7 +144,7 @@
       <script type="text/javascript"
         src="/++resource++popup_help-20071218.js">&#160;</script>
       <script type="text/javascript"
-        src="/++resource++check_email_verified-20080118.js">&#160;</script>
+        src="/++resource++check_email_verified-20080126.js">&#160;</script>
       <script type="text/javascript"
         tal:define="rws python:[w for w in view.widgets if w.required];
           rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
@@ -144,7 +153,7 @@
         jQuery.noConflict()
         jQuery(document).ready( function () {
             GSCheckEmailVerified.init('<span tal:replace="email"/>',  
-              '#form\\.actions\\.next', '#checking');
+              '#form\\.actions\\.next', '#checking', '#thingsToCheck');
         });
       </script>
       <script type="text/javascript" 

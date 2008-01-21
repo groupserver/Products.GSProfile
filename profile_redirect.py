@@ -6,6 +6,7 @@ from zope.app.traversing.interfaces import ITraversable
 from zope.interface import implements
 
 from interfaces import *
+import utils
 
 import logging
 log = logging.getLogger('GSProfile')
@@ -42,7 +43,7 @@ class GSProfileRedirect(BrowserView, Traversable):
                     verificationId)
                 log.info(m)
                 
-                self.login(user)
+                utils.login(self.context, user)
                 # Clean up
                 user.clear_userPasswordResetVerificationIds()
                 
@@ -68,21 +69,13 @@ class GSProfileRedirect(BrowserView, Traversable):
                     verificationId)
                 log.info(m)
                 
-                self.login(user)
+                utils.login(self.context, user)
 
-                uri = '/contacts/%s/verify_address.html' % user.getId()
+                uri = '/contacts/%s/verify_address.html?form.vid=%s' %\
+                  (user.getId(), verificationId)
             else: # Cannot find user
                 uri = '/r/verify-user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
             uri = '/r/verify-user-no-id'
         return self.request.RESPONSE.redirect(uri)
-
-    def login(self, user):
-        assert self.context
-        assert user
-        site_root = self.context.site_root()
-        site_root.cookie_authentication.credentialsChanged(user,
-          user.getId(), user.get_password())
-        m = 'GSProfileRedirect: Logged in user "%s"' % user.getId()
-        log.info(m)
 

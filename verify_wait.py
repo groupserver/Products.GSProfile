@@ -15,6 +15,10 @@ from zope.schema import *
 from Products.XWFCore import XWFUtils
 from interfaces import IGSVerifyWait
 from Products.CustomUserFolder.interfaces import ICustomUser
+import utils
+
+import logging
+log = logging.getLogger('GSProfile')
 
 class VerifyWaitForm(PageForm):
     label = u'Awaiting Verification'
@@ -31,6 +35,13 @@ class VerifyWaitForm(PageForm):
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
 
+    @property
+    def verificationEmailAddress(self):
+        retval = XWFUtils.getOption(self.context, 'userVerificationEmail')
+        assert type(retval) == str
+        assert '@' in retval
+        return retval
+
     @form.action(label=u'Next', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         return self.set_data(data)
@@ -43,7 +54,51 @@ class VerifyWaitForm(PageForm):
 
     @form.action(label=u'Send', failure='handle_set_action_failure')
     def handle_send(self, action, data):
-        return self.set_data(data)
+        assert data
+        assert 'email' in data.keys()
+        
+        newEmail = data['email']
+        if utils.address_exists(self.context, newEmail):
+            if newEmail in self.userEmail:
+                siteObj = self.siteInfo.siteObj
+                utils.send_verification_message(siteObj, self.context,
+                  newEmail)
+                self.status = u'''Another email address verification
+                  message has been sent to
+                  <code class="email">%s</code>.''' % newEmail
+            else:
+                self.status=u'''The address
+                  <code class="email">%s</code> is already registered
+                  to another user.''' % newEmail
+        else: # The address does not exist
+            oldEmail = self.remove_old_email()
+            self.add_new_email(newEmail)
+            self.status = u'''Changed your email address from
+              <code class="email">%s</code> to
+              <code class="email">%s</code>.''' % (newEmail, oldEmail)
+        assert self.status
+        assert type(self.status) == unicode        
+
+    def remove_old_email(self):
+        oldEmail = self.userEmail[0]
+        log.info('GSVerifyWait: Removing <%s> from the user "%s"' % \
+          (oldEmail, self.context.getId()))
+        self.context.remove_emailAddressVerification(oldEmail)
+        self.context.remove_emailAddress(oldEmail)
+
+        assert oldEmail not in self.context.get_emailAddresses()
+        return oldEmail
+        
+    def add_new_email(self, email):
+        log.info('GSVerifyWait: Adding <%s> to the user "%s"' % \
+          (email, self.context.getId()))
+        self.context.add_emailAddress(email, is_preferred=False)
+        
+        siteObj = self.siteInfo.siteObj
+        utils.send_verification_message(siteObj, self.context, email)
+        
+        assert email in self.context.get_emailAddresses()
+        return email
         
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:

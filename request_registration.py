@@ -9,7 +9,7 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Products.GSProfile.interfaces import *
 from Products.XWFCore import XWFUtils
-
+import utils
 import logging
 log = logging.getLogger('GSProfile')
 
@@ -51,7 +51,7 @@ class RequestRegistrationForm(PageForm):
         assert action
         assert data
         
-        if self.address_exists(data['email']):
+        if utils.address_exists(self.context, data['email']):
             logMsg = 'RequestRegistrationForm: Registration attempted with '\
               'existing address <%s>' % data['email']
             log.info(logMsg)
@@ -69,9 +69,11 @@ class RequestRegistrationForm(PageForm):
             self.status = m
             self.errors = []
         else:
-            user = self.create_user_from_email(data['email'])
-            self.login(user)
-            self.send_verification_message(user)
+            email = data['email']
+            user = self.create_user_from_email(email)
+            utils.login(self.context, user)
+            site = self.siteInfo.siteObj
+            utils.send_verification_message(site, user, email)
             
             # Go to the edit-profile page
             uri = '/contacts/%s/registration_profile.html' % user.getId()
@@ -79,14 +81,6 @@ class RequestRegistrationForm(PageForm):
 
     def handle_register_action_failure(self, action, data, errors):
         pass
-
-    def address_exists(self, emailAddress):
-        acl_users = self.context.site_root().acl_users
-        user = acl_users.get_userIdByEmail(emailAddress)
-        retval = user != None
-        
-        assert type(retval) == bool
-        return retval
 
     def create_user_from_email(self, email):
         assert email
@@ -111,38 +105,4 @@ class RequestRegistrationForm(PageForm):
         m = 'Request Registration: Created a new user "%s"' % user.getId()
         log.info(m)
         return user
-        
-    def login(self, user):
-        assert self.context
-        assert user
-        site_root = self.context.site_root()
-        site_root.cookie_authentication.credentialsChanged(user,
-          user.getId(), user.get_password())          
-        m = 'Request Registration: Logged in the user "%s"' % user.getId()
-        log.info(m)
-
-    def send_verification_message(self, user):
-        assert user!= None
-        email = user.get_emailAddresses()[0]
-        assert email
-
-        # Let us hope that the verification ID *is* unique
-        vNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-        verificationId = str(XWFUtils.convert_int2b62(vNum))
-        user.add_emailAddressVerification(verificationId, email)
-        
-        n_dict = {}
-        n_dict['verificationId'] = verificationId
-        n_dict['userId'] = user.getId()
-        n_dict['userFn'] = user.getProperty('fn','')
-        n_dict['siteName'] = self.siteInfo.get_name()
-        n_dict['siteURL'] = self.siteInfo.get_url()
-        user.send_notification(
-          n_type='verify_email_address', 
-          n_id='default',
-          n_dict=n_dict, 
-          email_only=[email])
-        m = 'Request Registration: Sent an email-verification message to '\
-          '<%s> for the user "%s"' % (email, user.getId())
-        log.info(m)
 

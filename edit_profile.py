@@ -158,7 +158,8 @@ class RegisterEditProfileForm(EditProfileForm):
         if self.user_has_verified_email():
             uri = 'register_set_password.html'
         else:
-            uri = 'register_verify_wait.html'
+            email = self.context.get_emailAddresses()[0]
+            uri = 'verify_wait.html?form.email=%s' % email
         return self.request.RESPONSE.redirect(uri)
         
     def user_has_verified_email(self):
