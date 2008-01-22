@@ -47,7 +47,7 @@ GSCheckEmailVerified = function () {
             var verified = data == '1';
             if (verified) {
                 jQuery(button).attr("disabled","");
-                jQuery(thingsToCheck).fadeOut("slow");
+                jQuery(thingsToCheck + ' input').attr("disabled","disabled");
                 jQuery(statusUpdate).html(VERIFIED_MSG);
             } else {
                 jQuery(button).attr("disabled","disabled");
