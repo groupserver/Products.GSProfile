@@ -7,7 +7,8 @@
   metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
-      Address Verified
+      Address Verified:
+      <span tal:replace="view/siteInfo/get_name">this site</span>
     </title>
     <!--=mpj17=-->
     <!--
