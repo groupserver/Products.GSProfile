@@ -9,12 +9,10 @@ from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
   TextAreaWidget
-from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
 from Products.XWFCore import XWFUtils
 import interfaces
-from Products.CustomUserFolder.interfaces import ICustomUser
 
 def select_widget(field, request):
     retval = SelectWidget(field, field.vocabulary, request)
@@ -137,13 +135,34 @@ class EditProfileForm(PageForm):
         return retval
 
 class RegisterEditProfileForm(EditProfileForm):
-    
+    ## --=mpj17=-- todo: add the joinable-groups to the form.
     label = u'Edit Profile'
     pageTemplateFileName = 'browser/templates/edit_profile_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
-        EditProfileForm.__init__(self, context, request)
+        PageForm.__init__(self, context, request)
+
+        self.siteInfo = createObject('groupserver.SiteInfo', context)
+        site_root = context.site_root()
+
+        assert hasattr(site_root, 'GlobalConfiguration')
+        config = site_root.GlobalConfiguration
+        
+        interfaceName = config.getProperty('profileInterface',
+                                           'IGSCoreProfile')
+        interfaceName = '%sRegister' % interfaceName 
+        assert hasattr(interfaces, interfaceName), \
+            'Interface "%s" not found.' % interfaceName
+        self.interface = interface = getattr(interfaces, interfaceName)
+        self.form_fields = form.Fields(interface, render_context=True)
+
+        self.form_fields['tz'].custom_widget = select_widget
+        self.form_fields['biography'].custom_widget = wym_editor_widget
+        self.form_fields['joinable_groups'].custom_widget = \
+          multi_check_box_widget
+            
+        self.enforce_schema(context, interface)
         
     @property
     def userEmail(self):

@@ -5,7 +5,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.contentprovider.interfaces import IContentProvider
-from interfaceCoreProfile import IGSCoreProfile
+from interfaceCoreProfile import *
 try:
     # The site profile may not exist.
     from interfaceSiteProfile import *

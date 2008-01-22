@@ -31,22 +31,20 @@ class IGSCoreProfile(Interface):
       required=False,
       default=u'')
 
-class IGSRegisterCoreProfile(IGSCoreProfile):
-    nickname = DottedName(title=u'Nickname',
-      description=u'The name you wish to give your profile. It should be '
-        u'a short name, that contains just letters or numbers. If you do '
-        u'not set a nickname, one will be created from your display name.',
-      required=False,
-      min_length=1)
 
-    joinable_groups = List(title=u'Joinable Groups',
-      description=u'Groups the user can join',
-      required=False,
-      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True,
-      default=[])
+joinable_groups = List(title=u'Joinable Groups',
+  description=u'Groups on this site you can join.',
+  required=False,
+  value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+  unique=True,
+  default=[])
 
-# Image
+class IGSCoreProfileRegister(IGSCoreProfile):
+    joinable_groups = joinable_groups
+
+#########
+# Image #
+#########
 
 class VGSImageWrongType(ValidationError):
     """Verification identifier not found"""
