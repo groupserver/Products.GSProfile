@@ -86,7 +86,7 @@
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="verify_address.html"
-    class=".verify_address.VerifyAddressForm"
+    class="Products.GSContent.view.GSContentView"
     template="browser/templates/verify_address.pt"
     permission="zope2.ManageProperties" />
    <browser:page 

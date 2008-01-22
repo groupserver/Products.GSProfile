@@ -63,16 +63,20 @@ class GSProfileRedirect(BrowserView, Traversable):
             user = acl_users.get_userByEmailVerificationId(verificationId)
             
             if user:
-                m = 'GSProfileRedirect: Going to the email verification '\
-                  'page for the user %s (%s), using the verification ID '\
-                  '"%s"' % (user.getProperty('fn', ''), user.getId(),
-                    verificationId)
+                m = 'GSProfileRedirect: Going to verify the address with '\
+                  'the verification ID %s for the user %s (%s).'  % \
+                  (verificationId, user.getProperty('fn', ''), user.getId())
                 log.info(m)
                 
                 utils.login(self.context, user)
+                emailAddress = user.verify_emailAddress(verificationId)
+                m = 'GSProfileRedirect: Verified the address <%s> for '\
+                  'the user %s (%s)' % (emailAddress, 
+                    user.getProperty('fn', ''), user.getId())
+                log.info(m)
 
-                uri = '/contacts/%s/verify_address.html?form.vid=%s' %\
-                  (user.getId(), verificationId)
+                uri = '/contacts/%s/verify_address.html?email=%s' %\
+                  (user.getId(), emailAddress)
             else: # Cannot find user
                 uri = '/r/verify-user-not-found?id=%s' % verificationId
         else: # Verification ID not specified

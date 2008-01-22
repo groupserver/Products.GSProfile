@@ -7,9 +7,7 @@
   metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="view/label">
-        Reset Password
-      </span>
+      Address Verified
     </title>
     <!--=mpj17=-->
     <!--
@@ -21,42 +19,21 @@
     -->
   </head>
   <body>
-    <div metal:fill-slot="messages" tal:condition="view/status" 
-      class="message-error"
-      tal:define="e view/errors"
-      tal:attributes="class python:e and 'message-error' or 'message-result'">
-      <p class="form-status" tal:content="structure view/status"/>
-      <dl tal:condition="view/errors">
-        <tal:block repeat="widget view/widgets">
-          <dt tal:content="widget/label">Widget Name</dt>
-          <dd class="error" tal:condition="widget/error"
-            tal:content="structure widget/error">Error message</dd>
-        </tal:block>
-      </dl>
+    <div metal:fill-slot="messages" class="message-result"
+      tal:define="email request/email">
+      <p>The address 
+        <code class="email" tal:content="email"/>
+        has been verified.
+        You can use this address to
+        send messages to your groups,
+        receive messages from groups,
+        and
+        log in to 
+        <span class="site" 
+          tal:content="view/siteInfo/get_name">this site</span>.
+      </p>
     </div>
     <tal:block metal:fill-slot="body">
-      <form enctype="multipart/form-data"  method="post" action="."
-        tal:attributes="action request/URL">
-        
-        <h1 tal:content="view/label">Reset Password</h1>
-         
-        <p tal:condition="not:view/status">
-          To verify the email address
-          <code class="email">my@email.address</code>
-        </p>
-          
-        <tal:block repeat="widget view/widgets">
-            <span tal:replace="structure widget/hidden">Widget</span>
-        </tal:block>
-        
-        <div class="buttons" tal:condition="view/availableActions">
-          <tal:block repeat="action view/actions">
-            <div class="formelementbutton">
-              <span tal:replace="structure action/render">Button</span>
-            </div>
-          </tal:block>
-        </div><!--buttons-->
-      </form>
     </tal:block>
   </body>
 </html>
