@@ -172,15 +172,5 @@
     class=".edit_image.GSEditImageForm"
     permission="zope2.ManageProperties" />
 
-  <interface 
-    interface=".interfaces.IGSVerifyAddressMarker"
-    type="zope.app.content.interfaces.IContentType" />
-   <browser:page 
-    for=".interfaces.IGSVerifyAddressMarker"
-    name="index.html"
-    class=".verify_address.VerifyAddressForm"
-    template="browser/templates/verify_address.pt"
-    permission="zope2.View" />
-
 </configure>
 
