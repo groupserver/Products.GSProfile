@@ -259,8 +259,8 @@ class IEDemProfile(IGSCoreProfile):
       required=True)
     
     fn = TextLine(title=u'Display Name',
-      description=u'The name that you want others to see on your profile '
-        u'and posts.',
+      description=u'The name that you want others to see. This is usually ' 
+        u'your first name followed by your last name.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
