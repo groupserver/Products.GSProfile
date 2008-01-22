@@ -111,8 +111,7 @@ GSCheckEmailAddress = function () {
             emailEntry.keyup(function(event) {
                 check();
             });
-            
-            jQuery(b).attr("disabled","disabled");
+            check();
         }
     };
 }(); // GSCheckEmailAddress

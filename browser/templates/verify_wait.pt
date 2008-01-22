@@ -146,6 +146,8 @@
       <script type="text/javascript"
         src="/++resource++check_email_verified-20080122.js">&#160;</script>
       <script type="text/javascript"
+        src="/++resource++check_email-20080122.js">&#160;</script>
+      <script type="text/javascript"
         tal:define="rws python:[w for w in view.widgets if w.required];
           rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
           arr python:'%s' % ', '.join(rwIds);
@@ -154,6 +156,8 @@
         jQuery(document).ready( function () {
             GSCheckEmailVerified.init('<span tal:replace="email"/>',  
               '#form\\.actions\\.next', '#checking', '#thingsToCheck');
+            GSCheckEmailAddress.init('#form\\.email', 
+              '#form\\.actions\\.send', null, null);
         });
       </script>
       <script type="text/javascript" 
