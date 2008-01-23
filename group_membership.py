@@ -19,7 +19,9 @@ class JoinableGroupsForSite(object):
 
     def __iter__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
-        retval = [SimpleTerm(g.get_id(), g.get_id(), g.get_name())
+        retval = [SimpleTerm(g.get_id(), g.get_id(), 
+                             '%s: for %s' % (g.get_name(),
+                                             g.get_property('real_life_group', '')))
                   for g in self.groups]
         for term in retval:
             assert term
