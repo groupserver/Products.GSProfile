@@ -106,7 +106,7 @@ class EditProfileForm(PageForm):
     #   label, but it helps with readability.
     @form.action(label=u'Edit', failure='handle_set_action_failure')
     def handle_set(self, action, data):
-        return self.set_data(data)
+        self.status = self.set_data(data)
         
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:
