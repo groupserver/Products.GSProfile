@@ -31,16 +31,13 @@ class IGSCoreProfile(Interface):
       required=False,
       default=u'')
 
-
-joinable_groups = List(title=u'Joinable Groups',
-  description=u'Groups on this site you can join.',
-  required=False,
-  value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-  unique=True,
-  default=[])
-
 class IGSCoreProfileRegister(IGSCoreProfile):
-    joinable_groups = joinable_groups
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
 
 #########
 # Image #

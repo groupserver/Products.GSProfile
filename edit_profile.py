@@ -64,6 +64,7 @@ class EditProfileForm(PageForm):
           * "inputData" is stated to provide the "schema" interface
           * "inputData" will provide all the properties defined in "schema"
         """
+
         typeMap = {
           Text:      'ulines',
           TextLine:  'ustring',
@@ -123,9 +124,13 @@ class EditProfileForm(PageForm):
         assert self.context
         assert self.form_fields
 
-        alteredFields = [datum[0] 
-                         for datum in getFieldsInOrder(self.interface)
-                         if data[datum[0]] != getattr(self.context, datum[0])]
+        fields = getFieldsInOrder(self.interface)
+        # --=mpj17=-- There *must* be a better way to skip the joinable
+        #  groups data, and still get a list of altered fields in a sane
+        #  order, but I am far too tired to figure it out
+        alteredFields = [datum[0] for datum in fields
+                         if ((datum[0] != 'joinable_groups') and
+                           (data[datum[0]] != getattr(self.context, datum[0])))]
         changed = form.applyChanges(self.context, self.form_fields, data)
         if changed:
             fields = [self.interface.get(name).title
@@ -162,6 +167,7 @@ class RegisterEditProfileForm(EditProfileForm):
         interfaceName = config.getProperty('profileInterface',
                                            'IGSCoreProfile')
         interfaceName = '%sRegister' % interfaceName 
+
         assert hasattr(interfaces, interfaceName), \
             'Interface "%s" not found.' % interfaceName
         self.interface = interface = getattr(interfaces, interfaceName)
@@ -189,7 +195,7 @@ class RegisterEditProfileForm(EditProfileForm):
             # --=mpj17=-- Site member?
             groupsToJoin = data.pop('joinable_groups')
             self.join_groups(groupsToJoin)
-        data['joinable_groups'] = None
+        self.form_fields = self.form_fields.omit('joinable_groups')
         self.set_data(data)
         
         if self.user_has_verified_email():

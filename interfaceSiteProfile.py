@@ -3,8 +3,7 @@ import pytz
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
-from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
-   joinable_groups
+from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -48,8 +47,13 @@ class IOGNProfile(IGSCoreProfile):
       default=u'')
 
 class IOGNProfileRegister(IOGNProfile):
-    joinable_groups = joinable_groups
-    
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
 class IABELProfile(IGSCoreProfile):
     fn = TextLine(title=u'Display Name',
       description=u'The name that everyone will see on your profile '
@@ -102,7 +106,14 @@ class IABELProfile(IGSCoreProfile):
       readonly=True)
 
 class IABELProfileRegister(IABELProfile):
-    joinable_groups = joinable_groups
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
+
 
 imClients = [u'Skype', u'Yahoo!', u'ICQ', u'MSN', u'AIM',
   u'Google Talk', u'Gizmo', u'IRC']
@@ -254,9 +265,6 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-class IDoWireProfileRegister(IDoWireProfile):
-    joinable_groups = joinable_groups
-
 class IEDemProfile(IGSCoreProfile):
     givenName = TextLine(title=u'First Name',
       description=u'The name that you are commonly called, which is given '
@@ -334,7 +342,4 @@ class IEDemProfile(IGSCoreProfile):
        u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default=u'')
-
-class IEDemProfileRegister(IEDemProfile):
-    joinable_groups = joinable_groups
 
