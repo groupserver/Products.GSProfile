@@ -79,13 +79,13 @@
             <div id="privacy-content">Loading&#8230;</div>
           </div>
         </div>
-
         <tal:block repeat="widget view/widgets">
           <div class="form-widget" id="widget-abc123" 
             tal:define="req widget/required;
               style python:req and 'required' or 'not-required'"
             tal:attributes="id string:widget-${widget/name};
               class string:form-widget ${style}">
+
             <label for="abc123" title="The hint for the widget"
               tal:condition="python:(not hasattr(widget, 'type')) or widget.type != 'checkbox'"
               tal:attributes="for widget/name; title widget/hint"
@@ -120,7 +120,7 @@
               <span tal:replace="structure action/render">Button</span>
             </div>
           </tal:block>
-        </div><!--buttons-->
+        </div>
       </form>
     </tal:block>
     <tal:block metal:fill-slot="javascript">

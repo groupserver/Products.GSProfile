@@ -3,7 +3,8 @@ import pytz
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
-from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
+from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
+   joinable_groups
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -45,7 +46,10 @@ class IOGNProfile(IGSCoreProfile):
       description=u'Your roles in organisations and the world.',
       required=False,
       default=u'')
-      
+
+class IOGNProfileRegister(IOGNProfile):
+    joinable_groups = joinable_groups
+    
 class IABELProfile(IGSCoreProfile):
     fn = TextLine(title=u'Display Name',
       description=u'The name that everyone will see on your profile '
@@ -96,6 +100,9 @@ class IABELProfile(IGSCoreProfile):
       description=u'The area of accountancy that you work in',
       required=True,
       readonly=True)
+
+class IABELProfileRegister(IABELProfile):
+    joinable_groups = joinable_groups
 
 imClients = [u'Skype', u'Yahoo!', u'ICQ', u'MSN', u'AIM',
   u'Google Talk', u'Gizmo', u'IRC']
@@ -247,6 +254,9 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
+class IDoWireProfileRegister(IDoWireProfile):
+    joinable_groups = joinable_groups
+
 class IEDemProfile(IGSCoreProfile):
     givenName = TextLine(title=u'First Name',
       description=u'The name that you are commonly called, which is given '
@@ -324,4 +334,7 @@ class IEDemProfile(IGSCoreProfile):
        u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default=u'')
+
+class IEDemProfileRegister(IEDemProfile):
+    joinable_groups = joinable_groups
 

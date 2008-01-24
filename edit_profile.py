@@ -14,6 +14,10 @@ from zope.schema import *
 from Products.XWFCore import XWFUtils
 import interfaces
 
+
+import logging
+log = logging.getLogger('GSEditProfile')
+
 def select_widget(field, request):
     retval = SelectWidget(field, field.vocabulary, request)
     retval.size = 15 # Because there are a lot of items.
@@ -36,6 +40,7 @@ class EditProfileForm(PageForm):
         PageForm.__init__(self, context, request)
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
+        self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         site_root = context.site_root()
 
         assert hasattr(site_root, 'GlobalConfiguration')
@@ -130,6 +135,10 @@ class EditProfileForm(PageForm):
             retval = u'Changed %s' % f
         else:
             retval = u"No fields changed."
+            
+        m = 'set_data: %s (%s)' % (retval, self.context.getId())
+        log.info(m)
+        
         assert retval
         assert type(retval) == unicode
         return retval
@@ -141,27 +150,29 @@ class RegisterEditProfileForm(EditProfileForm):
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
+
         PageForm.__init__(self, context, request)
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
+        self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         site_root = context.site_root()
-
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
-        
+
         interfaceName = config.getProperty('profileInterface',
                                            'IGSCoreProfile')
         interfaceName = '%sRegister' % interfaceName 
         assert hasattr(interfaces, interfaceName), \
             'Interface "%s" not found.' % interfaceName
         self.interface = interface = getattr(interfaces, interfaceName)
+
         self.form_fields = form.Fields(interface, render_context=True)
 
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
-            
+
         self.enforce_schema(context, interface)
         
     @property
@@ -172,6 +183,13 @@ class RegisterEditProfileForm(EditProfileForm):
 
     @form.action(label=u'Edit', failure='handle_set_action_failure')
     def handle_set(self, action, data):
+        assert data
+        
+        if 'joinable_groups' in data.keys():
+            # --=mpj17=-- Site member?
+            groupsToJoin = data.pop('joinable_groups')
+            self.join_groups(groupsToJoin)
+        data['joinable_groups'] = None
         self.set_data(data)
         
         if self.user_has_verified_email():
@@ -185,4 +203,17 @@ class RegisterEditProfileForm(EditProfileForm):
         email = self.context.get_emailAddresses()[0]
         retval = self.context.emailAddress_isVerified(email)
         return retval
+
+    def join_groups(self, groupsToJoin):
+        joinableGroups = \
+            self.groupsInfo.get_joinable_group_ids_for_user(self.context)
+        for groupId in groupsToJoin:
+            assert groupId in joinableGroups, \
+              '%s not a joinable group' % groupId
+            m = u'RegisterEditProfileForm: adding the user %s to the '\
+                u' group %s' % (self.context.getId(), groupId)
+            log.info(m)
+            
+            userGroup = '%s_member' % groupId
+            self.context.add_groupWithNotification(userGroup)
 
