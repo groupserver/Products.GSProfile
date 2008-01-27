@@ -14,7 +14,6 @@ from zope.schema import *
 from Products.XWFCore import XWFUtils
 import interfaces
 
-
 import logging
 log = logging.getLogger('GSEditProfile')
 
@@ -124,7 +123,8 @@ class EditProfileForm(PageForm):
         assert self.context
         assert self.form_fields
 
-        fields = getFieldsInOrder(self.interface)
+        fields = [field for field in getFieldsInOrder(self.interface)
+                  if not field[1].readonly]
         # --=mpj17=-- There *must* be a better way to skip the joinable
         #  groups data, and still get a list of altered fields in a sane
         #  order, but I am far too tired to figure it out
