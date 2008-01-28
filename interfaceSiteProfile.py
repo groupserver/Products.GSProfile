@@ -115,7 +115,7 @@ class IABELProfile(IGSCoreProfile):
       required=False,
       readonly=True)
       
-    emindervaID = TextLine(title=u'eMinerva ID',
+    eminervaID = TextLine(title=u'eMinerva ID',
       description=u'The identifier for your record in the eMinerva Student Control System',
       required=False,
       readonly=True)
