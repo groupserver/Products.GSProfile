@@ -105,6 +105,26 @@ class IABELProfile(IGSCoreProfile):
       required=True,
       readonly=True)
 
+    membershipID = TextLine(title=u'NZICA Membership Number',
+      description=u'Your New Zealand Institute of Chartered Accountants Membership Number',
+      required=False,
+      readonly=True)
+
+    candidateID = TextLine(title=u'Candidate Number',
+      description=u'Your ABEL Candidate Number',
+      required=False,
+      readonly=True)
+      
+    emindervaID = TextLine(title=u'eMinerva ID',
+      description=u'The identifier for your record in the eMinerva Student Control System',
+      required=False,
+      readonly=True)
+
+    preferredExamLocation = TextLine(title=u'Preferred Examination Location',
+      description=u'Where you wish to sit your exam.',
+      required=False,
+      readonly=True)
+
 class IABELProfileRegister(IABELProfile):
     joinable_groups = List(title=u'Joinable Groups',
       description=u'Groups on this site you can join.',
