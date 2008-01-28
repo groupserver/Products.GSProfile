@@ -51,3 +51,23 @@ class SetPasswordForm(PageForm):
         else:
             self.status = u'<p>There were errors:</p>'
 
+class SetPasswordRegisterForm(SetPasswordForm):
+    form_fields = form.Fields(IGSSetPassword)
+    label = u'Set Password'
+    pageTemplateFileName = 'browser/templates/set_password_register.pt'
+    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+    @form.action(label=u'Set', failure='handle_set_action_failure')
+    def handle_set(self, action, data):
+        assert self.context
+        assert self.form_fields
+        assert action
+        assert data
+        
+        loggedInUser = self.request.AUTHENTICATED_USER
+        user = self.context.acl_users.getUserById(loggedInUser.getId())
+        user.set_password(data['password1'])
+        
+        return self.request.RESPONSE.redirect('/?welcome=1')
+
+        

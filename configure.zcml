@@ -147,6 +147,12 @@
     class=".set_password.SetPasswordForm"
     permission="zope2.ManageProperties" />
 
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="register_password.html"
+    class=".set_password.SetPasswordRegisterForm"
+    permission="zope2.ManageProperties" />
+
   <interface
     interface=".interfaces.IGSEditProfileMarker"
     type="zope.app.content.interfaces.IContentType" />
