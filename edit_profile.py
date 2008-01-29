@@ -13,6 +13,7 @@ from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
 from Products.XWFCore import XWFUtils
 import interfaces
+from zope.app.form.browser.widget import renderElement
 
 import logging
 log = logging.getLogger('GSEditProfile')
@@ -22,8 +23,25 @@ def select_widget(field, request):
     retval.size = 15 # Because there are a lot of items.
     return retval
 
+class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
+    def renderItem(self, index, text, value, name, cssClass):
+        widgetId = '%s.%s' % (name, index)
+        elem = renderElement('input',
+                             type="checkbox",
+                             cssClass=cssClass,
+                             name=name,
+                             id=widgetId,
+                             value=value)
+        label = '<label class="checkboxLabel" for="%s">%s</label>' % \
+          (widgetId, text)
+        return self._joinButtonToMessageTemplate %(elem, label)
+
+
 def multi_check_box_widget(field, request):
-    return MultiCheckBoxWidget(field, field.value_type.vocabulary, request)
+    return NotBrokenMultiCheckBoxWidget(field, 
+                                        field.value_type.vocabulary, 
+                                        request)
+    
     
 def wym_editor_widget(field, request):
     retval = TextAreaWidget(field, request)
