@@ -84,7 +84,7 @@ class IGSRequestRegistration(IGSEmailAddressEntry):
     groupId = GroupID(title=u'Group Identifier',
       description=u'The identifier for the group that you '
         u'wish to join.',
-      required=True)
+      required=False)
 
 # Email Address Verification
 

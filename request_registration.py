@@ -77,6 +77,8 @@ class RequestRegistrationForm(PageForm):
             
             # Go to the edit-profile page
             uri = '/contacts/%s/registration_profile.html' % user.getId()
+            if 'groupId' in data.keys():
+                uri = '%s?form.joinable_groups:list=%s' % (uri, data['groupId'])
             return self.request.RESPONSE.redirect(uri)
 
     def handle_register_action_failure(self, action, data, errors):
