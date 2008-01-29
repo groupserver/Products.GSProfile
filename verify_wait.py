@@ -30,10 +30,6 @@ class VerifyWaitForm(PageForm):
         PageForm.__init__(self, context, request)
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
-        site_root = context.site_root()
-
-        assert hasattr(site_root, 'GlobalConfiguration')
-        config = site_root.GlobalConfiguration
 
     @property
     def verificationEmailAddress(self):
@@ -44,6 +40,7 @@ class VerifyWaitForm(PageForm):
 
     @form.action(label=u'Next', failure='handle_set_action_failure')
     def handle_set(self, action, data):
+        print 'Up to here!'
         return self.request.RESPONSE.redirect('register_password.html')
         
     def handle_set_action_failure(self, action, data, errors):
