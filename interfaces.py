@@ -5,6 +5,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.contentprovider.interfaces import IContentProvider
+from zope.component import createObject
 from interfaceCoreProfile import *
 try:
     # The site profile may not exist.
@@ -47,10 +48,6 @@ class IGSEmailAddressEntry(Interface):
 class IGSRequestPasswordReset(IGSEmailAddressEntry):
     """Schema used to request that the user's password is reset.
     """
-
-class IGSRequestRegistration(IGSEmailAddressEntry):
-    """Schema use to define the user-interface that start the whole
-    registration process"""
     
 class IGSResendVerification(IGSEmailAddressEntry):
     """Schema use to define the user-interface that the user uses to
@@ -61,8 +58,38 @@ class IGSVerifyWait(IGSEmailAddressEntry):
     """Schema use to define the user-interface presented while the user
     waits for verification of his or her email address."""
 
+# Registration
+class GroupIDNotFound(ValidationError):
+    """Group identifier not found"""
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return 'Group identifier %s not found' % repr(self.value)
+    def doc(self):
+        return self.__str__()
+
+class GroupID(ASCIILine):
+    def constraint(self, value):
+        groupsInfo = createObject('groupserver.GroupsInfo', self.context)
+        groupIds = groupsInfo.get_visible_group_ids()
+        if value not in groupIds:
+            raise GroupIDNotFound(value)
+        return True
+
+class IGSRequestRegistration(IGSEmailAddressEntry):
+    """Schema use to define the user-interface that start the whole
+    registration process"""
+    # Unfortunately the group identifier is not checked against the 
+    #   joinable groups, because there is no "user" to check with.
+    groupId = GroupID(title=u'Group Identifier',
+      description=u'The identifier for the group that you '
+        u'wish to join.',
+      required=True)
+
+# Email Address Verification
+
 class VIDNotFound(ValidationError):
-    """Verification identifier not found"""
+    """Email Address verification identifier not found"""
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -71,6 +98,7 @@ class VIDNotFound(ValidationError):
         return self.__str__()
         
 class VID(ASCIILine):
+    """Email Address Verification ID"""
     def constraint(self, value):
         acl_users = self.context.site_root().acl_users
         assert acl_users

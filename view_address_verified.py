@@ -1,17 +1,5 @@
 # coding=utf-8
-import Globals
 from Products.Five import BrowserView
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.component import createObject
-from zope.interface import implements
-from zope.interface.interface import InterfaceClass
-from zope.component.interfaces import IFactory
-import Products.GSContent.interfaces
-from Products.XWFCore import XWFUtils
-from Products.XWFCore.odict import ODict
-import zope.app.apidoc.interface # 
-
-from interfaces import *
 
 class GSAddressVerifiedView(BrowserView):
     '''View object for standard GroupServer User-Profile Instances'''
