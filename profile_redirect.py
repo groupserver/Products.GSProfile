@@ -83,3 +83,29 @@ class GSProfileRedirect(BrowserView, Traversable):
             uri = '/r/verify-user-no-id'
         return self.request.RESPONSE.redirect(uri)
 
+    def admin_verified_redirect(self):
+        site_root = self.context.site_root()
+        acl_users = site_root.acl_users
+
+        if len(self.request.form['subpaths']) == 1:
+            verificationId = self.request.form['subpaths'][0]
+            user = acl_users.get_userByPasswordVerificationId(verificationId)
+            
+            if user:
+                m = 'GSProfileRedirect: Going to register_password.html '\
+                  'for the user %s (%s), using the verification ID '\
+                  '"%s"' % (user.getProperty('fn', ''), user.getId(),
+                    verificationId)
+                log.info(m)
+                
+                utils.login(self.context, user)
+                # Clean up
+                user.clear_userPasswordResetVerificationIds()
+                
+                uri = '/contacts/%s/register_password.html' % user.getId()
+            else: # Cannot find user
+                uri = '/r/user-not-found?id=%s' % verificationId
+        else: # Verification ID not specified
+            uri = '/r/user-no-id'
+        return self.request.RESPONSE.redirect(uri)
+

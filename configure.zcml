@@ -110,6 +110,9 @@
     <browser:page
       name="verify"
       attribute="verify_redirect"/>
+    <browser:page
+      name="initlogin"
+      attribute="admin_verified_redirect"/>      
   </browser:pages>
   <browser:pages
     for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
