@@ -24,7 +24,15 @@ class RequestRegistrationForm(PageForm):
         self.context = context
         self.request = request
         self.siteInfo = createObject('groupserver.SiteInfo', context)
+        self.groupsInfo = createObject('groupserver.GroupsInfo', context)
 
+        self.groupInfo = None
+        if 'form.groupId' in request.form.keys():
+            gId = request.form['form.groupId']
+            if gId in self.groupsInfo.get_visible_group_ids():
+                self.groupInfo = createObject('groupserver.GroupInfo',
+                                              context, gId)
+            
     @property
     def verificationEmailAddress(self):
         retval = XWFUtils.getOption(self.context, 'userVerificationEmail')

@@ -50,7 +50,12 @@
         <p>
           You must register with
           <span class="site" tal:content="siteName">this site</span>
-          to to add posts to topics, receive email messages and join
+          to add posts to topics, receive email messages 
+          <span tal:condition="view/groupInfo">
+            (from groups such as 
+            <span class="group" tal:content="view/groupInfo/get_name"/>)
+          </span>
+          and join
           private or secret groups.
           Enter your email address below, and click the 
           <samp class="button" 
