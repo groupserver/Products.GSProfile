@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_layout/page">
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
       <span tal:replace="string:${view/label}: ${view/userName}: ${view/siteInfo/get_name}">
@@ -18,6 +18,14 @@
     </tal:block>
   </head>
   <body>
+    <tal:block metal:fill-slot="contextnavigation">
+    </tal:block>
+    <tal:block metal:fill-slot="sitenavigation">
+      <div id="sitenavigation" />
+    </tal:block>
+    <tal:block metal:fill-slot="utilitylinks">
+      <div id="utilitylinks" />
+    </tal:block>
     <div metal:fill-slot="messages" tal:condition="view/status" 
       class="message-error"
       tal:define="e view/errors"
@@ -33,12 +41,6 @@
         </tal:block>
       </dl>
     </div>
-    <tal:block metal:fill-slot="contextnavigation">
-      <span 
-        tal:replace="structure provider:groupserver.ProfileContextMenu">
-        Context Menu
-      </span>
-    </tal:block>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="edit-profile">

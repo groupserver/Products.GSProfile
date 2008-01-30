@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_layout/page">
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
       <span tal:replace="string:${view/label}: ${view/userName}: ${view/siteInfo/get_name}">
@@ -29,10 +29,12 @@
       </dl>
     </div>
     <tal:block metal:fill-slot="contextnavigation">
-      <span 
-        tal:replace="structure provider:groupserver.ProfileContextMenu">
-        Context Menu
-      </span>
+    </tal:block>
+    <tal:block metal:fill-slot="sitenavigation">
+      <div id="sitenavigation" />
+    </tal:block>
+    <tal:block metal:fill-slot="utilitylinks">
+      <div id="utilitylinks" />
     </tal:block>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
@@ -162,10 +164,6 @@
       </script>
       <script type="text/javascript" 
         src="/++resource++jquery-1.2.1.min.js">&#160;</script>
-      <script type="text/javascript" 
-        src="/++resource++wymeditor/jquery.wymeditor.pack.js">&#160;</script>
-      <script type="text/javascript" 
-        src="/++resource++wymeditor/init.js">&#160;</script>
     </tal:block>
   </body>
 </html>
