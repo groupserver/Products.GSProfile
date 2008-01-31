@@ -133,7 +133,7 @@
     for="*"
     name="reset_password.html"
     class=".request_password_reset.RequestPasswordResetForm"
-    permission="zope2.View" />
+    permission="zope2.Public" />
 
   <interface 
     interface=".interfaces.IGSRequestRegistrationMarker"
