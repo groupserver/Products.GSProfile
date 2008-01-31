@@ -130,8 +130,8 @@
     interface=".interfaces.IGSRequestPasswordResetMarker" 
     type="zope.app.content.interfaces.IContentType" />
    <browser:page 
-    for=".interfaces.IGSRequestPasswordResetMarker"
-    name="index.html"
+    for="*"
+    name="reset_password.html"
     class=".request_password_reset.RequestPasswordResetForm"
     permission="zope2.View" />
 

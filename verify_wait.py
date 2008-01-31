@@ -59,6 +59,10 @@ class VerifyWaitForm(PageForm):
         newEmail = data['email']
         if utils.address_exists(self.context, newEmail):
             if newEmail in self.userEmail:
+                m ='GSVerifyWait: Resending verification message to ' \
+                  '<%s> for the user "%s"' % (newEmail, self.context.getId())
+                log.info(m)
+                
                 siteObj = self.siteInfo.siteObj
                 utils.send_verification_message(siteObj, self.context,
                   newEmail)
@@ -66,6 +70,10 @@ class VerifyWaitForm(PageForm):
                   message has been sent to
                   <code class="email">%s</code>.''' % newEmail
             else:
+                m ='GSVerifyWait: Attempt to use another email address ' \
+                  '<%s> by the user "%s"' % (newEmail, self.context.getId())
+                log.info(m)
+
                 self.status=u'''The address
                   <code class="email">%s</code> is already registered
                   to another user.''' % newEmail
