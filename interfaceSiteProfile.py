@@ -90,8 +90,8 @@ class IABELProfile(IGSCoreProfile):
       default=u'UTC',
       vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
 
-    region = TextLine(title=u'City or Town',
-      description=u'Where you live and work.',
+    region = TextLine(title=u'Preferred Workshop Location',
+      description=u'Where you would prefer to attend workshops.',
       required=True,
       readonly=True)
 
