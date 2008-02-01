@@ -14,7 +14,7 @@
   </head>
   <body metal:fill-slot="body">
     <h1>User Not Found</h1>
-      <p tal:define="sprt python:modules['Products.XWFCore.XWFUtils'].get_support_email;">
+      <p>
 
         The user that you were trying to log in as was not found.
         Please check the link you followed, as it may be broken over two
@@ -30,7 +30,7 @@
         a new password. When you receive the new link, please ensure that 
         you click on it only once.
       </p>
-      <p>
+      <p tal:define="sprt python:modules['Products.XWFCore.XWFUtils'].get_support_email">
         <a href="#" title="Email Support"
           tal:attributes="href python:'mailto:%s' % sprt(view.context, view.siteInfo.get_id())">Please
           report this error</a> if you need more assistance.
