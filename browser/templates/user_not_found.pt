@@ -17,11 +17,20 @@
       <p tal:define="sprt python:modules['Products.XWFCore.XWFUtils'].get_support_email;">
 
         The user that you were trying to log in as was not found.
-        Check the link you followed &#8213; as it may be broken over two
+        Please check the link you followed, as it may be broken over two
         lines.
         If the link is broken, fix it by pasting both parts into the 
         location-bar (also known as the <q>address</q> bar) 
         of your Web browser.
+      </p>
+      <p>
+        If the link is not broken, it may have expired. (Links to set your
+        password are valid for one click only.) Please visit the 
+        <a href="/reset_password.html">Reset Password</a> page to request 
+        a new password. When you receive the new link, please ensure that 
+        you click on it only once.
+      </p>
+      <p>
         <a href="#" title="Email Support"
           tal:attributes="href python:'mailto:%s' % sprt(view.context, view.siteInfo.get_id())">Please
           report this error</a> if you need more assistance.
