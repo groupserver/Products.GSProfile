@@ -20,6 +20,8 @@ GSCheckPassword = function () {
     var p1 = null;
     var p2 = null;
     var b = null;
+    var h = null;
+    var passwdMatch = true; // This is correct.
     
     // Private methods
     var check_passwords = function () {
@@ -27,24 +29,37 @@ GSCheckPassword = function () {
         pswd2 = jQuery(p2).val();
         if ( (pswd1 == pswd2) && (pswd1 != "") ) {
             jQuery(b).attr("disabled","");
+            if ( (h != null) && (!passwdMatch) ) {
+                jQuery(h).find(".message-error").hide("slow");
+                jQuery(h).find(".message-result").show("slow");
+            }
+            passwdMatch = true;
         } else {
             jQuery(b).attr("disabled","disabled");
+            if ( (h != null) && passwdMatch ) {
+                jQuery(h).find(".message-result").hide("slow");
+                jQuery(h).find(".message-error").show("slow");
+            }
+            passwdMatch = false;
         }
     }
     
     // Public methods and properties
     return {
-        init: function (password1, password2, button) {
+        init: function (password1, password2, button, help) {
             /* Add the password-checking code to the appropriate widgets
               
               ARGUMENTS
                 password1:  String of the ID of the first password entry.
                 password2:  String of the ID of the second password entry.
-                button:     String of the ID of the form-submit button
+                button:     String of the ID of the form-submit button.
+                help:       String of the ID of the "passwords do not 
+                            match" help. Can be null.
             */
             p1 = password1;
             p2 = password2;
             b = button;
+            h = help;
             
             jQuery(password1).keyup(function(e) {
                 check_passwords();
