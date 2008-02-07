@@ -4,6 +4,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from Products.XWFCore import XWFUtils
+from checkEmail import check_email
 
 def display_name_not_nul(text):
     retval = text.strip() != u''
@@ -38,6 +39,16 @@ class IGSCoreProfileRegister(IGSCoreProfile):
       value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
       unique=True,
       default=[])
+
+class IGSCoreProfileAdminJoin(IGSCoreProfile):
+    email = ASCIILine(title=u'Email Address',
+      description=u'Your email address.',
+      required=True,
+      constraint=check_email)
+
+    message = Text(title=u'Message',
+      description=u'The message to send to the new group member',
+      required=False)
 
 #########
 # Image #

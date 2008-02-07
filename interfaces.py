@@ -7,6 +7,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 from zope.contentprovider.interfaces import IContentProvider
 from zope.component import createObject
 from interfaceCoreProfile import *
+from checkEmail import check_email
 try:
     # The site profile may not exist.
     from interfaceSiteProfile import *
@@ -35,9 +36,6 @@ class IGSSetPassword(Interface):
     def passwordsMatch(passwords):
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
-
-EMAIL_RE = r'[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}'
-check_email = re.compile(EMAIL_RE).match
 
 class IGSEmailAddressEntry(Interface):
     email = ASCIILine(title=u'Email Address',

@@ -167,7 +167,6 @@ class EditProfileForm(PageForm):
         return retval
 
 class RegisterEditProfileForm(EditProfileForm):
-    ## --=mpj17=-- todo: add the joinable-groups to the form.
     label = u'Edit Profile'
     pageTemplateFileName = 'browser/templates/edit_profile_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
@@ -243,4 +242,40 @@ class RegisterEditProfileForm(EditProfileForm):
 
         siteGroup = '%s_member' % self.siteInfo.get_id()
         self.context.add_groupWithNotification(siteGroup)
+
+class AdminJoinEditProfileForm(EditProfileForm):
+    label = u'Add a New Group Member'
+    pageTemplateFileName = 'browser/templates/edit_profile_admin_join.pt'
+    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+    def __init__(self, context, request):
+        PageForm.__init__(self, context, request)
+
+        self.siteInfo = createObject('groupserver.SiteInfo', context)
+        self.groupsInfo = createObject('groupserver.GroupsInfo', context)
+        site_root = context.site_root()
+
+        assert hasattr(site_root, 'GlobalConfiguration')
+        config = site_root.GlobalConfiguration
+        
+        # interfaceName = config.getProperty('profileInterface',
+        #                                    'IGSCoreProfile')
+        interfaceName = 'IGSCoreProfileAdminJoin'
+        # assert hasattr(interfaces, interfaceName), \
+        #     'Interface "%s" not found.' % interfaceName
+        self.interface = interface = getattr(interfaces, interfaceName)
+        self.form_fields = form.Fields(interface, render_context=False)
+
+        self.form_fields['tz'].custom_widget = select_widget
+        self.form_fields['biography'].custom_widget = wym_editor_widget
+            
+    @form.action(label=u'Add', failure='handle_add_action_failure')
+    def handle_add(self, action, data):
+        self.status = u'Woot!'
+        
+    def handle_add_action_failure(self, action, data, errors):
+        if len(errors) == 1:
+            self.status = u'<p>There is an error:</p>'
+        else:
+            self.status = u'<p>There are errors:</p>'
 

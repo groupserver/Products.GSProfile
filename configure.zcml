@@ -71,11 +71,17 @@
     for=".interfaces.IGSReigstration"
     name="request_password.html"
     class=".request_password_reset.RequestPasswordResetForm"
-    permission="zope2.View" />
+    permission="zope2.Public" />
   <browser:page 
     for=".interfaces.IGSReigstration"
     name="request_registration.html"
     class=".request_registration.RequestRegistrationForm"
+    permission="zope2.Public"/>
+
+  <browser:page 
+    for=".interfaces.IGSReigstration"
+    name="admin_join.html"
+    class=".edit_profile.AdminJoinEditProfileForm"
     permission="zope2.View"/>
 
    <browser:page 
