@@ -79,10 +79,10 @@
     permission="zope2.Public"/>
 
   <browser:page 
-    for=".interfaces.IGSReigstration"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="admin_join.html"
-    class=".edit_profile.AdminJoinEditProfileForm"
-    permission="zope2.View"/>
+    class=".admin_join.AdminJoinEditProfileForm"
+    permission="zope2.ManageProperties"/>
 
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
