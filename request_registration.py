@@ -78,7 +78,7 @@ class RequestRegistrationForm(PageForm):
             self.errors = []
         else:
             email = data['email']
-            user = self.create_user_from_email(email)
+            user = utils.create_user_from_email(self.context, email)
             utils.login(self.context, user)
             site = self.siteInfo.siteObj
             utils.send_verification_message(site, user, email)
@@ -91,28 +91,4 @@ class RequestRegistrationForm(PageForm):
 
     def handle_register_action_failure(self, action, data, errors):
         pass
-
-    def create_user_from_email(self, email):
-        assert email
-        m = 'Request Registration: Creating a new user for the '\
-          'address <%s>' % email
-        log.info(m)
-        
-        userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-        userId = str(XWFUtils.convert_int2b62(userNum))
-
-        # Ensure that the user ID is unique. There is also has a race 
-        #   condition, and the loop is non-deterministic.
-        acl_users = self.context.site_root().acl_users
-        while (acl_users.getUserById(userId)):
-            userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-            userId = str(XWFUtils.convert_int2b62(userNum))
-            
-        displayName = email.split('@')[0]
-        
-        user = acl_users.simple_register_user(email, userId, displayName)
-        assert user
-        m = 'Request Registration: Created a new user "%s"' % user.getId()
-        log.info(m)
-        return user
 

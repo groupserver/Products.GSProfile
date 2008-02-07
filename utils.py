@@ -66,3 +66,27 @@ def send_verification_message(context, user, email):
       'message to <%s> for the user "%s"' % (email, user.getId())
     log.info(m)
 
+def create_user_from_email(context, email):
+    assert email
+    m = 'utils.create_user_from_email: Creating a new user for the '\
+      'address <%s>' % email
+    log.info(m)
+    
+    userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
+    userId = str(XWFUtils.convert_int2b62(userNum))
+
+    # Ensure that the user ID is unique. There is also has a race 
+    #   condition, and the loop is non-deterministic.
+    acl_users = context.site_root().acl_users
+    while (acl_users.getUserById(userId)):
+        userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
+        userId = str(XWFUtils.convert_int2b62(userNum))
+        
+    displayName = email.split('@')[0]
+    
+    user = acl_users.simple_register_user(email, userId, displayName)
+    assert user
+    m = 'Request Registration: Created a new user "%s"' % user.getId()
+    log.info(m)
+    return user
+

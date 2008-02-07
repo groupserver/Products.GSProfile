@@ -13,6 +13,7 @@ from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
 from Products.XWFCore import XWFUtils
 import interfaces
+import utils
 from zope.app.form.browser.widget import renderElement
 
 import logging
@@ -253,6 +254,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
+        self.groupInfo = createObject('groupserver.GroupInfo', context)
         site_root = context.site_root()
 
         assert hasattr(site_root, 'GlobalConfiguration')
@@ -271,11 +273,75 @@ class AdminJoinEditProfileForm(EditProfileForm):
             
     @form.action(label=u'Add', failure='handle_add_action_failure')
     def handle_add(self, action, data):
-        self.status = u'Woot!'
+        acl_users = self.context.acl_users
+        
+        if utils.address_exists(self.context, data['email']):
+            m = 'AdminJoinEditProfileForm: User with the email address '\
+              '<%s> exists.' % data['email']
+            log.info(m)
+
+            user = acl_users.get_userIdByEmail(data['email'])
+            assert user, 'User for address <%s> not found' % data['email']
+            self.join_group(self, user)
+        else:        
+            m = 'AdminJoinEditProfileForm: No user with the email '\
+              'address <%s>.' % data['email']
+            log.info(m)
+
+            user = utils.create_user_from_email(self.context, data['email'])
+            
+            # Add profile attributes 
+            changed = form.applyChanges(user, self.form_fields, data)
+            m = 'AdminJoinEditProfileForm: Changed the attributes %s ' \
+              'for the user "%s"' % (chaged, user.getId())
+            log.info(m)
+            
+            # Send notification
+            self.send_add_user_notification(user)
         
     def handle_add_action_failure(self, action, data, errors):
         if len(errors) == 1:
             self.status = u'<p>There is an error:</p>'
         else:
             self.status = u'<p>There are errors:</p>'
+
+    def join_group(self, user):
+        m = u'AdminJoinEditProfileForm: adding the user %s to the '\
+            u' group %s' % (user.getId(), self.groupInfo.get_id())
+        log.info(m)
+
+        userGroups = user.getGroups()
+        userGroup = '%s_member' % self.groupInfo.get_id()
+        assert userGroup not in userGroups, 'User %s in %s' % \
+          (user.getId(), userGroup)
+        user.add_groupWithNotification(userGroup)
+
+        siteGroup = '%s_member' % self.siteInfo.get_id()
+        if siteGroup not in userGroups:
+            m = u'AdminJoinEditProfileForm: the user "%s" (%s) is not a '\
+                u' member of the site "%s" (%s)' % \
+                  (user.getId(), user.getProperty('fn', ''),
+                   self.siteInfo.get_name(), self.siteInfo.get_id())
+            log.info(m)
+            self.context.add_groupWithNotification(siteGroup)
+
+    def send_add_user_notification(self, user):
+        email = user.get_emailAddresses(self)
+        
+        verificationId = utils.verificationId_from_email(email)
+        user.add_emailAddressVerification(verificationId, email)
+        n_dict = {}
+        n_dict['verificationId'] = verificationId
+        n_dict['userId'] = user.getId()
+        n_dict['userFn'] = user.getProperty('fn','')
+        n_dict['siteName'] = self.siteInfo.get_name()
+        n_dict['siteURL'] = self.siteInfo.get_url()
+        user.send_notification(
+          n_type='admin_create_new_user', 
+          n_id='default',
+          n_dict=n_dict, 
+          email_only=[email])
+        m = 'AdminJoinEditProfileForm: Sent a notification message '\
+          'to <%s> for the user "%s"' % (email, user.getId())
+        log.info(m)
 
