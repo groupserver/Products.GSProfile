@@ -109,13 +109,15 @@ class AdminJoinEditProfileForm(EditProfileForm):
     def send_add_user_notification(self, user, data):
         email = user.get_emailAddresses()[0]
         
-        verificationId = utils.verificationId_from_email(email)
-        user.add_emailAddressVerification(verificationId, email)
-        
+        invitationId = utils.verificationId_from_email(email)
         admin = self.get_admin()
 
+        user.add_invitation(invitationId, admin.getId(),
+          self.siteInfo.get_id(), self.groupInfo.get_id())
+        user.add_emailAddressVerification(invitationId, email)
+        
         n_dict = {}
-        n_dict['verificationId'] = verificationId
+        n_dict['verificationId'] = invitationId
         n_dict['userId'] = user.getId()
         n_dict['userFn'] = user.getProperty('fn','')
         n_dict['siteName'] = self.siteInfo.get_name()

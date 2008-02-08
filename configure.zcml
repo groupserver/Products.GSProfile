@@ -119,6 +119,9 @@
     <browser:page
       name="initlogin"
       attribute="admin_verified_redirect"/>      
+    <browser:page
+      name="reject_invite"
+      attribute="reject_invite"/>      
   </browser:pages>
   <browser:pages
     for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
@@ -130,6 +133,9 @@
     <browser:page
       name="user-not-found"
       template="browser/templates/user_not_found.pt" />
+    <browser:page
+      name="rejected-invitation"
+      template="browser/templates/reject_invite.pt" />
   </browser:pages>
 
   <interface 
