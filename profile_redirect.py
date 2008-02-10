@@ -111,6 +111,8 @@ class GSProfileRedirect(BrowserView, Traversable):
         return self.request.RESPONSE.redirect(uri)
 
     def reject_invite(self):
+        """Reject an invitation to join a group
+        """
         site_root = self.context.site_root()
         acl_users = site_root.acl_users
 
@@ -164,14 +166,33 @@ class GSProfileRedirect(BrowserView, Traversable):
                   n_id='default',
                   n_dict=n_dict)
 
-                # --=mpj17=-- Check to see if we should delete the profile
-                # Detete user
-                uri = '/r/rejected-invitation'
+                if (len(user.getGroups()) <= 2):
+                    m = u'reject_invite: Deleting user "%s"' % user.getId()
+                    log.info(m)
+                    acl_users.userFolderDelUsers([user.getId()])
 
+                uri = '/r/rejected-invitation'
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified
             uri = '/r/user-no-id'
         return self.request.RESPONSE.redirect(uri)
 
+    def accept_invite(self):
+        """Accept an invitation to join a group
+        """
+        site_root = self.context.site_root()
+        acl_users = site_root.acl_users
+
+        if len(self.request.form['subpaths']) == 1:
+            invitationId = self.request.form['subpaths'][0]
+            user = acl_users.get_userByInvitationId(invitationId) 
+
+            if user:
+                uri = '/contacts/%s/register_password.html' % user.getId()
+            else: # Cannot find user
+                uri = '/r/user-not-found?id=%s' % invitationId
+        else: # Verification ID not specified
+            uri = '/r/user-no-id'
+        return self.request.RESPONSE.redirect(uri)
 

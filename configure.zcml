@@ -122,6 +122,9 @@
     <browser:page
       name="reject_invite"
       attribute="reject_invite"/>      
+    <browser:page
+      name="accept_invite"
+      attribute="accept_invite"/>      
   </browser:pages>
   <browser:pages
     for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
