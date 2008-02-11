@@ -49,10 +49,10 @@
         <p>
           Welcome!
           An email message has been sent to your email account, asking you
-          to verify that you controll the address
+          to verify that you control the address
           <code class="email" 
             tal:content="python:view.userEmail[0]">your@email.address</code>.
-          You can edit your profile, while waiting for the message to 
+          You can now edit your profile, while waiting for the message to 
           arrive in your email inbox.
           When you have finished, click the 
           <samp class="button" 
@@ -64,10 +64,12 @@
           Most of your profile properties are only visible to other
           logged in users of
           <span class="site" 
-            tal:content="view/siteInfo/get_name">this site</span>.
+            tal:content="view/siteInfo/get_name">this site</span>,
+          when they visit your profile page.
           However, if you post to a public group, then your name and 
           image will be visible to all visitors to that group, even if
           they are not logged in.
+          You will be able to change all your profile properties later.
         </p>
         <div id="privacy" class="disclosureWidget">
           <p>
