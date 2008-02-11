@@ -167,7 +167,6 @@ class GSProfileRedirect(BrowserView, Traversable):
                   n_id='default',
                   n_dict=n_dict)
 
-                acl_users.delGroupsFromUser([groupInfo.get_id()], user.getId())
                 if (len(user.getGroups()) <= 2):
                     m = u'reject_invite: Deleting user "%s"' % user.getId()
                     log.info(m)
