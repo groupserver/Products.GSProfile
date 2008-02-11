@@ -100,8 +100,6 @@ class GSProfileRedirect(BrowserView, Traversable):
                 log.info(m)
                 
                 utils.login(self.context, user)
-                # Clean up
-                user.clear_userPasswordResetVerificationIds()
                 
                 uri = '/contacts/%s/register_password.html' % user.getId()
             else: # Cannot find user

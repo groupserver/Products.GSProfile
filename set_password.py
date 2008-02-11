@@ -67,7 +67,9 @@ class SetPasswordRegisterForm(SetPasswordForm):
         loggedInUser = self.request.AUTHENTICATED_USER
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
+
+        # Clean up
+        user.clear_userPasswordResetVerificationIds()
         
         return self.request.RESPONSE.redirect('/?welcome=1')
 
-        
