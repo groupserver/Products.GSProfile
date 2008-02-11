@@ -192,10 +192,23 @@ class GSProfileRedirect(BrowserView, Traversable):
             user = acl_users.get_userByInvitationId(invitationId) 
 
             if user:
-                uri = '/contacts/%s/register_password.html' % user.getId()
+                # Get Data
+                utils.login(self.context, user)
+                
+                invitation = user.get_invitation(invitationId)
+                groups = getattr(site_root.Content, invitation['site_id']).groups
+                grp = getattr(groups, invitation['group_id'])
+                groupInfo = createObject('groupserver.GroupInfo', grp)
+
+                userGroup = '%s_member' % groupInfo.get_id()
+                retval = user.add_groupWithNotification(userGroup)
+                assert retval
+                
+                uri = '%s?welcome=1' % groupInfo.get_url()
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified
             uri = '/r/user-no-id'
+        assert uri
         return self.request.RESPONSE.redirect(uri)
 

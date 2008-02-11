@@ -123,7 +123,7 @@
       name="reject_invite"
       attribute="reject_invite"/>      
     <browser:page
-      name="accept_invite"
+      name="join_group"
       attribute="accept_invite"/>      
   </browser:pages>
   <browser:pages
@@ -142,6 +142,9 @@
     <browser:page
       name="rejected-invitation-delete"
       template="browser/templates/reject_invite_delete.pt" />
+    <browser:page
+      name="accept-invitation"
+      template="browser/templates/accept_invite.pt" />
   </browser:pages>
 
   <interface 
