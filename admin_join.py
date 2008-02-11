@@ -138,7 +138,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         loggedInUser = self.request.AUTHENTICATED_USER
         assert loggedInUser
         roles = loggedInUser.getRolesInContext(self.groupInfo.groupObj)
-        assert ('GroupAdmin' in roles) or ('SiteAdmin' in roles), \
+        assert ('GroupAdmin' in roles) or ('DivisionAdmin' in roles), \
           '%s is not a group admin' % loggedInUser
         return loggedInUser
 
