@@ -47,16 +47,10 @@
         
         <h1 tal:content="view/label">Register</h1>
         
-        <p>
-          You must register with
+        <p>You must register with
           <span class="site" tal:content="siteName">this site</span>
-          to add posts to topics, receive email messages 
-          <span tal:condition="view/groupInfo">
-            (from groups such as 
-            <span class="group" tal:content="view/groupInfo/get_name"/>)
-          </span>
-          and join
-          private or secret groups.
+         before you can join groups, post messages, or receive email
+         messages from groups.
           Enter your email address below, and click the 
           <samp class="button" 
             tal:define="action python:[a for a in view.actions][0].label"
