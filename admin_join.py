@@ -133,9 +133,6 @@ class AdminJoinEditProfileForm(EditProfileForm):
           n_id='default',
           n_dict=n_dict, 
           email_only=[email])
-        m = 'AdminJoinEditProfileForm: Sent a notification message '\
-          'to <%s> for the user "%s"' % (email, user.getId())
-        log.info(m)
 
     def get_admin(self):
         loggedInUser = self.request.AUTHENTICATED_USER

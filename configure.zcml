@@ -139,6 +139,9 @@
     <browser:page
       name="rejected-invitation"
       template="browser/templates/reject_invite.pt" />
+    <browser:page
+      name="rejected-invitation-delete"
+      template="browser/templates/reject_invite_delete.pt" />
   </browser:pages>
 
   <interface 

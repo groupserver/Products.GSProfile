@@ -119,9 +119,10 @@ class GSProfileRedirect(BrowserView, Traversable):
         if len(self.request.form['subpaths']) == 1:
             invitationId = self.request.form['subpaths'][0]
             user = acl_users.get_userByInvitationId(invitationId) 
-
+            
+            uri = ''
             if user:
-                m = 'GSProfileRedirect: Going to reject_invite.html '\
+                m = 'GSProfileRedirect: Going to reject the invitation '\
                   'for the user %s (%s), using the invitation ID '\
                   '"%s"' % (user.getProperty('fn', ''), user.getId(),
                     invitationId)
@@ -170,12 +171,14 @@ class GSProfileRedirect(BrowserView, Traversable):
                     m = u'reject_invite: Deleting user "%s"' % user.getId()
                     log.info(m)
                     acl_users.userFolderDelUsers([user.getId()])
-
-                uri = '/r/rejected-invitation'
+                    uri = '/r/rejected-invitation-delete'
+                else:
+                    uri = '/r/rejected-invitation'
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified
             uri = '/r/user-no-id'
+        assert uri
         return self.request.RESPONSE.redirect(uri)
 
     def accept_invite(self):
