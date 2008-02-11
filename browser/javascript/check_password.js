@@ -34,7 +34,7 @@ GSCheckPassword = function () {
             passwdMatch = true;
         } else {
             if ( (h != null) && passwdMatch ) {
-                jQuery(h).find(".message-result").hide("slow");
+                jQuery(h).find(".message-error").show("slow");
             }
             passwdMatch = false;
         }
