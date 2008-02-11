@@ -192,7 +192,6 @@ class GSProfileRedirect(BrowserView, Traversable):
             user = acl_users.get_userByInvitationId(invitationId) 
 
             if user:
-                # Get Data
                 utils.login(self.context, user)
                 
                 invitation = user.get_invitation(invitationId)
@@ -201,9 +200,10 @@ class GSProfileRedirect(BrowserView, Traversable):
                 groupInfo = createObject('groupserver.GroupInfo', grp)
 
                 userGroup = '%s_member' % groupInfo.get_id()
-                retval = user.add_groupWithNotification(userGroup)
-                assert retval
-                
+                if userGroup not in user.getGroups():
+                    retval = user.add_groupWithNotification(userGroup)
+                    assert retval
+                user.remove_invitations()
                 uri = '%s?welcome=1' % groupInfo.get_url()
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % invitationId

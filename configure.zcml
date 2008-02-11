@@ -142,9 +142,6 @@
     <browser:page
       name="rejected-invitation-delete"
       template="browser/templates/reject_invite_delete.pt" />
-    <browser:page
-      name="accept-invitation"
-      template="browser/templates/accept_invite.pt" />
   </browser:pages>
 
   <interface 
