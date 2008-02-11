@@ -28,20 +28,17 @@ GSCheckPassword = function () {
         pswd1 = jQuery(p1).val();
         pswd2 = jQuery(p2).val();
         if ( (pswd1 == pswd2) && (pswd1 != "") ) {
-            jQuery(b).attr("disabled","");
             if ( (h != null) && (!passwdMatch) ) {
                 jQuery(h).find(".message-error").hide("slow");
-                jQuery(h).find(".message-result").show("slow");
             }
             passwdMatch = true;
         } else {
-            jQuery(b).attr("disabled","disabled");
             if ( (h != null) && passwdMatch ) {
                 jQuery(h).find(".message-result").hide("slow");
-                jQuery(h).find(".message-error").show("slow");
             }
             passwdMatch = false;
         }
+        return passwdMatch;
     }
     
     // Public methods and properties
@@ -61,13 +58,7 @@ GSCheckPassword = function () {
             b = button;
             h = help;
             
-            jQuery(password1).keyup(function(e) {
-                check_passwords();
-            });
-            jQuery(password2).keyup(function(e) {
-                check_passwords();
-            });
-            jQuery(button).attr("disabled","disabled");
+            jQuery(b).click(check_passwords);
         }
     };
 }(); // GSDisclosureButton

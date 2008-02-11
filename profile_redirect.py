@@ -194,6 +194,8 @@ class GSProfileRedirect(BrowserView, Traversable):
             if user:
                 utils.login(self.context, user)
                 
+                user.verify_emailAddress(invitationId)
+                
                 invitation = user.get_invitation(invitationId)
                 groups = getattr(site_root.Content, invitation['site_id']).groups
                 grp = getattr(groups, invitation['group_id'])

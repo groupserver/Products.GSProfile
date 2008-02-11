@@ -24,7 +24,7 @@
   <browser:resource name="popup_help-20071218.js" 
     file="browser/javascript/popup_help.js"
     permission="zope2.Public" />
-  <browser:resource name="check_password-20080204.js" 
+  <browser:resource name="check_password-20080212.js" 
     file="browser/javascript/check_password.js"
     permission="zope2.View" />
   <browser:resource name="check_email_verified-20080122.js" 

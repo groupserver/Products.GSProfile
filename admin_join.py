@@ -68,8 +68,8 @@ class AdminJoinEditProfileForm(EditProfileForm):
             schema = getattr(interfaces, self.interfaceName)
             self.enforce_schema(user, schema)
             changed = form.applyChanges(user, self.form_fields, data)
-            m = 'AdminJoinEditProfileForm: Changed the attributes %s ' \
-              'for the user "%s"' % (changed, user.getId())
+            m = 'AdminJoinEditProfileForm: Changed the attributes ' \
+              'for the user "%s"' % user.getId()
             log.info(m)
             
             # Send notification
