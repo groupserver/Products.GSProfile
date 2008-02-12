@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="string: Change Email Settings: ${view/userName}: ${view/siteInfo/get_name}">
+        Change Email Settings
+      </span>
+    </title>
+  </head>
+  <body>
+    <tal:block metal:fill-slot="contextnavigation">
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
+    </tal:block>
+    <tal:block metal:fill-slot="body">
+      <h1>Change Email Settings</h1>
+      
+      <table id="emailAddresses">
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody tal:define="addresses view/userAddresses; 
+          mAddr python:len(addresses)>1">
+          <tal:block repeat="address addresses">
+            <tr tal:define="defl address/default; ver address/verified"
+              tal:attributes="id address/id">
+              <td><code class="email"
+                tal:content="address/address">foo@bar.wibble</code></td>
+              <td class="status">
+                <span tal:condition="defl">Verified and 
+                  default</span>
+                <span 
+                  tal:condition="python:ver and not(defl)">Verified</span>
+                <span
+                  tal:condition="not:ver">Unverified</span>
+                <span
+                  tal:condition="python:not(ver) and defl">Weird</span>                  
+              </td>
+              <td class="change" 
+                tal:define="mDef view/multipleDefault">
+                <form tal:condition="python: not(defl) or (defl and mDef)"
+                   enctype="multipart/form-data"  
+                   method="post" action="." id="new-address"
+                   tal:attributes="action request/URL; 
+                    id address/id" >
+                  <select name="addressAction">
+                    <option tal:condition="python: not(defl) or (defl and mDef)"
+                      value="remove">Remove address</option>
+                    <option tal:condition="not:ver"
+                      value="resend_verification">Send verification</option>
+                    <option tal:condition="python:ver and not(defl)">Make
+                      default</option>
+                    <option tal:condition="python:defl and mDef">Remove
+                      from default</option>
+                  </select>
+                  <input class="button" type="submit" value="Change"/>
+                </form>
+                <div tal:condition="python: defl and not mDef"
+                  id="default-help" class="disclosureWidget">
+                  <a href="#" class="disclosureButton">You cannot change
+                    <span
+                      tal:replace="address/address">this address</span></a>
+                  <div class="disclosureShowHide" style="display:none;">
+                    This address is your only default email address.
+                    To change this address
+                    <span tal:condition="mAddr">either make another
+                      address the default, or</span>
+                    add an address and make the new address the default.
+                  </div>
+                </div><!--default-help-->
+                <a tal:condition="python:not(ver) and defl"
+                  tal:attributes="href string:mailto:${view/supportEmail}"
+                  href="#">Seek support because you email setting is 
+                  weird.</a>
+              </td>
+            </tr>
+          </tal:block>
+        </tbody>
+      </table>
+      <form enctype="multipart/form-data"  method="post" action="."
+        tal:attributes="action request/URL" id="new-address">
+        <h2>Add Address</h2>
+        <p>To add an addres, enter it in the
+          <samp class="entry">Address</samp> 
+          entry, and click the
+          <samp class="button">Add</samp> button.
+          You will receive a message verifying that you control the 
+          address.
+          Once you have verified this address you will be able to use it
+          with your online groups.
+        </p>
+        <label for="newAddress">Address</label>
+        <input class="text" type="text" name="newAddress" id="newAddress"
+          title="Address to add"/>
+        <input class="button" type="submit" value="Add"/>
+      </form><!--new-address-->
+      <div id="group-email-settings">
+        <h2>Group Email Settings</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Address</th>
+              <th>Notification</th>
+              <th>&#160;</th><!--change-->
+            </tr>
+          </thead>
+          <tbody>
+            <tal:block repeat="setting view/groupEmailSettings">
+              <tr tal:attributes="id setting/group/get_id">
+                <td>
+                  <a class="group"
+                    tal:content="setting/group/get_name"
+                    tal:attributes="href setting/group/get_url">Group</a></td>
+                <td>
+                  <tal:block repeat="email setting/addresses">
+                    <code class="email"
+                      tal:content="email">foo@bar.wibble</code>
+                  </tal:block>
+                </td>
+                <td class="setting"
+                  tal:content="setting/setting">none</td>
+                <td>
+                  <a title="Change the email settings for this group"
+                    tal:attributes="href string:${setting/group/get_url}/email_settings"
+                    href="#">Change</a>
+                </td>
+              </tr>
+            </tal:block>
+          </tbody>
+        </table>
+      </div><!--group-email-settings-->
+    </tal:block>
+  </body>
+</html>
+
