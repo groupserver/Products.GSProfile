@@ -192,19 +192,8 @@ class GSProfileRedirect(BrowserView, Traversable):
             if user:
                 utils.login(self.context, user)
                 
-                user.verify_emailAddress(invitationId)
-                
-                invitation = user.get_invitation(invitationId)
-                groups = getattr(site_root.Content, invitation['site_id']).groups
-                grp = getattr(groups, invitation['group_id'])
-                groupInfo = createObject('groupserver.GroupInfo', grp)
-
-                userGroup = '%s_member' % groupInfo.get_id()
-                if userGroup not in user.getGroups():
-                    retval = user.add_groupWithNotification(userGroup)
-                    assert retval
-                user.remove_invitations()
-                uri = '%s?welcome=1' % groupInfo.get_url()
+                uri = '/contacts/%s/join_password.html?form.invitationId=%s' % \
+                  (user.getId(), invitationId)
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified

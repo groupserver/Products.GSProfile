@@ -8,6 +8,9 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.XWFCore import XWFUtils
 from Products.GSProfile.interfaces import *
 
+import logging
+log = logging.getLogger('GSSetPassword')
+
 class SetPasswordForm(PageForm):
     form_fields = form.Fields(IGSSetPassword)
     label = u'Set Password'
@@ -72,4 +75,40 @@ class SetPasswordRegisterForm(SetPasswordForm):
         user.clear_userPasswordResetVerificationIds()
         
         return self.request.RESPONSE.redirect('/?welcome=1')
+
+class SetPasswordAdminJoinForm(SetPasswordForm):
+    form_fields = form.Fields(IGSSetPasswordAdminJoin)
+    label = u'Set Password'
+    pageTemplateFileName = 'browser/templates/set_password_join.pt'
+    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+
+    @form.action(label=u'Set', failure='handle_set_action_failure')
+    def handle_set(self, action, data):
+        assert self.context
+        assert self.form_fields
+        assert action
+        assert data
+        
+        loggedInUser = self.request.AUTHENTICATED_USER
+        user = self.context.acl_users.getUserById(loggedInUser.getId())
+        user.set_password(data['password1'])
+
+        site_root = self.context.site_root()
+        invitation = user.get_invitation(data['invitationId'])
+        groups = getattr(site_root.Content, invitation['site_id']).groups
+        grp = getattr(groups, invitation['group_id'])
+        groupInfo = createObject('groupserver.GroupInfo', grp)
+
+        # Add User to the Group
+        userGroup = '%s_member' % groupInfo.get_id()
+        if userGroup not in user.getGroups():
+            user.add_groupWithNotification(userGroup)
+        assert userGroup in user.getGroups()
+        user.remove_invitations()
+        user.verify_emailAddress(data['invitationId'])
+        
+        uri = '%s?welcome=1' % groupInfo.get_url()
+        m = u'SetPasswordAdminJoinForm: redirecting user to %s' % uri
+        log.info(m)
+        return self.request.RESPONSE.redirect(uri)
 

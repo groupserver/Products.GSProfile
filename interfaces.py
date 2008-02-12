@@ -37,6 +37,12 @@ class IGSSetPassword(Interface):
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
 
+class IGSSetPasswordAdminJoin(IGSSetPassword):
+    invitationId = ASCIILine(title=u'Invitation Identifier',
+      description=u'The identifier sent to you when you were invited to '\
+        u'join the group.',
+      required=True)
+
 class IGSEmailAddressEntry(Interface):
     email = ASCIILine(title=u'Email Address',
         description=u'Your email address.',
