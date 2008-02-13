@@ -108,9 +108,47 @@ class GSEmailSettings(BrowserView):
         retval = ''
         return retval
 
-
     def process_form(self):
-        pass
+        '''Process the forms in the page.
+        
+        This method uses the "submitted" pattern that is used for the
+        XForms impementation on GroupServer. 
+          * The method is called whenever the page is loaded by
+            tal:define="result view/process_form".
+          * The submitted form is checked for the hidden "submitted" field.
+            This field is only returned if the user submitted the form,
+            not when the page is loaded for the first time.
+            - If the field is present, then the form is processed.
+            - If the field is absent, then the method returns.
+        
+        RETURNS
+            A "result" dictionary, that at-least contains the form that
+            was submitted
+        '''
+        form = self.context.REQUEST.form
+        result = {}
+        result['form'] = form
+
+        if form.has_key('submitted'):
+            buttons = [k for k in form.keys() if '-button' in k]
+            assert len(buttons) == 1, 'User pressed multiple buttons!'
+            button = buttons[0]
+            
+            addressId = button.split('-')[0]
+            address = [a for a in self.userAddresses 
+                       if a.addressId == addressId][0]
+            print address
+            
+            actionId = '%s-action' % addressId
+            print form[actionId]
+            
+            result['error'] = False
+            result['message'] = u'stuff'
+            assert result.has_key('error')
+            assert type(result['error']) == bool
+            assert result.has_key('message')
+            assert type(result['message']) == unicode
+        return result
         
 class Address(object):
     """Information about a user's email address
