@@ -102,9 +102,6 @@
             </tal:block>
           </tbody>
         </table>
-      </form><!--changeSettings-->
-      <form enctype="multipart/form-data"  method="post" action="."
-        tal:attributes="action request/URL" id="new-address">
         <h2>Add Address</h2>
         <p>To add an addres, enter it in the
           <samp class="entry">Address</samp> 
@@ -118,8 +115,9 @@
         <label for="newAddress">Address</label>
         <input class="text" type="text" name="newAddress" id="newAddress"
           title="Address to add"/>
-        <input class="button" type="submit" value="Add"/>
-      </form><!--new-address-->
+        <input class="button" type="submit" value="Add" 
+          id="newAddress-button" name="newAddress-button"/>
+      </form><!--changeSettings-->
       <div id="group-email-settings">
         <h2>Group Email Settings</h2>
         <table>

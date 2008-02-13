@@ -12,6 +12,7 @@ from Products.XWFCore.odict import ODict
 import zope.app.apidoc.interface # 
 
 from interfaces import *
+import utils
 
 class GSEmailSettings(BrowserView):
     '''View object for standard GroupServer User-Profile Instances'''
@@ -140,27 +141,33 @@ class GSEmailSettings(BrowserView):
             assert len(buttons) == 1, 'User pressed multiple buttons!'
             button = buttons[0]
             
-            addressId = button.split('-')[0]
-            address = [a for a in self.userAddresses 
-                       if a.addressId == addressId][0]
-            actionId = '%s-action' % addressId
-            action = form[actionId]
-
-            actions = {
-              'remove':              self.remove_address,
-              'resend_verification': self.send_verification,
-              'make_default':        self.make_default,
-              'remove_default':      self.remove_default,
-            }
-            if action in actions.keys():
-                error, message = actions[action](address)
-                # Reset the address information
-                self.__addressData = []
-                self.__preferredAddresses = []
-                self.__groupEmailSettings = []
+            if button == 'newAddress-button':
+                assert 'newAddress' in form.keys()
+                newAddress = form['newAddress']
+                error, message  = self.add_email(newAddress)
             else:
-                error = True
-                message = u'Action <code>%s</code> not supported' % action
+                addressId = button.split('-')[0]
+                address = [a for a in self.userAddresses 
+                           if a.addressId == addressId][0]
+                actionId = '%s-action' % addressId
+                action = form[actionId]
+
+                actions = {
+                  'remove':              self.remove_address,
+                  'resend_verification': self.send_verification,
+                  'make_default':        self.make_default,
+                  'remove_default':      self.remove_default,
+                }
+                if action in actions.keys():
+                    error, message = actions[action](address)
+                    # Reset the address information
+                    self.__addressData = []
+                    self.__preferredAddresses = []
+                    self.__groupEmailSettings = []
+                
+                else:
+                    error = True
+                    message = u'Action <code>%s</code> not supported' % action
             result['error'] = error
             result['message'] = message
             
@@ -182,7 +189,7 @@ class GSEmailSettings(BrowserView):
         if len(h1l) > 1:
             retval = u' and '.join([h1, h1l[-1]])
         else:
-            retval = h1
+            retval = h1l[0]
         assert retval
         assert type(retval) == unicode
         return retval
@@ -279,6 +286,31 @@ class GSEmailSettings(BrowserView):
         assert type(retval[0]) == bool
         assert type(retval[1]) == unicode
         return retval
+
+    def add_email(self, email):
+        newEmailHtml = self.__addrs_to_html([email])
+        if utils.address_exists(self.context, email):
+            error = True
+            message = u'The address %s already exists on '\
+              u'<span class="site">%s</span>' % \
+              (newEmailHtml, self.siteInfo.get_name())
+        else:
+            self.__user.add_emailAddress(email=email, is_preferred=False)
+            utils.send_verification_message(self.context, self.__user, email)
+            error = False
+            message = u'The address %s has been added to your profile. '\
+              u'A verification message has been sent to %s to ensure '\
+              u'that you control the address. Please '\
+              u'<strong>check you Inbox</strong>, as well as your Junk '\
+              u'(or Spam) folder for the verification message, and '\
+              u'follow the instructions in the message.' % \
+              (newEmailHtml, newEmailHtml)
+        retval = (error, message)
+        assert len(retval) == 2
+        assert type(retval[0]) == bool
+        assert type(retval[1]) == unicode
+        return retval
+        
 
 class Address(object):
     """Information about a user's email address
