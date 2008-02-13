@@ -26,6 +26,7 @@ class GSEmailSettings(BrowserView):
         self.__user = self.__get_user()
         self.__addressData = []
         self.__preferredAddresses = []
+        self.__groupEmailSettings = []
 
     def __get_user(self):
         assert self.context
@@ -81,7 +82,7 @@ class GSEmailSettings(BrowserView):
 
     @property
     def preferredAddresses(self):
-        if not self.__preferredAddresses:
+        if self.__preferredAddresses == []:
             self.__preferredAddresses = self.__user.get_preferredEmailAddresses()
         retval = self.__preferredAddresses
         assert type(retval) == list
@@ -96,9 +97,14 @@ class GSEmailSettings(BrowserView):
 
     @property
     def groupEmailSettings(self):
-        folders = self.groupsInfo.get_member_groups_for_user(self.__user, self.__user)
-        grps = [createObject('groupserver.GroupInfo', g) for g in folders]
-        retval = [GroupEmailSetting(g, self.__user) for g in grps]
+        if self.__groupEmailSettings == []:
+            folders = self.groupsInfo.get_member_groups_for_user(self.__user,
+                self.__user)
+            grps = [createObject('groupserver.GroupInfo', g) 
+                    for g in folders]
+            self.__groupEmailSettings = [GroupEmailSetting(g, self.__user)
+                                         for g in grps]
+        retval = self.__groupEmailSettings
         assert type(retval) == list
         return retval
 
@@ -148,6 +154,10 @@ class GSEmailSettings(BrowserView):
             }
             if action in actions.keys():
                 error, message = actions[action](address)
+                # Reset the address information
+                self.__addressData = []
+                self.__preferredAddresses = []
+                self.__groupEmailSettings = []
             else:
                 error = True
                 message = u'Action <code>%s</code> not supported' % action
@@ -163,17 +173,89 @@ class GSEmailSettings(BrowserView):
         assert type(result['form']) == dict
         return result
 
+    def __addrs_to_html(self, addrs):
+        assert addrs
+        assert type(addrs) == list
+        
+        h1l = [u'<code class="email">%s</code>' % a for a in addrs]
+        h1 = u', '.join(h1l[:-1])
+        if len(h1l) > 1:
+            retval = u' and '.join([h1, h1l[-1]])
+        else:
+            retval = h1
+        assert retval
+        assert type(retval) == unicode
+        return retval
+
+    def remove_address_from_group(self, address, setting):
+        assert isinstance(address, Address)
+        assert isinstance(setting, GroupEmailSetting)
+        
+        gId = setting.group.get_id()
+        addr = address.address
+        grpAddrs = self.__user.remove_deliveryEmailAddressByKey(gid, addr)
+        message = u'%s\n<li>Removed <code class="email">%s</code> from '\
+          u'the delivery settings for '\
+          u'<a class="group" href="%s">%s</a></li>' %\
+          (message, address.address, setting.group.get_url(), 
+            setting.group.get_name())
+            
+        if ((grpAddrs == []) and (setting.setting == 2)):
+            # There are no group-spcific addresses, so we are reverting to
+            #   default delivery.
+            defl = self.preferredAddresses
+            if address.address in defl:
+                defl.remove(address.address)
+            deflHtml = self.__addrs_to_html(defl)
+            addrPlural = ((len(defl) == 1) and u'address') or u'addresses'
+            message = u'%s\n<li>Messages from '\
+              u'<a class="group" href="%s">%s</a> will now be sent to '\
+              'your default %s: %s.</li>' %\
+              (message, setting.group.get_url(), 
+                setting.group.get_name(), addrPlural, deflHtml)
+
+        elif ((grpAddrs != []) and (setting.setting == 2)):
+            # The group-specific delivery email address(es) have changed
+            addrsHtml = self.__addrs_to_html(grpAddrs)
+            message = u'%s\n<li>Messages from '\
+              u'<a class="group" href="%s">%s</a> will now be '\
+              u'sent to %s.</li>' %\
+              (message, setting.group.get_url(), 
+                setting.group.get_name(), addrsHtml)
+
+        assert message
+        assert type(message) == unicode
+        return message
+        
     ######################################
     # Email Address Modification Methods #
     ######################################
     def remove_address(self, address):
         assert isinstance(address, Address)
-        retval = (False, u'Remove address not implemented')
+
+        assert ((address.default and self.multipleDefault) or
+          (not address.default)), \
+          'Will not remove the only default address <%s> from %s (%s)' %\
+          (address.address, self.__user.getProperty('fn', ''), \
+           self.__user.getId())
+
+        self.__user.remove_emailAddressVerification(address.address)
+        for setting in self.groupEmailSettings:
+            if address.address in setting.addresses:
+                m = self.remove_address_from_group(address, setting)
+                message = u'%s%s' % (message, m)
+        self.__user.remove_emailAddress(address.address)
+        message = u'<li>Removed <code class="email">%s</code> from your '\
+          u'profile.</li>' % address.address
+        
+        message = u'<ul>\n%s\n</ul>' % message
+        retval = (False, message)
+
         assert len(retval) == 2
         assert type(retval[0]) == bool
         assert type(retval[1]) == unicode
         return retval
-
+        
     def send_verification(self, address):
         assert isinstance(address, Address)
         retval = (False, u'Send verification not implemented')
