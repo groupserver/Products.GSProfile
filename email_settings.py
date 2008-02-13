@@ -137,19 +137,67 @@ class GSEmailSettings(BrowserView):
             addressId = button.split('-')[0]
             address = [a for a in self.userAddresses 
                        if a.addressId == addressId][0]
-            print address
-            
             actionId = '%s-action' % addressId
-            print form[actionId]
+            action = form[actionId]
+
+            actions = {
+              'remove':              self.remove_address,
+              'resend_verification': self.send_verification,
+              'make_default':        self.make_default,
+              'remove_default':      self.remove_default,
+            }
+            if action in actions.keys():
+                error, message = actions[action](address)
+            else:
+                error = True
+                message = u'Action <code>%s</code> not supported' % action
+            result['error'] = error
+            result['message'] = message
             
-            result['error'] = False
-            result['message'] = u'stuff'
             assert result.has_key('error')
             assert type(result['error']) == bool
             assert result.has_key('message')
             assert type(result['message']) == unicode
-        return result
         
+        assert result.has_key('form')
+        assert type(result['form']) == dict
+        return result
+
+    ######################################
+    # Email Address Modification Methods #
+    ######################################
+    def remove_address(self, address):
+        assert isinstance(address, Address)
+        retval = (False, u'Remove address not implemented')
+        assert len(retval) == 2
+        assert type(retval[0]) == bool
+        assert type(retval[1]) == unicode
+        return retval
+
+    def send_verification(self, address):
+        assert isinstance(address, Address)
+        retval = (False, u'Send verification not implemented')
+        assert len(retval) == 2
+        assert type(retval[0]) == bool
+        assert type(retval[1]) == unicode
+        return retval
+        
+    def make_default(self, address):
+        assert isinstance(address, Address)
+        retval = (False, u'Make default not implemented')
+        assert len(retval) == 2
+        assert type(retval[0]) == bool
+        assert type(retval[1]) == unicode
+        return retval
+        
+    def remove_default (self, address):
+        assert isinstance(address, Address)
+        retval = (False, u'Remove default not implemented')
+        assert len(retval) == 2
+        assert type(retval[0]) == bool
+        assert type(retval[1]) == unicode
+        return retval
+
 class Address(object):
     """Information about a user's email address
     
