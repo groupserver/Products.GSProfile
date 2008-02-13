@@ -34,7 +34,7 @@
           mAddr python:len(addresses)>1">
           <tal:block repeat="address addresses">
             <tr tal:define="defl address/default; ver address/verified"
-              tal:attributes="id address/id">
+              tal:attributes="id address/addressId">
               <td><code class="email"
                 tal:content="address/address">foo@bar.wibble</code></td>
               <td class="status">
@@ -53,7 +53,7 @@
                    enctype="multipart/form-data"  
                    method="post" action="." id="new-address"
                    tal:attributes="action request/URL; 
-                    id address/id" >
+                    id string:form-${address/addressId}" >
                   <select name="addressAction">
                     <option tal:condition="python: not(defl) or (defl and mDef)"
                       value="remove">Remove address</option>

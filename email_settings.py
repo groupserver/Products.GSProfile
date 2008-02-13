@@ -24,6 +24,7 @@ class GSEmailSettings(BrowserView):
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         
         self.__user = self.__get_user()
+        self.__addressData = []
 
     def __get_user(self):
         assert self.context
@@ -67,21 +68,19 @@ class GSEmailSettings(BrowserView):
 
     @property
     def userAddresses(self):
-        retval = [
-          { 'id':       'mpl17atonlinegroups.net',
-            'address':  'mpj17@onlinegroups.net',
-            'default':  True,
-            'verified': True},
-          { 'id':       'mpl17atstudent.canterbury.ac.nz',
-            'address':  'mpj17@student.canterbury.ac.nz',
-            'default':  False,
-            'verified': True}]
+        if self.__addressData == []:
+           addr = self.__user.get_emailAddresses()
+           pref = self.__user.get_preferredEmailAddresses()
+           veri = self.__user.get_verifiedEmailAddresses()
+           self.__addressData = [Address(a, pref, veri) for a in addr]
+        retval = self.__addressData
+
         assert type(retval) == list
         return retval
         
     @property
     def multipleDefault(self):
-        retval = False
+        retval = len([a for a in self.userAddresses if a.default]) > 1
         assert type(retval) == bool
         return retval
 
@@ -101,5 +100,31 @@ class GSEmailSettings(BrowserView):
     def supportEmail(self):
         assert type(retval) == str
         retval = ''
+        return retval
+
+class Address(object):
+    def __init__(self, emailAddress, defaultAddresses=[], 
+                 verifiedAddresses=[]):
+        assert type(emailAddress) == str
+        assert type(defaultAddresses) == list
+        assert type(verifiedAddresses) == list
+
+        self.address = emailAddress
+        addressId = emailAddress.replace('@','at')
+        self.addressId = addressId
+        self.default = emailAddress in defaultAddresses
+        self.verified = emailAddress in verifiedAddresses
+
+        assert type(self.address) == str
+        assert type(self.addressId) == str
+        assert type(self.default) == bool
+        assert type(self.verified) == bool
+
+
+    def __str__(self):
+        defl = (self.default and 'default') or 'not default'
+        veri = (self.verified and 'verified') or 'not verified'
+        retval = u'Email Address <%s>: %s, %s' % (self.address, defl, veri)
+        assert type(retval) == unicode
         return retval
 
