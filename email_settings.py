@@ -234,6 +234,18 @@ class GSEmailSettings(BrowserView):
         assert type(message) == unicode
         return message
         
+    def verification_message(self, email):
+        emailHtml = self.__addrs_to_html([email])
+        retval = u'A verification message has been sent to %s to ensure '\
+          u'that you control the address. Please <strong>check your '\
+          u'Inbox</strong>, as well as your Junk (or Spam) folder for '\
+          u'the verification message, and follow the instructions in '\
+          u'the message.' % emailHtml
+          
+        assert retval
+        assert type(retval) == unicode
+        return retval
+        
     ######################################
     # Email Address Modification Methods #
     ######################################
@@ -265,7 +277,16 @@ class GSEmailSettings(BrowserView):
         
     def send_verification(self, address):
         assert isinstance(address, Address)
-        retval = (False, u'Send verification not implemented')
+        assert not address.verified, 'Address %s already verified' % \
+          address.address
+
+        utils.send_verification_message(self.context, self.__user, 
+          address.address)
+
+        message = self.verification_message(address.address)
+        error = False
+        
+        retval = (error, message)
         assert len(retval) == 2
         assert type(retval[0]) == bool
         assert type(retval[1]) == unicode
@@ -298,13 +319,10 @@ class GSEmailSettings(BrowserView):
             self.__user.add_emailAddress(email=email, is_preferred=False)
             utils.send_verification_message(self.context, self.__user, email)
             error = False
-            message = u'The address %s has been added to your profile. '\
-              u'A verification message has been sent to %s to ensure '\
-              u'that you control the address. Please '\
-              u'<strong>check you Inbox</strong>, as well as your Junk '\
-              u'(or Spam) folder for the verification message, and '\
-              u'follow the instructions in the message.' % \
-              (newEmailHtml, newEmailHtml)
+            message = u'<li>The address %s has been added to your '\
+              u'profile.</li>' % newEmailHtml
+            message = u'<ul>%s\n<li>%s</li></ul>' % \
+              (message, self.verification_message(email))
         retval = (error, message)
         assert len(retval) == 2
         assert type(retval[0]) == bool
