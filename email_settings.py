@@ -25,6 +25,7 @@ class GSEmailSettings(BrowserView):
         
         self.__user = self.__get_user()
         self.__addressData = []
+        self.__preferredAddresses = []
 
     def __get_user(self):
         assert self.context
@@ -69,32 +70,37 @@ class GSEmailSettings(BrowserView):
     @property
     def userAddresses(self):
         if self.__addressData == []:
-           addr = self.__user.get_emailAddresses()
-           pref = self.__user.get_preferredEmailAddresses()
-           veri = self.__user.get_verifiedEmailAddresses()
-           self.__addressData = [Address(a, pref, veri) for a in addr]
+            addr = self.__user.get_emailAddresses()
+            pref = self.preferredAddresses
+            veri = self.__user.get_verifiedEmailAddresses()
+            self.__addressData = [Address(a, pref, veri) for a in addr]
         retval = self.__addressData
 
         assert type(retval) == list
         return retval
+
+    @property
+    def preferredAddresses(self):
+        if not self.__preferredAddresses:
+            self.__preferredAddresses = self.__user.get_preferredEmailAddresses()
+        retval = self.__preferredAddresses
+        assert type(retval) == list
+        assert len(retval) > 0
+        return retval
         
     @property
     def multipleDefault(self):
-        retval = len([a for a in self.userAddresses if a.default]) > 1
+        retval = len(self.preferredAddresses) > 1
         assert type(retval) == bool
         return retval
 
     @property
     def groupEmailSettings(self):
-        g1 = createObject('groupserver.GroupInfo', 
-            getattr(self.groupsInfo.groupsObj, 'team'))
-        retval = [
-          { 'group':      g1,
-            'addresses':  ['mpj17@student.canterbury.ac.nz'],
-            'setting':    'Email and Web'}]
+        folders = self.groupsInfo.get_member_groups_for_user(self.__user, self.__user)
+        grps = [createObject('groupserver.GroupInfo', g) for g in folders]
+        retval = [GroupEmailSetting(g, self.__user) for g in grps]
         assert type(retval) == list
         return retval
-
 
     @property
     def supportEmail(self):
@@ -102,7 +108,22 @@ class GSEmailSettings(BrowserView):
         retval = ''
         return retval
 
+
+    def process_form(self):
+        pass
+        
 class Address(object):
+    """Information about a user's email address
+    
+    ATTRIBUTES
+      address:   The email address, as a string
+      addressId: An identifier for the address. It is unique across all the
+                 user's addresses.
+      default:   True if the address is a default (alias preferred) address
+                 for the user.
+      verified:  True if the address has been verified as being controlled
+                 by the user.
+    """
     def __init__(self, emailAddress, defaultAddresses=[], 
                  verifiedAddresses=[]):
         assert type(emailAddress) == str
@@ -120,11 +141,39 @@ class Address(object):
         assert type(self.default) == bool
         assert type(self.verified) == bool
 
-
     def __str__(self):
         defl = (self.default and 'default') or 'not default'
         veri = (self.verified and 'verified') or 'not verified'
         retval = u'Email Address <%s>: %s, %s' % (self.address, defl, veri)
         assert type(retval) == unicode
         return retval
+
+class GroupEmailSetting(object):
+    """Information about a user's group email settings.
+    
+    ATTRIBUTES
+      group:      Information about the group.
+      setting:    The delivery setting for the user, as an integer.
+                    0. No email delivery (Web only)
+                    1. One email per post to the default address.
+                    2. One email per post to a specific address.
+                    3. Daily digest of topics.
+      default:    True if the messages are sent to the user's default (alias
+                  preferred) email addresses.
+      addresses:  The address where posts are delivered.
+    """
+    def __init__(self, group, user):
+        assert group
+        assert user
+        self.group = group
+        self.setting = user.get_deliverySettingsByKey(group.get_id())
+        grpAddrs = user.get_specificEmailAddressesByKey(group.get_id())
+        self.default = len(grpAddrs) == 0
+        self.addresses = user.get_deliveryEmailAddressesByKey(group.get_id())
+
+        assert self.group
+        assert self.group == group
+        assert type(self.setting) == int
+        assert self.setting in range(0,4)
+        assert type(self.addresses) == list
 
