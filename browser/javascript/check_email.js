@@ -35,14 +35,19 @@ GSCheckEmailAddress = function () {
     // Private variables
     var email = null;
     var button = null;
+    var webmailHelp = null;
     var help = null;
     var webmail = null;
     
     // Private methods
     var check = function () {
         var addr = jQuery(email).val().toLowerCase();
-        check_address(addr);
-        if ( help != null ) {
+        return check_address(addr);
+    }
+    
+    var check_help = function () {
+        var addr = jQuery(email).val().toLowerCase();
+        if ( webmailHelp != null ) {
             check_for_webmail(addr);
         }
     }
@@ -51,7 +56,7 @@ GSCheckEmailAddress = function () {
         var i = 0;
         var m = '';
         var elemId = '';
-        var helpShown = ( jQuery(help).css('display') != 'none' );
+        var helpShown = ( jQuery(webmailHelp).css('display') != 'none' );
         var helpOrigShown = helpShown;
         
         for ( i in webmail ) {
@@ -60,7 +65,7 @@ GSCheckEmailAddress = function () {
             if ( addr.match(m) ) {
                 if ( !helpShown ) {
                     helpShown = true;
-                    jQuery(help).fadeIn("slow");
+                    jQuery(webmailHelp).fadeIn("slow");
                 }
                 jQuery(elemId).fadeIn("slow");
                 break;
@@ -70,7 +75,7 @@ GSCheckEmailAddress = function () {
             }
         }
         if (!helpShown && helpOrigShown ) {
-            jQuery(help).fadeOut("slow");
+            jQuery(webmailHelp).fadeOut("slow");
         }
     }
     
@@ -78,18 +83,23 @@ GSCheckEmailAddress = function () {
         // Check the email address  to see if it is valid.
         // --=mpj17=-- It would be good if we could get the following
         //    regular expression from the interface module.
+        var retval = false;
         regexp = /[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}/;
-        elem = jQuery(button)
         if ( regexp.test(addr) ) {
-            elem.attr("disabled",""); //Enable the element
+            // Good address
+            retval = true;
+            jQuery(help).find(".message-error").hide("slow");
         } else {
-            elem.attr("disabled","disabled"); //Disable the element
+            // Bad address
+            retval = false;
+            jQuery(help).find(".message-error").show("slow");
         }
+        return retval;
     }
     
     // Public methods and properties
     return {
-        init: function (e, b, h, w) {
+        init: function (e, b, wh, w, h) {
             /* Add the address-checking code to the correct widgets
             
             ARGUMENTS
@@ -103,15 +113,16 @@ GSCheckEmailAddress = function () {
             */
             email = e;
             button = b;
-            help = h;
+            webmailHelp = wh;
             webmail = w;
+            help = h;
             
             emailEntry = jQuery(e);
             
             emailEntry.keyup(function(event) {
-                check();
+                check_help();
             });
-            check();
+            jQuery(button).click(check);
         }
     };
 }(); // GSCheckEmailAddress

@@ -173,7 +173,12 @@
               class="weblink">MSN Hotmail</a>
           </strong><!--addressbook-->
         </p>
-        
+        <div id="emailHelp">
+          <p class="message-error" style="display: none;">
+            The email address is not valid.
+            Please enter a valid email address.
+          </p>
+        </div><!--Password Help-->
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
             <div class="formelementbutton">
@@ -185,7 +190,7 @@
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
-        src="++resource++check_email-20080122.js">&#160;</script>
+        src="++resource++check_email-20080214.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict()
         jQuery(document).ready( function () {
@@ -194,7 +199,8 @@
                 '#form\\.email',
                 '#form\\.actions\\.register',
                 '#addressBookHelp',
-                webmail);
+                webmail,
+                '#emailHelp');
         
             jQuery("#privacy-button").click( function () {
                 var uri = "/about/policies/privacy/ #privacy";

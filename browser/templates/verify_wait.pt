@@ -130,6 +130,12 @@
               </label>
             </div><!--form-widget-->
           </tal:block>
+          <div id="emailHelp">
+            <p class="message-error" style="display: none;">
+              The email address is not valid.
+              Please enter a valid email address.
+            </p>
+          </div><!--Password Help-->
           <div class="buttons" tal:condition="view/availableActions">
             <tal:block define="action python:[a for a in view.actions][1]">
               <div class="formelementbutton">
@@ -148,7 +154,7 @@
       <script type="text/javascript"
         src="/++resource++check_email_verified-20080122.js">&#160;</script>
       <script type="text/javascript"
-        src="/++resource++check_email-20080122.js">&#160;</script>
+        src="/++resource++check_email-20080214.js">&#160;</script>
       <script type="text/javascript"
         tal:define="rws python:[w for w in view.widgets if w.required];
           rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
@@ -159,7 +165,7 @@
             GSCheckEmailVerified.init('<span tal:replace="email"/>',  
               '#form\\.actions\\.next', '#checking', '#thingsToCheck');
             GSCheckEmailAddress.init('#form\\.email', 
-              '#form\\.actions\\.send', null, null);
+              '#form\\.actions\\.send', null, null, '#emailHelp');
         });
       </script>
       <script type="text/javascript" 

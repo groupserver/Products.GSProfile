@@ -111,9 +111,10 @@ class GSEmailSettings(BrowserView):
         return retval
 
     @property
-    def supportEmail(self):
+    def verificationEmailAddress(self):
+        retval = XWFUtils.getOption(self.context, 'userVerificationEmail')
         assert type(retval) == str
-        retval = ''
+        assert '@' in retval
         return retval
 
     def process_form(self):

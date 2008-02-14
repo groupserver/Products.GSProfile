@@ -15,7 +15,7 @@
     class="OFS.Folder.Folder" />
   
   <!-- Generic resources -->
-  <browser:resource name="check_email-20080122.js" 
+  <browser:resource name="check_email-20080214.js" 
     file="browser/javascript/check_email.js"
     permission="zope2.Public" />
   <browser:resource name="check_required-20071214.js"

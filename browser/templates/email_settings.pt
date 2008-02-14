@@ -30,7 +30,8 @@
       <form enctype="multipart/form-data" method="post" action="." 
         id="changeUserEmailSettings" tal:attributes="action request/URL" >
         <input type="hidden" class="hidden" name="submitted" value=""/>
-        <table id="emailAddresses" class="profile">
+        <table tal:define="mDef view/multipleDefault" id="emailAddresses"
+          class="profile">
           <thead>
             <tr>
               <th>Address</th>
@@ -45,23 +46,23 @@
                tal:define="pos repeat/address/number;
                   class python:((((pos) % 2) == 0) and 'even') or 'odd';
                   defl address/default; 
-                  ver address/verified"
+                  ver address/verified;
+                  weird python:not(ver) and defl"
                 tal:attributes="id address/addressId; class class">
                 <td class="address"><code class="email"
                   tal:content="address/address">foo@bar.wibble</code></td>
                 <td class="status">
+                  <strong
+                    tal:condition="python:not(ver) and defl">Weird:</strong>                  
                   <span tal:condition="defl">Verified and 
                     default</span>
                   <span 
                     tal:condition="python:ver and not(defl)">Verified</span>
                   <span
                     tal:condition="not:ver">Unverified</span>
-                  <span
-                    tal:condition="python:not(ver) and defl">Weird</span>                  
                 </td>
-                <td class="change" 
-                  tal:define="mDef view/multipleDefault">
-                  <div tal:condition="python:not(defl) or (defl and mDef)">
+                <td class="change">
+                  <div tal:condition="python:not(defl) or (defl and mDef) and not(weird)">
                     <select name="addressAction" id="addressAction"
                       tal:define="actionId string:${address/addressId}-action"
                       tal:attributes="name actionId; id actionId">
@@ -84,7 +85,7 @@
                       tal:define="buttonId string:${address/addressId}-button"
                       tal:attributes="name buttonId; id buttonId"/>
                   </div>
-                  <div tal:condition="python: defl and not mDef"
+                  <div tal:condition="python: defl and not mDef and not weird"
                     id="default-help" class="disclosureWidget">
                     <a href="#" class="disclosureButton">You cannot change
                       <span
@@ -97,10 +98,11 @@
                       add an address and make the new address the default.
                     </div>
                   </div><!--default-help-->
-                  <a tal:condition="python:not(ver) and defl"
-                    tal:attributes="href string:mailto:${view/supportEmail}"
-                    href="#">Seek support because you email setting is 
-                    weird.</a>
+                  <span tal:condition="weird">
+                    <a class="email"
+                      tal:attributes="href string:mailto:${view/siteInfo/get_support_email}?Subject=Weird Address ${address/address}"
+                      href="#"><strong>Please contact support</strong></a>
+                      because you email setting is weird.</span>
                 </td>
               </tr>
             </tal:block>
@@ -120,6 +122,42 @@
           Once you have verified this address you will be able to use it
           with your online groups.
         </p>
+        <p class="note">
+          Before clicking the <samp class="button">Add</samp> button,
+          <strong>add the contact
+            <span class="vcard" tal:define="sn view/siteInfo/get_name">
+              <abbr tal:attributes="title string:${sn} Verification" 
+                title="Verification" class="fn hide">&#160;</abbr>
+              <code><a href="#"
+                tal:content="view/verificationEmailAddress"
+                tal:attributes="href string:mailto:${view/verificationEmailAddress}"
+                class="email">validation@valid.valid</a></code>
+            </span><!--vcard-->
+          </strong>
+          to your email address book, to ensure that you receive the
+          verification message.
+          <strong id="addressBookHelp" style="display:none;">
+            Help with
+            <a id="gmail"
+              title="How do I add people to my Contacts list? GMail Help Center"
+              href="http://mail.google.com/support/bin/answer.py?answer=8933&amp;topic=1530"
+              class="weblink">GMail</a>
+            <a id="yahoo"
+              title="How do I add a contact? Yahoo! Address Book" 
+              href="http://help.yahoo.com/l/us/yahoo/addressbook/updating/updating-02.html"
+              class="weblink">Yahoo! Mail</a>
+            <a id="hotmail"
+              title="Add a contact: MSN Hotmail Help"
+              href="http://help.msn.com/(ZmlsdGVyPURIX0ZSRUUmcHJvamVjdD1ob3RtYWlscGltdjEwJm1hcmtldD1lbi1VUyZjdT0mdG10PUhvdG1haWxQSU12MTAma2M9JmZvcm1hdD0=)/Help.aspx?market=en-US&amp;project=HotmailPIMv10&amp;querytype=topic&amp;query=PIM_PROC_AddContact.htm"
+              class="weblink">MSN Hotmail</a>
+          </strong><!--addressbook-->
+        </p>
+        <div id="emailHelp">
+          <p class="message-error" style="display: none;">
+            The email address is not valid.
+            Please enter a valid email address.
+          </p>
+        </div><!--Password Help-->
         <label for="newAddress">Address</label>
         <input class="text" type="text" name="newAddress" id="newAddress"
           title="Address to add"/>
@@ -181,6 +219,22 @@
           </tbody>
         </table>
       </div><!--group-email-settings-->
+    </tal:block>
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript"
+        src="++resource++check_email-20080214.js">&#160;</script>
+      <script type="text/javascript">
+        jQuery.noConflict()
+        jQuery(document).ready( function () {
+            var webmail = new Array('gmail', 'hotmail', 'yahoo');
+            GSCheckEmailAddress.init(
+                '#newAddress',
+                '#newAddress-button',
+                '#addressBookHelp',
+                webmail,
+                '#emailHelp');
+        });
+      </script>
     </tal:block>
   </body>
 </html>
