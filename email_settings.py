@@ -73,6 +73,7 @@ class GSEmailSettings(BrowserView):
     def userAddresses(self):
         if self.__addressData == []:
             addr = self.__user.get_emailAddresses()
+            addr.sort()
             pref = self.preferredAddresses
             veri = self.__user.get_verifiedEmailAddresses()
             self.__addressData = [Address(a, pref, veri) for a in addr]
@@ -294,15 +295,49 @@ class GSEmailSettings(BrowserView):
         
     def make_default(self, address):
         assert isinstance(address, Address)
-        retval = (False, u'Make default not implemented')
-        assert len(retval) == 2
+        assert not(address.default)
+        self.__user.add_defaultDeliveryEmailAddress(address.address)
+        
+        error = False
+        htmlAddr = self.__addrs_to_html([address.address])
+        message = u'<li>Added the address %s to the list of default '\
+          u'email addresses</li>' % htmlAddr
+
+        newDefl = self.preferredAddresses
+        newDefl.append(address.address)
+        deflHtmlAddrs = self.__addrs_to_html(newDefl)
+        message = u'%s\n<li>Your default email addresses are %s</li>' %\
+          (message, deflHtmlAddrs)
+
+        message = u'<ul>%s</ul>' % message
+        
+        retval = (error, message)
         assert type(retval[0]) == bool
         assert type(retval[1]) == unicode
         return retval
         
     def remove_default (self, address):
         assert isinstance(address, Address)
-        retval = (False, u'Remove default not implemented')
+        assert self.multipleDefault, 'There is only one default address'
+        assert address.default, 'Address %s is not default' % address.address
+        
+        self.__user.remove_defaultDeliveryEmailAddress(address.address)
+        
+        error = False
+        htmlAddr = self.__addrs_to_html([address.address])
+        message = u'<li>Removed %s from the list of default email '\
+          u'addresses.</li> ' % htmlAddr
+
+        newDefl = self.preferredAddresses
+        newDefl.remove(address.address)
+        addrPlural = ((len(newDefl) == 1) and u'address is') \
+          or u'addresses are'
+        deflHtmlAddrs = self.__addrs_to_html(newDefl)
+        message = u'%s\n<li>Your default email %s %s</li>' %\
+          (message, addrPlural, deflHtmlAddrs)
+        message = u'<ul>%s</ul>' % message
+        
+        retval = (error, message)
         assert len(retval) == 2
         assert type(retval[0]) == bool
         assert type(retval[1]) == unicode

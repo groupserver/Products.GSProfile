@@ -69,7 +69,7 @@
                         value="resend_verification">Send verification</option>
                       <option 
                         tal:condition="python:ver and not(defl)"
-                        value="made_default">Make
+                        value="make_default">Make
                         default</option>
                       <option 
                         tal:condition="python:defl and mDef"
