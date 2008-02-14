@@ -301,8 +301,7 @@ class GSEmailSettings(BrowserView):
         
         error = False
         htmlAddr = self.__addrs_to_html([address.address])
-        message = u'<li>Added the address %s to the list of default '\
-          u'email addresses</li>' % htmlAddr
+        message = u'<li>Added the default address %s.</li>' % htmlAddr
 
         newDefl = self.preferredAddresses
         newDefl.append(address.address)
