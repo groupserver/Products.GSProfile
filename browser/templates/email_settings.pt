@@ -28,9 +28,9 @@
     <tal:block metal:fill-slot="body">
       <h1>Change Email Settings</h1>
       <form enctype="multipart/form-data" method="post" action="." 
-        id="changeSettings" tal:attributes="action request/URL" >
+        id="changeUserEmailSettings" tal:attributes="action request/URL" >
         <input type="hidden" class="hidden" name="submitted" value=""/>
-        <table id="emailAddresses">
+        <table id="emailAddresses" class="profile">
           <thead>
             <tr>
               <th>Address</th>
@@ -41,9 +41,13 @@
           <tbody tal:define="addresses view/userAddresses; 
             mAddr python:len(addresses)>1">
             <tal:block repeat="address addresses">
-              <tr tal:define="defl address/default; ver address/verified"
-                tal:attributes="id address/addressId">
-                <td><code class="email"
+              <tr
+               tal:define="pos repeat/address/number;
+                  class python:((((pos) % 2) == 0) and 'even') or 'odd';
+                  defl address/default; 
+                  ver address/verified"
+                tal:attributes="id address/addressId; class class">
+                <td class="address"><code class="email"
                   tal:content="address/address">foo@bar.wibble</code></td>
                 <td class="status">
                   <span tal:condition="defl">Verified and 
@@ -61,9 +65,6 @@
                     <select name="addressAction" id="addressAction"
                       tal:define="actionId string:${address/addressId}-action"
                       tal:attributes="name actionId; id actionId">
-                      <option
-                        tal:condition="python: not(defl) or (defl and mDef)"
-                        value="remove">Remove address</option>
                       <option 
                         tal:condition="not:ver"
                         value="resend_verification">Send verification</option>
@@ -74,6 +75,9 @@
                       <option 
                         tal:condition="python:defl and mDef"
                         value="remove_default">Remove from default</option>
+                      <option
+                        tal:condition="python: not(defl) or (defl and mDef)"
+                        value="remove">Remove address</option>
                     </select>
                     <input class="button" type="submit" value="Change"
                       name="changeButton" id="changeButton"
@@ -102,6 +106,10 @@
             </tal:block>
           </tbody>
         </table>
+      </form><!--changeSettings-->
+      <form enctype="multipart/form-data" method="post" action="." 
+        id="newAddressForm" tal:attributes="action request/URL" >
+        <input type="hidden" class="hidden" name="submitted" value=""/>
         <h2>Add Address</h2>
         <p>To add an addres, enter it in the
           <samp class="entry">Address</samp> 
@@ -118,9 +126,9 @@
         <input class="button" type="submit" value="Add" 
           id="newAddress-button" name="newAddress-button"/>
       </form><!--changeSettings-->
-      <div id="group-email-settings">
+      <div id="userGroupEmailSettings">
         <h2>Group Email Settings</h2>
-        <table>
+        <table class="profile">
           <thead>
             <tr>
               <th>Group</th>
@@ -131,14 +139,17 @@
           </thead>
           <tbody>
             <tal:block repeat="setting view/groupEmailSettings">
-              <tr tal:attributes="id setting/group/get_id">
+              <tr tal:define="pos repeat/setting/number;
+                  class python:((((pos) % 2) == 0) and 'even') or 'odd';"
+                tal:attributes="id setting/group/get_id; class class">
                 <td>
                   <a class="group"
                     tal:content="setting/group/get_name"
-                    tal:attributes="href setting/group/get_url">Group</a></td>
-                <td>
-                  <span tal:condition="not:setting/setting"
-                    class="na">&#8212;</span>
+                    tal:attributes="href setting/group/get_url">Group</a>
+                </td>
+                <td tal:condition="not:setting/setting"
+                  class="setting na">&#8212;</td>
+                <td tal:condition="setting/setting" class="setting">
                   <span tal:condition="setting/setting">
                     <span tal:condition="setting/default">Default: </span>
                     <strong 
