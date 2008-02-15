@@ -120,7 +120,7 @@
                     <a class="email"
                       tal:attributes="href string:mailto:${view/siteInfo/get_support_email}?Subject=Weird Address ${address/address}"
                       href="#"><strong>Please contact support</strong></a>
-                      because you email setting is weird.</span>
+                      because your email setting is weird.</span>
                 </td>
               </tr>
             </tal:block>

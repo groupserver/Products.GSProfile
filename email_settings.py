@@ -261,15 +261,16 @@ class GSEmailSettings(BrowserView):
            self.__user.getId())
 
         self.__user.remove_emailAddressVerification(address.address)
+        message = u'<p>Removed <code class="email">%s</code> from your '\
+          u'profile.</p>' % (address.address)
+        groupMsg = u''
         for setting in self.groupEmailSettings:
             if address.address in setting.addresses:
                 m = self.remove_address_from_group(address, setting)
-                message = u'%s%s' % (message, m)
+                groupMsg = u'%s%s' % (groupMsg, m)
         self.__user.remove_emailAddress(address.address)
-        message = u'<li>Removed <code class="email">%s</code> from your '\
-          u'profile.</li>' % address.address
         
-        message = u'<ul>\n%s\n</ul>' % message
+        message = u'%s\n<ul>\n%s\n</ul>' % (message, groupMsg)
         retval = (False, message)
 
         assert len(retval) == 2
