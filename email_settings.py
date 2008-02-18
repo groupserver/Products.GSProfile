@@ -385,7 +385,7 @@ class Address(object):
         assert type(verifiedAddresses) == list
 
         self.address = emailAddress
-        addressId = emailAddress.replace('@','at')
+        addressId = emailAddress.replace('@','at').replace('-', 'dash')
         self.addressId = addressId
         self.default = emailAddress in defaultAddresses
         self.verified = emailAddress in verifiedAddresses

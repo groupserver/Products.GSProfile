@@ -133,17 +133,7 @@
         tal:attributes="action request/URL" >
         <input type="hidden" class="hidden" name="submitted" value=""/>
         <h2>Add Address</h2>
-        <p>To add an addres, enter it in the
-          <samp class="entry">Address</samp> 
-          entry, and click the
-          <samp class="button">Add</samp> button.
-          You will receive a message verifying that you control the 
-          address.
-          Once you have verified this address you will be able to use it
-          with your online groups.
-        </p>
-        <p class="note">
-          Before clicking the <samp class="button">Add</samp> button,
+        <p>To add an addres, 
           <strong>add the contact
             <span class="vcard" tal:define="sn view/siteInfo/get_name">
               <abbr tal:attributes="title string:${sn} Verification" 
@@ -171,6 +161,14 @@
               href="http://help.msn.com/(ZmlsdGVyPURIX0ZSRUUmcHJvamVjdD1ob3RtYWlscGltdjEwJm1hcmtldD1lbi1VUyZjdT0mdG10PUhvdG1haWxQSU12MTAma2M9JmZvcm1hdD0=)/Help.aspx?market=en-US&amp;project=HotmailPIMv10&amp;querytype=topic&amp;query=PIM_PROC_AddContact.htm"
               class="weblink">MSN Hotmail</a>
           </strong><!--addressbook-->
+          Then enter it in the
+          <samp class="entry">Address</samp> 
+          entry, and click the
+          <samp class="button">Add</samp> button.
+          You will receive a message verifying that you control the 
+          address.
+          Once you have verified this address you will be able to use it
+          with your online groups.
         </p>
         <label for="newAddress">Address</label>
         <input class="text" type="text" name="newAddress" id="newAddress"
