@@ -133,7 +133,7 @@
         tal:attributes="action request/URL" >
         <input type="hidden" class="hidden" name="submitted" value=""/>
         <h2>Add Address</h2>
-        <p>To add an addres, 
+        <p>To add an address, 
           <strong>add the contact
             <span class="vcard" tal:define="sn view/siteInfo/get_name">
               <abbr tal:attributes="title string:${sn} Verification" 
