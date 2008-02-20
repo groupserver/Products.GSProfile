@@ -4,6 +4,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
+from interfaceCoreProfile import check_email
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -53,6 +54,24 @@ class IOGNProfileRegister(IOGNProfile):
       value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
       unique=True,
       default=[])
+
+class IOGNProfileAdminJoin(IOGNProfile):
+    email = ASCIILine(title=u'Email Address',
+      description=u'Your email address.',
+      required=True,
+      constraint=check_email)
+
+class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
+    message = Text(title=u'Message',
+      description=u'The message to send to the new group member',
+      required=False)
+
+class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
+    pass
+
+########
+# ABEL #
+########
 
 class IABELProfile(IGSCoreProfile):
     fn = TextLine(title=u'Display Name',

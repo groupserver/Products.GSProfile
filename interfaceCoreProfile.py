@@ -46,10 +46,14 @@ class IGSCoreProfileAdminJoin(IGSCoreProfile):
       required=True,
       constraint=check_email)
 
+class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
     message = Text(title=u'Message',
       description=u'The message to send to the new group member',
       required=False)
 
+class IGSCoreProfileAdminJoinCSV(IGSCoreProfileAdminJoin):
+    pass
+    
 #########
 # Image #
 #########
@@ -122,4 +126,12 @@ class IGSProfileImage(Interface):
       description=u'If set, others can see your image.',
       required=False,
       default=True)
+
+
+class IGSCreateUserCSV(Interface):
+    csvFile = Bytes(title=u'CSV File',
+      description=u'The comma-seperated value file that contains the '
+        u'membership information you wish to load.',
+      required=True,
+      default=None)
 
