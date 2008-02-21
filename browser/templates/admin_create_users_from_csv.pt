@@ -8,7 +8,14 @@
   <head>
     <title metal:fill-slot="title">Create Members in Bulk</title>
   </head>
-  <body metal:fill-slot="body">
+  <body>
+    <div metal:fill-slot="messages"
+      tal:define="result view/process_form;
+      isError python:result.get('error', False);"
+      tal:condition="python:result and result.has_key('message')"
+      tal:attributes="class python:(isError and 'message-error') or 'message-result'"
+      tal:content="structure result/message"/>
+    <div metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="edit-profile">
         
@@ -38,10 +45,10 @@
           After saving the file in CSV format select it using the
           selector below.
         </p>
-        <label 
+        <label class="required"
           title="The comma-seperated value (CSV) file that contains the data for the new members"
-          for="csvFile">CSV File</label>
-        <input class="fileType" id="csvFile" name="csvFile" 
+          for="csvfile">CSV File</label>
+        <input class="fileType" id="csvfile" name="csvfile" 
           type="file"  />
         <h2>Step 3: Set the Columns</h2>
         <p>Now set the column headers. 
@@ -61,24 +68,24 @@
               <tal:block
                 repeat="option column/profileList">
                 <tal:block
-                  define="initial python:(n==1 and option.value == 'email') or (n==2 and option.value == 'fn')">
+                  define="initial python:(n==1 and option.token == 'email') or (n==2 and option.token == 'fn')">
                   <option 
                     tal:condition="initial"
                     selected="selected"
                     tal:content="option/title"
                     tal:define="m repeat/option/number"
-                    tal:attributes="value option/value"/>
+                    tal:attributes="value option/token"/>
                   <option 
                     tal:condition="not:initial"
                     tal:content="option/title"
                     tal:define="m repeat/option/number"
-                    tal:attributes="value option/value"/>
+                    tal:attributes="value option/token"/>
                 </tal:block>
               </tal:block>
               <option tal:condition="python:n&gt;2"
-                selected="selected" value="unused">(Unused)</option>
+                selected="selected" value="nothing">(Unused)</option>
               <option tal:condition="python:n&lt;=2"
-                value="unused">(Unused)</option>
+                value="nothing">(Unused)</option>
             </select>
           </tal:block>
         </div><!--columns-->
@@ -88,9 +95,12 @@
           Click the <samp class="button">Create</samp> button to
           create the users specified in your CSV file.
         </p>
+        <input type="hidden" id="submitted" name="submitted" 
+          class="hidden" value=""/>
         <input type="submit" id="create" name="create" class="button"
           value="Create"/>
       </form>
+    </div>
   </body>
 </html>
 
