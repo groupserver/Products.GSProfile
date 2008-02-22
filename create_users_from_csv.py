@@ -15,6 +15,8 @@ from Products.XWFCore.CSV import CSVFile
 from Products.CustomUserFolder.CustomUser import CustomUser
 import interfaces, utils
 
+from zope.formlib import form
+
 import logging
 log = logging.getLogger('GSCreateUsersFromCSV')
 
@@ -27,6 +29,15 @@ class CreateUsersForm(BrowserView):
         self.groupInfo = createObject('groupserver.GroupInfo', context)
         self.profileList = ProfileList(context)
         self.acl_users = context.site_root().acl_users
+        
+        site_root = context.site_root()
+        assert hasattr(site_root, 'GlobalConfiguration')
+        config = site_root.GlobalConfiguration
+        self.profileSchemaName = profileSchemaName = \
+          config.getProperty('profileInterface', 'IGSCoreProfile')
+        self.profileSchema = profileSchema = \
+          getattr(interfaces, profileSchemaName)
+        self.profileFields = form.Fields(self.profileSchema, render_context=False)
         
         self.__admin = None
         
@@ -230,6 +241,14 @@ class CreateUsersForm(BrowserView):
                self.siteInfo.get_name(),   self.siteInfo.get_id())
         else:
             user = utils.create_user_from_email(self.context, email)
+
+            # Add profile attributes 
+            utils.enforce_schema(user, self.profileSchema)
+            print user
+            print self.profileFields
+            print fields
+            changed = form.applyChanges(user, self.profileFields, fields)
+
             admin = self.get_admin()
             utils.send_add_user_notification(user, admin, self.groupInfo)
             new = True

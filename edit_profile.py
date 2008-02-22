@@ -74,35 +74,8 @@ class EditProfileForm(PageForm):
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
             
-        self.enforce_schema(context, interface)
+        self.z(context, interface)
         
-    def enforce_schema(self, inputData, schema):
-        """
-        SIDE EFFECTS
-          * "inputData" is stated to provide the "schema" interface
-          * "inputData" will provide all the properties defined in "schema"
-        """
-
-        typeMap = {
-          Text:      'ulines',
-          TextLine:  'ustring',
-          ASCII:     'lines',
-          ASCIILine: 'string',
-          URI:       'string',
-          Bool:      'bool',
-          Float:     'float',
-          Int:       'int',
-          Datetime:  'date',
-          Date:      'date',
-        }
-        fields = [field[0] for field in getFieldsInOrder(schema)]
-        for field in fields:
-            if not hasattr(inputData, field):
-                default = schema.get(field).default or ''
-                t = typeMap.get(type(schema.get(field)), 'ustring')
-                inputData.manage_addProperty(field, default, t)
-        alsoProvides(inputData, schema)
-
     @property
     def userName(self):
         retval = u''
@@ -197,7 +170,7 @@ class RegisterEditProfileForm(EditProfileForm):
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
 
-        self.enforce_schema(context, interface)
+        utils.enforce_schema(context, interface)
         
     @property
     def userEmail(self):

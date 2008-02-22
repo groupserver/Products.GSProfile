@@ -1,6 +1,10 @@
 #coding: utf-8
 import time, md5
 from zope.component import createObject
+from zope.schema import *
+from zope.interface import implements, providedBy, implementedBy,\
+  directlyProvidedBy, alsoProvides
+
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.CustomUser import CustomUser
 
@@ -200,4 +204,32 @@ def join_group(user, groupInfo):
     userGroupsAssert = user.getGroups()
     assert userGroup in userGroupsAssert
     assert siteGroup in userGroupsAssert
+
+
+def enforce_schema(inputData, schema):
+    """
+    SIDE EFFECTS
+      * "inputData" is stated to provide the "schema" interface
+      * "inputData" will provide all the properties defined in "schema"
+    """
+
+    typeMap = {
+      Text:      'ulines',
+      TextLine:  'ustring',
+      ASCII:     'lines',
+      ASCIILine: 'string',
+      URI:       'string',
+      Bool:      'bool',
+      Float:     'float',
+      Int:       'int',
+      Datetime:  'date',
+      Date:      'date',
+    }
+    fields = [field[0] for field in getFieldsInOrder(schema)]
+    for field in fields:
+        if not hasattr(inputData, field):
+            default = schema.get(field).default or ''
+            t = typeMap.get(type(schema.get(field)), 'ustring')
+            inputData.manage_addProperty(field, default, t)
+    alsoProvides(inputData, schema)
 
