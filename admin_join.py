@@ -45,25 +45,30 @@ class AdminJoinEditProfileForm(EditProfileForm):
     @form.action(label=u'Add', failure='handle_add_action_failure')
     def handle_add(self, action, data):
         acl_users = self.context.acl_users
-        
-        if utils.address_exists(self.context, data['email']):
-            m = 'AdminJoinEditProfileForm: User with the email address '\
-              '<%s> exists.' % data['email']
+        email = data['email']
+        admin = self.request.AUTHENTICATED_USER
+        assert admin
+        if utils.address_exists(self.context, email):
+            m = u'AdminJoinEditProfileForm: User with the email address '\
+              u'<%s> exists: %s (%s). Adding to %s (%s) on %s (%s).' % \
+              (email, admin.getProperty('fn', ''), admin.getId(),
+               self.groupInfo.get_name(), self.groupInfo.get_id(),
+                 self.siteInfo.get_name(), self.siteInfo.get_id())
             log.info(m)
 
-            user = acl_users.get_userByEmail(data['email'])
-            assert user, 'User for address <%s> not found' % data['email']
-            self.join_group(user)
-            self.status = u'''The existing user %s has been added to
-              <span class="group">%s</span>''' % \
-              (user.getProperty('fn', ''), self.groupInfo.get_name())
+            user = acl_users.get_userByEmail(email)
+            assert user, 'User for address <%s> not found' % email
+            self.status = u'The existing user <a class="fn" href="%s">%s</a> '\
+              u'has been added to <span class="group">%s</span>''' % \
+              (user.getId(), user.getProperty('fn', ''), 
+                self.groupInfo.get_name())
         else:        
             m = 'AdminJoinEditProfileForm: No user with the email '\
-              'address <%s>.' % data['email']
+              'address <%s>; creating user for .' % email
             log.info(m)
 
-            user = utils.create_user_from_email(self.context, data['email'])
-            
+            user = utils.create_user_from_email(self.context, email)
+
             # Add profile attributes 
             schema = getattr(interfaces, self.interfaceName)
             self.enforce_schema(user, schema)
@@ -73,66 +78,21 @@ class AdminJoinEditProfileForm(EditProfileForm):
             log.info(m)
             
             # Send notification
-            self.send_add_user_notification(user, data)
-            
+            utils.send_add_user_notification(user, admin, 
+              self.groupInfo, data['message'])
+
             self.status = u'''The user %s has been created, and an
               invitation message has been sent to 
               <code class="email">%s</code>''' % \
-                (user.getProperty('fn', ''), data['email'])
+                (user.getProperty('fn', ''), email)
+
+        utils.join_group(user, self.groupInfo)
         
     def handle_add_action_failure(self, action, data, errors):
         if len(errors) == 1:
             self.status = u'<p>There is an error:</p>'
         else:
             self.status = u'<p>There are errors:</p>'
-
-    def join_group(self, user):
-        m = u'AdminJoinEditProfileForm: adding the user %s to the '\
-            u' group %s' % (user.getId(), self.groupInfo.get_id())
-        log.info(m)
-
-        userGroups = user.getGroups()
-        userGroup = '%s_member' % self.groupInfo.get_id()
-        assert userGroup not in userGroups, 'User %s in %s' % \
-          (user.getId(), userGroup)
-        user.add_groupWithNotification(userGroup)
-
-        siteGroup = '%s_member' % self.siteInfo.get_id()
-        if siteGroup not in userGroups:
-            m = u'AdminJoinEditProfileForm: the user "%s" (%s) is not a '\
-                u' member of the site "%s" (%s)' % \
-                  (user.getId(), user.getProperty('fn', ''),
-                   self.siteInfo.get_name(), self.siteInfo.get_id())
-            log.info(m)
-            self.context.add_groupWithNotification(siteGroup)
-
-    def send_add_user_notification(self, user, data):
-        email = user.get_emailAddresses()[0]
-        
-        invitationId = utils.verificationId_from_email(email)
-        admin = self.get_admin()
-
-        user.add_invitation(invitationId, admin.getId(),
-          self.siteInfo.get_id(), self.groupInfo.get_id())
-        user.add_emailAddressVerification(invitationId, email)
-        
-        n_dict = {}
-        n_dict['verificationId'] = invitationId
-        n_dict['userId'] = user.getId()
-        n_dict['userFn'] = user.getProperty('fn','')
-        n_dict['siteName'] = self.siteInfo.get_name()
-        n_dict['groupName'] = self.groupInfo.get_name()
-        n_dict['siteURL'] = self.siteInfo.get_url()
-        n_dict['admin'] = {
-          'name':    admin.getProperty('fn', ''),
-          'address': admin.get_preferredEmailAddresses()[0],
-          'message': data['message']}
-        
-        user.send_notification(
-          n_type='admin_create_new_user', 
-          n_id='default',
-          n_dict=n_dict, 
-          email_only=[email])
 
     def get_admin(self):
         loggedInUser = self.request.AUTHENTICATED_USER

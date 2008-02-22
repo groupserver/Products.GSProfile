@@ -12,6 +12,7 @@ from zope.interface.common.mapping import IEnumerableMapping
 from Products.Five import BrowserView
 from Products.XWFCore.odict import ODict
 from Products.XWFCore.CSV import CSVFile
+from Products.CustomUserFolder.CustomUser import CustomUser
 import interfaces, utils
 
 import logging
@@ -23,9 +24,11 @@ class CreateUsersForm(BrowserView):
         self.request = request
         
         self.siteInfo = createObject('groupserver.SiteInfo', context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', context)
+        self.groupInfo = createObject('groupserver.GroupInfo', context)
         self.profileList = ProfileList(context)
         self.acl_users = context.site_root().acl_users
+        
+        self.__admin = None
         
     @property
     def columns(self):
@@ -46,6 +49,18 @@ class CreateUsersForm(BrowserView):
             retval.append(column)
         assert len(retval) > 0
         return retval
+
+    def get_admin(self):
+        if self.__admin == None:
+            self.__admin = self.request.AUTHENTICATED_USER
+            assert self.__admin
+            roles = self.__admin.getRolesInContext(self.groupInfo.groupObj)
+            assert ('GroupAdmin' in roles) or ('DivisionAdmin' in roles), \
+              '%s (%s) is not an administrator of %s (%s) on %s (%s)' % \
+                (self.__admin.getProperty('fn', ''), self.__admin.getId(), 
+                 self.groupInfo.get_name(), self.groupInfo.get_id(),
+                 self.siteInfo.get_name(), self.siteInfo.get_id())
+        return self.__admin
         
     def process_form(self):
         form = self.context.REQUEST.form
@@ -55,20 +70,32 @@ class CreateUsersForm(BrowserView):
         if form.has_key('submitted'):
             result['message'] = u''
             result['error'] = False
+
+            admin = self.get_admin()
+            m = u'process_form: Adding users to %s (%s) on %s (%s) in'\
+              u' bulk for %s (%s)' % \
+              (self.groupInfo.get_name(),   self.groupInfo.get_id(),
+               self.siteInfo.get_name(),    self.siteInfo.get_id(),
+               admin.getProperty('fn', ''), admin.getId())
+            print m
             
             r = self.process_columns(form)
-            result['message'] = '%s\n%s' % (result['message'], r['message'])
+            result['message'] = '%s\n%s' % \
+              (result['message'], r['message'])
             result['error'] = result['error'] or r['error']
             columns = r['columns']
 
             if not result['error']:
                 r = self.process_csv_file(form, columns)
-                result['message'] = '%s\n%s' % (result['message'], r['message'])
+                result['message'] = '%s\n%s' %\
+                  (result['message'], r['message'])
                 result['error'] = result['error'] or r['error']
                 csvResults = r['csvResults']
+                
             if not result['error']:
                 r = self.process_csv(csvResults, columns)
-                result['message'] = '%s\n%s' % (result['message'], r['message'])
+                result['message'] = '%s\n%s' % \
+                  (result['message'], r['message'])
                 result['error'] = result['error'] or r['error']
 
             assert result.has_key('error')
@@ -84,7 +111,6 @@ class CreateUsersForm(BrowserView):
     def process_columns(self, form):
         assert type(form) == dict
         assert 'csvfile' in form
-        
         message = u''
         error = False
         
@@ -188,21 +214,47 @@ class CreateUsersForm(BrowserView):
 
     def process_row(self, fields):
         assert type(fields) == dict
+        assert 'email' in fields
+        assert fields['email']
+        user = None
+        result = {}
         
-        existingUser = self.acl_users.get_userByEmail(fields['email'])
-        if existingUser:
-            fn = existingUser.getProperty('fn')
-            uid = existingUser.getId()
-            m = u'Should add user %s (%s) to the group %s (%s)' % \
-              (fn, uid, self.groupInfo.get_name(), self.groupInfo.get_id())
+        email = fields['email']
+        if utils.address_exists(self.context, email):
+            user = self.acl_users.get_userByEmail(email)
+            assert user, 'User for <%s> not found' % email
+            new = False
+            m = u'Adding the user %s (%s) to the group %s (%s) on %s (%s)' %\
+              (user.getProperty('fn', ''), user.getId(),
+               self.groupInfo.get_name(),  self.groupInfo.get_id(),
+               self.siteInfo.get_name(),   self.siteInfo.get_id())
         else:
-            m = u'Should create user for the address %s' % (fields['email'])
+            user = utils.create_user_from_email(self.context, email)
+            admin = self.get_admin()
+            utils.send_add_user_notification(user, admin, self.groupInfo)
+            new = True
+            m = u'Created the user %s (%s) add added the user to the '\
+              u'group %s (%s) on %s (%s)' %\
+              (user.getProperty('fn', ''), user.getId(),
+               self.groupInfo.get_name(),  self.groupInfo.get_id(),
+               self.siteInfo.get_name(),   self.siteInfo.get_id())
+
+        utils.join_group(user, self.groupInfo)
+
         result = {'error':      False,
-                  'message':    m}
+                  'message':    m,
+                  'user':       user,
+                  'new':        new}
+        assert result
+        assert type(result) == dict
         assert result.has_key('error')
         assert type(result['error']) == bool
         assert result.has_key('message')
         assert type(result['message']) == unicode
+        assert result.has_key('user')
+        assert isinstance(result['user'], CustomUser)
+        assert result.has_key('new')
+        assert type(result['new']) == bool
         return result
         
 class ProfileList(object):
