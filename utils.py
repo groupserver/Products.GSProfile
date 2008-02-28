@@ -63,7 +63,8 @@ def send_verification_message(context, user, email):
     '''
     assert context != None
     assert user!= None
-    assert email in user.get_emailAddresses()
+    assert email in user.get_emailAddresses(), \
+      'Email <%s> not in %s' % (email, user.get_emailAddresses())
     siteInfo = createObject('groupserver.SiteInfo', context)
 
     verificationId = verificationId_from_email(email)
