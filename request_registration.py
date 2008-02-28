@@ -64,7 +64,7 @@ class RequestRegistrationForm(PageForm):
               'existing address <%s>' % data['email']
             log.info(logMsg)
             
-            url = 'request_password.html?form.email=%s' % data['email']
+            url = 'reset_password.html?form.email=%s' % data['email']
             m = '''A user with the email address 
               <code class="email">%s</code> already exists on 
               <span class="site">%s</span>. Either
