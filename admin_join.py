@@ -31,7 +31,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
         
-        interfaceName = '%sAdminJoinSingle' %\
+        self.interfaceName = interfaceName = '%sAdminJoinSingle' %\
           config.getProperty('profileInterface', 'IGSCoreProfile')
         assert hasattr(interfaces, interfaceName), \
             'Interface "%s" not found.' % interfaceName
