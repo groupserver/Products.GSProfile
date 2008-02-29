@@ -152,7 +152,23 @@ class IABELProfileRegister(IABELProfile):
       unique=True,
       default=[])
 
+class IABELProfileAdminJoin(IABELProfile):
+    email = ASCIILine(title=u'Email Address',
+      description=u'Your email address.',
+      required=True,
+      constraint=check_email)
 
+class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
+    message = Text(title=u'Message',
+      description=u'The message to send to the new group member',
+      required=False)
+
+class IABELProfileAdminJoinCSV(IABELProfileAdminJoin):
+    pass
+
+##########
+# DoWire #
+##########
 
 imClients = [u'Skype', u'Yahoo!', u'ICQ', u'MSN', u'AIM',
   u'Google Talk', u'Gizmo', u'IRC']
@@ -304,6 +320,32 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
+class IDoWireProfileRegister(IDoWireProfile):
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
+class IDoWireProfileAdminJoin(IDoWireProfile):
+    email = ASCIILine(title=u'Email Address',
+      description=u'Your email address.',
+      required=True,
+      constraint=check_email)
+
+class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
+    message = Text(title=u'Message',
+      description=u'The message to send to the new group member',
+      required=False)
+
+class IDoWireProfileAdminJoinCSV(IDoWireProfileAdminJoin):
+    pass
+
+########
+# eDem #
+########
+
 class IEDemProfile(IGSCoreProfile):
     givenName = TextLine(title=u'First Name',
       description=u'The name that you are commonly called, which is given '
@@ -381,4 +423,26 @@ class IEDemProfile(IGSCoreProfile):
        u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default=u'')
+
+class IEDemProfileRegister(IEDemProfile):
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
+class IEDemProfileAdminJoin(IEDemProfile):
+    email = ASCIILine(title=u'Email Address',
+      description=u'Your email address.',
+      required=True,
+      constraint=check_email)
+
+class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
+    message = Text(title=u'Message',
+      description=u'The message to send to the new group member',
+      required=False)
+
+class IEDemProfileAdminJoinCSV(IEDemProfileAdminJoin):
+    pass
 
