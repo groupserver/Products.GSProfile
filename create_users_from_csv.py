@@ -405,12 +405,16 @@ class CreateUsersForm(BrowserView):
         else:
             user = utils.create_user_from_email(self.context, email)
             new = 2
+
             # Add profile attributes 
             utils.enforce_schema(user, self.profileSchema)
             changed = form.applyChanges(user, self.profileFields, fields)
             m = u'Created new user <a href="/contacts/%s">%s</a>' %\
               (user.getId(), user.getProperty('fn', ''))
-        
+            
+            utils.send_add_user_notification(user, self.get_admin(),
+              self.groupInfo, u'')
+            
         groupMembershipId = '%s_member' % self.groupInfo.get_id()
         if groupMembershipId not in user.getGroups():
             utils.join_group(user, self.groupInfo)
