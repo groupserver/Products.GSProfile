@@ -57,8 +57,9 @@ class AdminJoinEditProfileForm(EditProfileForm):
 
             user = acl_users.get_userByEmail(email)
             assert user, 'User for address <%s> not found' % email
-            self.status = u'The existing user <a class="fn" href="%s">%s</a> '\
-              u'has been added to <span class="group">%s</span>''' % \
+            self.status = u'The existing user '\
+              u'<a class="fn" href="/contacts/%s">%s</a> '\
+              u'has been added to <span class="group">%s</span>.' % \
               (user.getId(), user.getProperty('fn', ''), 
                 self.groupInfo.get_name())
         else:        
