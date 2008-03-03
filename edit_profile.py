@@ -70,8 +70,9 @@ class EditProfileForm(PageForm):
         assert hasattr(interfaces, interfaceName), \
             'Interface "%s" not found.' % interfaceName
         self.interface = interface = getattr(interfaces, interfaceName)
-        self.form_fields = form.Fields(interface, render_context=True)
+        utils.enforce_schema(context, interface)
 
+        self.form_fields = form.Fields(interface, render_context=True)
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
             
@@ -161,6 +162,7 @@ class RegisterEditProfileForm(EditProfileForm):
         assert hasattr(interfaces, interfaceName), \
             'Interface "%s" not found.' % interfaceName
         self.interface = interface = getattr(interfaces, interfaceName)
+        utils.enforce_schema(context, interface)
 
         self.form_fields = form.Fields(interface, render_context=True)
 
@@ -168,8 +170,6 @@ class RegisterEditProfileForm(EditProfileForm):
         self.form_fields['biography'].custom_widget = wym_editor_widget
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
-
-        utils.enforce_schema(context, interface)
         
     @property
     def userEmail(self):
