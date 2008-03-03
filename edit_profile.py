@@ -60,12 +60,13 @@ class EditProfileForm(PageForm):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         site_root = context.site_root()
-
+        
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
         
         interfaceName = config.getProperty('profileInterface',
                                            'IGSCoreProfile')
+        
         assert hasattr(interfaces, interfaceName), \
             'Interface "%s" not found.' % interfaceName
         self.interface = interface = getattr(interfaces, interfaceName)
@@ -74,8 +75,6 @@ class EditProfileForm(PageForm):
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
             
-        self.z(context, interface)
-        
     @property
     def userName(self):
         retval = u''
