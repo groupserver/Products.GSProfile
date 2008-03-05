@@ -29,7 +29,8 @@ def login(context, user):
     site_root = context.site_root()
     site_root.cookie_authentication.credentialsChanged(user,
       user.getId(), user.get_password())          
-    m = 'utils.login: Logged in the user "%s"' % user.getId()
+    m = 'utils.login: Logged in the user %s (%s)' % \
+      (user.getProperty('fn', ''), user.getId())
     log.info(m)
 
 def verificationId_from_email(email):
@@ -82,7 +83,8 @@ def send_verification_message(context, user, email):
       n_dict=n_dict, 
       email_only=[email])
     m = 'utils.send_verification_message: Sent an email-verification '\
-      'message to <%s> for the user "%s"' % (email, user.getId())
+      'message to <%s> for the user %s (%s)' % \
+        (email, user.getProperty('fn', ''), user.getId())
     log.info(m)
 
 def create_user_from_email(context, email):
@@ -140,9 +142,9 @@ def send_add_user_notification(user, admin, groupInfo, message=u''):
     assert user
     assert isinstance(user, CustomUser)
     assert admin
-    assert isinstance(admin, CustomUser)
+    #assert isinstance(admin, CustomUser)
     assert groupInfo
-    assert type(message) in (str, unicode)
+    assert (type(message) in (str, unicode)) or (message == None)
     
     siteInfo = groupInfo.siteInfo
     # As the user is a brand-new user, he or she only has one address.
