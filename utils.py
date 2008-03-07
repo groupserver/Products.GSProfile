@@ -155,6 +155,9 @@ def send_add_user_notification(user, admin, groupInfo, message=u''):
       siteInfo.get_id(), groupInfo.get_id())
     user.add_emailAddressVerification(invitationId, email)
     
+    if message == None:
+        message = ''
+    
     n_dict = {}
     n_dict['verificationId'] = invitationId
     n_dict['userId'] = user.getId()
