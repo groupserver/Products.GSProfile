@@ -99,7 +99,7 @@ class VerifyWaitForm(PageForm):
     def add_new_email(self, email):
         log.info('GSVerifyWait: Adding <%s> to the user "%s"' % \
           (email, self.context.getId()))
-        self.context.add_emailAddress(email, is_preferred=False)
+        self.context.add_emailAddress(email, is_preferred=True)
         
         siteObj = self.siteInfo.siteObj
         utils.send_verification_message(siteObj, self.context, email)
