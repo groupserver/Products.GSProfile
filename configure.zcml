@@ -214,5 +214,13 @@
     template="browser/templates/email_settings.pt"
     permission="zope2.ManageProperties" />
 
+  <interface 
+    interface=".interfaces.IGSUserProfiles" />
+  <browser:page
+    for="Products.GSContent.interfaces.IGSSiteFolder"
+    name="p"
+    class=".userprofiles.GSUserProfiles"
+    permission="zope2.View" />
+
 </configure>
 

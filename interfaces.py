@@ -182,4 +182,6 @@ class IGSVerifyAddressMarker(Interface):
 class IGSReigstration(Interface):
     """Marker interface for the entire registration system.
     """
+class IGSUserProfiles(Interface):
+    """Marker interface for the user profiles."""
 
