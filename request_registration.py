@@ -9,6 +9,7 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Products.GSProfile.interfaces import *
 from Products.XWFCore import XWFUtils
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 import utils
 import logging
 log = logging.getLogger('GSProfile')
@@ -79,12 +80,13 @@ class RequestRegistrationForm(PageForm):
         else:
             email = data['email']
             user = utils.create_user_from_email(self.context, email)
+            userInfo = IGSUserInfo(user)
             utils.login(self.context, user)
             site = self.siteInfo.siteObj
             utils.send_verification_message(site, user, email)
             
             # Go to the edit-profile page
-            uri = '/contacts/%s/registration_profile.html' % user.getId()
+            uri = '%s/registration_profile.html' % userInfo.url
             if 'groupId' in data.keys():
                 uri = '%s?form.joinable_groups:list=%s' % (uri, data['groupId'])
             return self.request.RESPONSE.redirect(uri)

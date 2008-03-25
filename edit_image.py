@@ -13,7 +13,7 @@ from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
 from Products.XWFCore import XWFUtils
 from interfaceCoreProfile import *
-from Products.CustomUserFolder.interfaces import ICustomUser
+from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
 
 class GSEditImageForm(PageForm):
     label = u'Edit Image'

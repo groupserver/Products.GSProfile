@@ -8,6 +8,7 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.schema import *
 
 from Products.XWFCore import XWFUtils
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 import interfaces
 import utils
 from edit_profile import *
@@ -45,47 +46,52 @@ class AdminJoinEditProfileForm(EditProfileForm):
     def handle_add(self, action, data):
         acl_users = self.context.acl_users
         email = data['email']
+
         admin = self.request.AUTHENTICATED_USER
         assert admin
+        adminInfo = IGSUserInfo(admin)
+        m = u'AdminJoinEditProfileForm: Admin %s (%s) joining user with '\
+          u'address <%s>' % (admin.name, admin.id, email)
+        log.info(m)
+        
         groupMembershipId = '%s_member' % self.groupInfo.get_id()
         if utils.address_exists(self.context, email):
             m = u'AdminJoinEditProfileForm: User with the email address '\
-              u'<%s> exists: %s (%s). Adding to %s (%s) on %s (%s).' % \
-              (email, admin.getProperty('fn', ''), admin.getId(),
-               self.groupInfo.get_name(), self.groupInfo.get_id(),
+              u'<%s> exists. Adding to %s (%s) on %s (%s).' % \
+              (email, self.groupInfo.get_name(), self.groupInfo.get_id(),
                  self.siteInfo.get_name(), self.siteInfo.get_id())
             log.info(m)
 
             user = acl_users.get_userByEmail(email)
             assert user, 'User for address <%s> not found' % email
-            
+            userInfo = IGSUserInfo(user)
             if groupMembershipId in user.getGroups():
                 self.status=u'<li>The user with the email address '\
                   u'<code class="email">%s</code> &#8213;'\
-                  u'<a href="/contacts/%s" class="fn">%s</a> &#8213; is '\
+                  u'<a href="%s" class="fn">%s</a> &#8213; is '\
                   u'already a member of '\
                   u'<a class="group" href="%s">%s</a>.</li>'%\
-                  (email, user.getId(), user.getProperty('fn', ''),
-                   self.groupInfo.get_url(), self.groupInfo.get_name())
+                  (email, userInfo.url, user.name, 
+                   self.groupInfo.url, self.groupInfo.name)
             else:
                 self.status=u'<li>Using the existing user with the email '\
                   u'address <code class="email">%s</code>: '\
-                  u'<a href="/contacts/%s" class="fn">%s</a></li>' %\
-                  (email, user.getId(), user.getProperty('fn', ''))
+                  u'<a href="%s" class="fn">%s</a></li>' %\
+                  (email, userInfo.url, userInfo.name)
         else:
             user = self.create_user(data)
-            self.status = u'<li>The user <a href="/contacts/%s">%s</a> '\
+            userInfo = IGSUserInfo(user)
+            self.status = u'<li>The user <a href="%s">%s</a> '\
               u'has been created, and given the email address '\
               u'<code class="email">%s</code></li>''' % \
-                (user.getId(), user.getProperty('fn', ''), email)
+                (userInfo.url, userInfo.name, email)
 
         if groupMembershipId not in user.getGroups():
             utils.join_group(user, self.groupInfo)
-            self.status = u'%s<li><a href="/contacts/%s" class="fn">%s</a> '\
-              u'is now a member of '\
-              u'<a class="group" href="%s">%s</a>.</li>'%\
-              (self.status, user.getId(), user.getProperty('fn', ''),
-               self.groupInfo.get_url(), self.groupInfo.get_name())
+            self.status = u'%s<li><a href="%s" class="fn">%s</a> is now '\
+              u'a member of <a class="group" href="%s">%s</a>.</li>'%\
+              (self.status, userInfo.url, userInfo.name, 
+               self.groupInfo.url, self.groupInfo.name)
         else:
             self.status = u'%s<li>No changes have been made.</li>' % \
               self.status
@@ -104,13 +110,13 @@ class AdminJoinEditProfileForm(EditProfileForm):
         log.info(m)
         
         user = utils.create_user_from_email(self.context, email)
-
+        userInfo = IGSUserInfo(user)
         # Add profile attributes 
         schema = getattr(interfaces, self.interfaceName)
         utils.enforce_schema(user, schema)
         changed = form.applyChanges(user, self.form_fields, data)
         m = 'AdminJoinEditProfileForm: Changed the attributes ' \
-          'for the user %s (%s)' % (user.getProperty('fn', ''), user.getId())
+          'for the user %s (%s)' % (userInfo.name, userInfo.id)
         log.info(m)
         
         # Send notification

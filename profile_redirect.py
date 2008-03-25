@@ -5,6 +5,7 @@ from Products.Five.traversable import Traversable
 from zope.app.traversing.interfaces import ITraversable
 from zope.interface import implements
 from zope.component import createObject
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 
 from interfaces import *
 import utils
@@ -38,17 +39,17 @@ class GSProfileRedirect(BrowserView, Traversable):
             user = acl_users.get_userByPasswordVerificationId(verificationId)
             
             if user:
+                userInfo = IGSUserInfo(user)
                 m = 'GSProfileRedirect: Going to the set password '\
                   'page for the user %s (%s), using the verification ID '\
-                  '"%s"' % (user.getProperty('fn', ''), user.getId(),
-                    verificationId)
+                  '"%s"' % (userInfo.name, userInfo.id, verificationId)
                 log.info(m)
                 
                 utils.login(self.context, user)
                 # Clean up
                 user.clear_userPasswordResetVerificationIds()
                 
-                uri = '/contacts/%s/password.html' % user.getId()
+                uri = '%s/password.html' % userInfo.url
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
@@ -64,9 +65,10 @@ class GSProfileRedirect(BrowserView, Traversable):
             user = acl_users.get_userByEmailVerificationId(verificationId)
             
             if user:
+                userInfo = IGSUserInfo(user)
                 m = 'GSProfileRedirect: Going to verify the address with '\
                   'the verification ID %s for the user %s (%s).'  % \
-                  (verificationId, user.getProperty('fn', ''), user.getId())
+                  (verificationId, userInfo.name, userInfo.id)
                 log.info(m)
                 
                 utils.login(self.context, user)
@@ -76,8 +78,8 @@ class GSProfileRedirect(BrowserView, Traversable):
                     user.getProperty('fn', ''), user.getId())
                 log.info(m)
 
-                uri = '/contacts/%s/verify_address.html?email=%s' %\
-                  (user.getId(), emailAddress)
+                uri = '%s/verify_address.html?email=%s' %\
+                  (userInfo.url, emailAddress)
             else: # Cannot find user
                 uri = '/r/verify-user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
@@ -93,15 +95,15 @@ class GSProfileRedirect(BrowserView, Traversable):
             user = acl_users.get_userByPasswordVerificationId(verificationId)
             
             if user:
+                userInfo = IGSUserInfo(user)
                 m = 'GSProfileRedirect: Going to register_password.html '\
                   'for the user %s (%s), using the verification ID '\
-                  '"%s"' % (user.getProperty('fn', ''), user.getId(),
-                    verificationId)
+                  '"%s"' % (userInfo.name, user.id, verificationId)
                 log.info(m)
                 
                 utils.login(self.context, user)
                 
-                uri = '/contacts/%s/register_password.html' % user.getId()
+                uri = '%s/register_password.html' % userInfo.url
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
@@ -120,10 +122,10 @@ class GSProfileRedirect(BrowserView, Traversable):
             
             uri = ''
             if user:
+                userInfo = IGSUserInfo(user)
                 m = 'GSProfileRedirect: Going to reject the invitation '\
                   'for the user %s (%s), using the invitation ID '\
-                  '"%s"' % (user.getProperty('fn', ''), user.getId(),
-                    invitationId)
+                  '"%s"' % (userInfo.name, userInfo.id, invitationId)
                 log.info(m)
                 
                 utils.login(self.context, user)
@@ -149,7 +151,7 @@ class GSProfileRedirect(BrowserView, Traversable):
                     'email':  adminAddr,
                   },
                   'user': {
-                    'name':   user.getProperty('fn', ''),
+                    'name':   userInfo.name,
                     'email':  user.get_emailAddresses()[0],
                   },
                   'group': {
@@ -188,12 +190,12 @@ class GSProfileRedirect(BrowserView, Traversable):
         if len(self.request.form['subpaths']) == 1:
             invitationId = self.request.form['subpaths'][0]
             user = acl_users.get_userByInvitationId(invitationId) 
-
             if user:
+                userInfo = IGSUserInfo(user)
                 utils.login(self.context, user)
                 
-                uri = '/contacts/%s/join_password.html?form.invitationId=%s' % \
-                  (user.getId(), invitationId)
+                uri = '%s/join_password.html?form.invitationId=%s' % \
+                  (userInfo.url, invitationId)
             else: # Cannot find user
                 uri = '/r/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified

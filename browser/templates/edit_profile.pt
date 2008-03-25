@@ -7,7 +7,8 @@
   metal:use-macro="context/@@groupserver_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="string:${view/label}: ${view/userName}: ${view/siteInfo/get_name}">
+      <span tal:define="fn python:view.userInfo.name"
+        tal:replace="string:${view/label}: ${fn}: ${view/siteInfo/get_name}">
         Edit Profile
       </span>
     </title>

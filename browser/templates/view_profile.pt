@@ -8,21 +8,22 @@
   <head>
     <title metal:fill-slot="title">
       Profile of 
-      <span tal:replace="view/userName">
+      <span tal:replace="python:view.userInfo.name">
         A. Person
       </span>:
       <span tal:replace="view/siteInfo/get_name">A Site</span>
     </title>
     
-    <tal:block metal:fill-slot="metadata">
+    <tal:block metal:fill-slot="metadata"
+      tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
       <link rel="alternate" type="application/atom+xml"
         href="#" title="Posts"
-        tal:attributes="href string:/s/search.atom?a=${view/userId}&amp;t=0&amp;p=1;
-          title string:All posts by ${view/userName}: ${view/siteInfo/get_name}"/>
+        tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;p=1;
+          title string:All posts by ${fn}: ${view/siteInfo/get_name}"/>
       <link rel="alternate" type="application/atom+xml"
         href="#" title="Files"
-        tal:attributes="href string:/s/search.atom?a=${view/userId}&amp;t=0&amp;f=1;
-          title string:All files by ${view/userName}: ${view/siteInfo/get_name}"/>
+        tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;f=1;
+          title string:All files by ${fn}: ${view/siteInfo/get_name}"/>
     </tal:block>
   </head>
   <body>
@@ -36,7 +37,8 @@
       tal:define="authenticated python:user.has_role('Authenticated')">
       <div class="vcard">
         <h1>Profile of 
-          <span class="fn" tal:content="view/userName">A. Person</span>
+          <span class="fn" 
+            tal:content="python:view.userInfo.name">A. Person</span>
         </h1>
         <div tal:define="user view/context"
           tal:replace="structure provider:groupserver.UserImage" />
@@ -69,7 +71,7 @@
           <p tal:condition="python:vis == 'request'">
             <a href="user-request-contact">Request email contact with
               <span class="fn" 
-                tal:content="view/userName">A. Person</span></a>
+                tal:content="python:view.userInfo.name">A. Person</span></a>
           </p>
           <ul tal:condition="python:vis == 'everybody'">
             <tal:block repeat="address view/userEmailAddresses">
@@ -95,40 +97,42 @@
         </ul>
       </div><!--groups-->
       
-      <div class="cols">
+      <div class="cols"
+        tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
         <div id="files" class="rightColumn">
           <h2>Latest Files</h2>
           <div id="latestFiles"><img src="/++resource++anim/wait.gif"/>
             Loading the latest files by
-            <span class="fn" tal:content="view/userName"/>
+            <span class="fn" tal:content="fn"/>
           </div>
           <p>
             <a title="More files by A. Person"
               href="#"
-              tal:attributes="href string:/s/?p=0&amp;t=0&amp;f=1&amp;a=${view/userId};
-                title string:More files by ${view/userName};">More&#8230;</a>
+              tal:attributes="href string:/s/?p=0&amp;t=0&amp;f=1&amp;a=${uid};
+                title string:More files by ${fn};">More&#8230;</a>
           </p>
         </div><!--Files-->
         <div id="posts" class="leftColumn">
           <h2>Latest Posts</h2>
           <div id="latestPosts"><img src="/++resource++anim/wait.gif"/>
             Loading the latest posts by
-            <span class="fn" tal:content="view/userName"/>
+            <span class="fn" tal:content="fn"/>
           </div>
           <p>
             <a title="More posts by A. Person"
               href="#"
-              tal:attributes="href string:/s/?p=1&amp;t=0&amp;a=${view/userId};
-                title string:More posts by ${view/userName};">More&#8230;</a>
+              tal:attributes="href string:/s/?p=1&amp;t=0&amp;a=${uid};
+                title string:More posts by ${fn};">More&#8230;</a>
           </p>
         </div><!--Posts-->
       </div><!--cols-->
     </div><!--profile-->
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript">
+      <script type="text/javascript"
+        tal:define="uid python:view.userInfo.id">
         jQuery.noConflict();
         jQuery(document).ready( function () {
-            var ajaxUri = "/s/search.ajax?a=<span tal:replace="view/userId"/>";
+            var ajaxUri = "/s/search.ajax?a=<span tal:replace="uid"/>";
 
             var postsUri = ajaxUri + "&amp;t=0&amp;p=1&amp;f=0&amp;r=0";
             jQuery("#latestPosts").load(postsUri);

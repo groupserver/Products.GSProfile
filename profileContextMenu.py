@@ -3,6 +3,7 @@ from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 import zope.interface, zope.component, zope.publisher.interfaces
 import zope.viewlet.interfaces, zope.contentprovider.interfaces 
 from Products.XWFCore import XWFUtils, ODict
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 from interfaces import *
 
 class GSProfileContextMenuContentProvider(object):
@@ -29,6 +30,7 @@ class GSProfileContextMenuContentProvider(object):
           self.context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', 
           self.context)
+        self.userInfo = IGSUserInfo(self.context)
 
         self.__pages__ = self.get_pages()
 
@@ -67,6 +69,7 @@ class GSProfileContextMenuContentProvider(object):
         config = site_root.GlobalConfiguration
         assert config
         return config        
+
     def get_edit_pages(self):
         pages = ODict()
         pages['edit.html']     = 'Edit Profile'
@@ -87,13 +90,6 @@ class GSProfileContextMenuContentProvider(object):
         retval = self.request.AUTHENTICATED_USER
         return retval
     
-    @property
-    def userUrl(self):
-        retval = '/contacts/%s' % self.userId
-        assert type(retval) == str
-        assert retval
-        return retval
-
     @property
     def pages(self):
         return self.__pages__

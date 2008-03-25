@@ -13,6 +13,7 @@ from Products.Five import BrowserView
 from Products.XWFCore.odict import ODict
 from Products.XWFCore.CSV import CSVFile
 from Products.CustomUserFolder.CustomUser import CustomUser
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 import interfaces, utils
 
 from zope.formlib import form
@@ -65,11 +66,12 @@ class CreateUsersForm(BrowserView):
         if self.__admin == None:
             self.__admin = self.request.AUTHENTICATED_USER
             assert self.__admin
+            self.__adminInfo = IGSUserInfo(self.__admin)
             roles = self.__admin.getRolesInContext(self.groupInfo.groupObj)
             assert ('GroupAdmin' in roles) or ('DivisionAdmin' in roles), \
               '%s (%s) is not an administrator of %s (%s) on %s (%s)' % \
-                (self.__admin.getProperty('fn', ''), self.__admin.getId(), 
-                 self.groupInfo.get_name(), self.groupInfo.get_id(),
+                (self.__adminInfo.name, self.__adminInfo.id, 
+                 self.groupInfo.name, self.groupInfo.id,
                  self.siteInfo.get_name(), self.siteInfo.get_id())
         return self.__admin
         
@@ -85,9 +87,9 @@ class CreateUsersForm(BrowserView):
             admin = self.get_admin()
             m = u'process_form: Adding users to %s (%s) on %s (%s) in'\
               u' bulk for %s (%s)' % \
-              (self.groupInfo.get_name(),   self.groupInfo.get_id(),
+              (self.groupInfo.name,   self.groupInfo.id,
                self.siteInfo.get_name(),    self.siteInfo.get_id(),
-               admin.getProperty('fn', ''), admin.getId())
+               self.__admin.name, self.__admin.id)
             print m
             
             r = self.process_columns(form)
@@ -400,17 +402,19 @@ class CreateUsersForm(BrowserView):
             new = 1 # Possibly changed to 3 later
             user = self.acl_users.get_userByEmail(email)
             assert user, 'User for <%s> not found' % email
-            m = u'Added existing user <a href="/contacts/%s">%s</a>' %\
-              (user.getId(), user.getProperty('fn', ''))
+            userInfo = IGSUserInfo(user)
+            m = u'Added existing user <a class="fn" href="%s">%s</a>' %\
+              (userInfo.url, userInfo.name)
         else:
             user = utils.create_user_from_email(self.context, email)
+            userInfo = IGSUserInfo(user)
             new = 2
 
             # Add profile attributes 
             utils.enforce_schema(user, self.profileSchema)
             changed = form.applyChanges(user, self.profileFields, fields)
-            m = u'Created new user <a href="/contacts/%s">%s</a>' %\
-              (user.getId(), user.getProperty('fn', ''))
+            m = u'Created new user <a class="fn" href="%s">%s</a>' %\
+              (userInfo.url, userInfo.name)
             
             utils.send_add_user_notification(user, self.get_admin(),
               self.groupInfo, u'')
@@ -420,14 +424,14 @@ class CreateUsersForm(BrowserView):
             utils.join_group(user, self.groupInfo)
         else:
             new = 3
-            m = 'Skipped adding %s (%s) to the group %s (%s) as the user '\
+            m = 'Skipped adding %s to the group %s (%s) as the user '\
               'is already a member' % \
-                (user.getProperty('fn', ''), user.getId(),
-                 self.groupInfo.get_name(), self.groupInfo.get_id())
+                (userInfo.name, user.id, 
+                 self.groupInfo.name, self.groupInfo.id)
             log.info(m)
             m = u'Skipped existing group member '\
-              u'<a href="/contacts/%s">%s</a>' % \
-                (user.getId(), user.getProperty('fn', ''))
+              u'<a class="fn" href="%s">%s</a>' %\
+              (userInfo.url, userInfo.name)
 
         result = {'error':      False,
                   'message':    m,

@@ -2,8 +2,9 @@
   <div id="contextnav" class="xhtml2-nl">
     <p class="label">
       <a href="#" title="Profile of A. User" class="fn"
-        tal:attributes="href view/userUrl;
-          title string:Profile of ${view/userName};">Profile</a>
+        tal:define="fn python:view.userInfo.name; 
+          url python:view.userInfo.url"
+        tal:attributes="href url; title string:Profile of ${fn};">Profile</a>
     </p>
     <ul>
       <tal:block repeat="page python:view.pages.keys()">

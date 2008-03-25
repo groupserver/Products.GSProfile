@@ -59,6 +59,7 @@ class EditProfileForm(PageForm):
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
+        self.userInfo = IGSUserInfo(context)
         site_root = context.site_root()
         
         assert hasattr(site_root, 'GlobalConfiguration')
@@ -75,24 +76,6 @@ class EditProfileForm(PageForm):
         self.form_fields = form.Fields(interface, render_context=True)
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
-            
-    @property
-    def userName(self):
-        retval = u''
-        retval = XWFUtils.get_user_realnames(self.context)
-        return retval
-
-    @property
-    def userId(self):
-        userId = self.context.getId()
-        return userId
-    
-    @property
-    def userUrl(self):
-        retval = '/contacts/%s' % self.userId
-        assert type(retval) == str
-        assert retval
-        return retval
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
@@ -206,8 +189,11 @@ class RegisterEditProfileForm(EditProfileForm):
         for groupId in groupsToJoin:
             assert groupId in joinableGroups, \
               '%s not a joinable group' % groupId
-            m = u'RegisterEditProfileForm: adding the user %s to the '\
-                u' group %s' % (self.context.getId(), groupId)
+            groupInfo = createObject('groupserver.GroupInfo', context)
+            m = u'RegisterEditProfileForm: adding the user %s (%s) to '\
+                u'the group %s (%s)' %\
+                (self.userInfo.name, self.userInfo.id, 
+                 groupInfo.name, groupInfo.id)
             log.info(m)
             
             userGroup = '%s_member' % groupId

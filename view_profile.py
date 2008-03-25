@@ -9,7 +9,8 @@ from zope.component.interfaces import IFactory
 import Products.GSContent.interfaces
 from Products.XWFCore import XWFUtils
 from Products.XWFCore.odict import ODict
-import zope.app.apidoc.interface # 
+from Products.CustomUserFolder.interfaces import IGSUserInfo
+import zope.app.apidoc.interface
 
 from interfaces import *
 
@@ -22,6 +23,7 @@ class GSProfileView(BrowserView):
         self.request = request
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
+        self.userInfo = IGSUserInfo(context)
         
         self.props = self.__properties_dict()
         self.__user = self.__get_user()
@@ -74,37 +76,12 @@ class GSProfileView(BrowserView):
         return user
         
     @property
-    def userName(self):
-        retval = u''
-        retval = XWFUtils.get_user_realnames(self.__user)
-
-        return retval
-
-    @property
-    def userId(self):
-        userId = self.context.getId()
-        return userId
-    
-    @property
     def properties(self):
         assert self.props
         return self.props            
         
     def get_property(self, propertyId, default=''):
         return self.props[propertyId].query(self.__user, default)
-
-    @property
-    def userUrl(self):
-        retval = '/contacts/%s' % self.userId
-        assert type(retval) == str
-        assert retval
-        return retval
-
-    @property
-    def userImageUrl(self):
-        retval = self.__user.get_image() or ''
-        assert type(retval) == str
-        return retval
         
     def emailVisibility(self):
         config = self.context.GlobalConfiguration
@@ -120,7 +97,6 @@ class GSProfileView(BrowserView):
         assert type(retval) == list
         assert retval
         return retval
-
 
     def groupMembership(self):
         u = self.__get_user()
