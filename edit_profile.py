@@ -12,6 +12,7 @@ from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
 from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
 from Products.XWFCore import XWFUtils
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 import interfaces
 import utils
 from zope.app.form.browser.widget import renderElement
