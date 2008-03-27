@@ -28,7 +28,7 @@ def login(context, user):
     assert user
     site_root = context.site_root()
     site_root.cookie_authentication.credentialsChanged(user,
-      user.getId(), user.get_password())          
+      user.getId(), user.get_password())
     m = 'utils.login: Logged in the user %s (%s)' % \
       (user.getProperty('fn', ''), user.getId())
     log.info(m)

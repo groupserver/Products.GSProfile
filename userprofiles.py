@@ -34,15 +34,15 @@ class GSUserProfiles(BrowserView, Traversable):
 
         user = self.acl_users.getUser(name)
         if user:
-            m = 'Found user with the ID %s: %s' %\
-              (name, user.getProperty('fn', ''))
-            log.info(m)
+            #m = 'Found user with the ID %s: %s' %\
+            #  (name, user.getProperty('fn', ''))
+            #log.info(m)
             retval = user
         else:
             user = self.acl_users.get_userByNickname(name)
             if user:
-                m = 'Found user with the nickname %s: %s' %\
-                  (name, user.getProperty('fn', ''))
+                #m = 'Found user with the nickname %s: %s' %\
+                #  (name, user.getProperty('fn', ''))
                 log.info(m)
                 
                 cnn = user.get_canonicalNickname()
@@ -50,9 +50,9 @@ class GSUserProfiles(BrowserView, Traversable):
                     retval = user
                 else:
                     url = '/p/%s/' % cnn
-                    m = 'Redirecting to %s for user %s (%s)' %\
-                      (url, user.getProperty('fn', ''), user.getId())
-                    log.info(m)
+                    #m = 'Redirecting to %s for user %s (%s)' %\
+                    #  (url, user.getProperty('fn', ''), user.getId())
+                    #log.info(m)
                     r = self.request.RESPONSE.redirect(url)
                     return r
             else:

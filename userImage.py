@@ -6,7 +6,6 @@ import zope.viewlet.interfaces, zope.contentprovider.interfaces
 from Products.XWFCore import XWFUtils, ODict
 from interfaces import *
 
-
 class GSUserImageContentProvider(object):
     """GroupServer view of the user image
     """
@@ -34,8 +33,8 @@ class GSUserImageContentProvider(object):
     def render(self):
         if not self.__updated:
             raise interfaces.UpdateNotCalled
-
-        pageTemplate = PageTemplateFile(self.pageTemplateFileName)
+        ptfm = 'browser/templates/titleBar.pt'
+        pageTemplate = PageTemplateFile(ptfm)
         return pageTemplate(view=self)
         
     #########################################
