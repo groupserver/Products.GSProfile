@@ -33,7 +33,7 @@ class GSUserImageContentProvider(object):
     def render(self):
         if not self.__updated:
             raise interfaces.UpdateNotCalled
-        pageTemplate = PageTemplateFile(ptfm)
+        pageTemplate = PageTemplateFile(self.pageTemplateFileName)
         return pageTemplate(view=self)
         
     #########################################
