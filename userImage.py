@@ -33,7 +33,6 @@ class GSUserImageContentProvider(object):
     def render(self):
         if not self.__updated:
             raise interfaces.UpdateNotCalled
-        ptfm = 'browser/templates/titleBar.pt'
         pageTemplate = PageTemplateFile(ptfm)
         return pageTemplate(view=self)
         
