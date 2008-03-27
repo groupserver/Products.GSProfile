@@ -43,7 +43,7 @@ class GSUserProfiles(BrowserView, Traversable):
             if user:
                 #m = 'Found user with the nickname %s: %s' %\
                 #  (name, user.getProperty('fn', ''))
-                log.info(m)
+                # log.info(m)
                 
                 cnn = user.get_canonicalNickname()
                 if cnn == name:
