@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="python:'%s: %s: %s'% (view.label, view.userInfo.name, view.siteInfo.name)">
+        Set Nickaname
+      </span>
+    </title>
+  </head>
+  <body>
+    <div metal:fill-slot="messages" tal:condition="view/status" 
+      class="message-error"
+      tal:define="e view/errors"
+      tal:attributes="class python:e and 'message-error' or 'message-result'">
+      <p class="form-status" tal:content="structure view/status"/>
+      <dl tal:condition="view/errors">
+        <tal:block repeat="widget view/widgets">
+          <tal:block tal:condition="widget/error">
+            <dt tal:content="widget/label">Widget Name</dt>
+            <dd class="error" 
+              tal:content="structure widget/error">Error message</dd>
+          </tal:block>
+        </tal:block>
+      </dl>
+    </div>
+    <tal:block metal:fill-slot="contextnavigation">
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
+    </tal:block>
+    <tal:block metal:fill-slot="body">
+      <form enctype="multipart/form-data"  method="post" action="."
+        tal:attributes="action request/URL" id="set-nickname">
+        
+        <h1 tal:content="view/label">Set Nickname</h1>
+
+        <tal:block condition="python:not(view.allowSetNickname)">
+          <p>Your nickname has been set.
+            The link to your profile is
+            <a href="#" 
+              tal:define="url python:'%s%s' % (view.siteInfo.url, view.userInfo.url)"
+              tal:attributes="href url">
+              <code class="url" tal:content="url">http://stuff/</code></a>.
+          </p>
+        </tal:block>
+        <tal:block condition="view/allowSetNickname">
+          <p>
+            Your nickname is used to navigate to your profile, rather than
+            your user identifier (which is automatically assigned to you
+            when your profile is created).
+            By setting a nickname you make it easier to share the link to
+            your profile, by making the link more memorable &#8212; and 
+            potentially more meaningful.
+            Currently, the link to your profile looks like
+            <a href="#" 
+              tal:define="url python:'%s%s' % (view.siteInfo.url, view.userInfo.url)"
+              tal:attributes="href url">
+              <code class="url" tal:content="url">http://stuff/</code></a>.
+          </p>
+          <p>
+            To set your nickname, enter it in the entry below, and click
+            the
+            <samp class="button" 
+              tal:define="action python:[a for a in view.actions][0].label"
+              tal:content="action">Big R</samp>
+            button.
+            Once set, all links to your profile will change; the old link
+            will still work.
+            However, you cannot change your nickname once set, so 
+            <strong>choose carefully!</strong>
+          </p>
+          <tal:block 
+            repeat="widget view/widgets">
+            <div class="form-widget" id="widget-abc123" 
+              tal:define="req widget/required;
+                style python:req and 'required' or 'not-required'"
+              tal:attributes="id string:widget-${widget/name};
+                class string:form-widget ${style}">
+              <label for="abc123" title="The hint for the widget"
+                tal:condition="python:widget.type != 'checkbox'"
+                tal:attributes="for widget/name; title widget/hint"
+                tal:content="widget/label">
+                A label
+              </label>
+                          
+              <p class="error" tal:condition="widget/error"
+                tal:content="structure widget/error">
+                Error message
+              </p>
+              
+              <span id="abc123" 
+                tal:replace="structure widget">Widget</span>
+                
+              <label for="abc123" title="The hint for the widget"
+                class="checkboxLabel"
+                tal:condition="python:widget.type == 'checkbox'"
+                tal:attributes="for widget/name; title widget/hint"
+                tal:content="widget/label">
+                A label
+              </label>
+            </div><!--form-widget-->
+          </tal:block>
+          <div class="buttons" tal:condition="view/availableActions">
+            <tal:block repeat="action view/actions">
+              <div class="formelementbutton">
+                <span tal:replace="structure action/render">Button</span>
+              </div>
+            </tal:block>
+          </div><!--buttons-->
+        </tal:block>
+      </form>
+    </tal:block>
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript"
+        src="/++resource++check_required-20071214.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++popup_help-20071218.js">&#160;</script>
+      <script type="text/javascript"
+        tal:define="rws python:[w for w in view.widgets if w.required];
+          rwIds python:['\'#%s\''%w.name.replace('.','\\\\.') for w in rws];
+          arr python:'%s' % ', '.join(rwIds);">
+        jQuery.noConflict()
+        jQuery(document).ready( function () {
+            var gsRequiredWidgets = new Array(<span tal:replace="arr" />);
+            GSCheckRequired.init(
+              gsRequiredWidgets, 
+              '#form\\.actions\\.set');
+              
+            GSPopupFormHelp.init('#set-nickname');
+        });
+      </script>
+      <script type="text/javascript" 
+        src="/++resource++jquery-1.2.1.min.js">&#160;</script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor/jquery.wymeditor.pack.js">&#160;</script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor/init.js">&#160;</script>
+    </tal:block>
+  </body>
+</html>
+

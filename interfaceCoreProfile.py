@@ -1,5 +1,6 @@
 # coding=utf-8
 import re, pytz
+from string import ascii_letters, digits
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
@@ -127,7 +128,65 @@ class IGSProfileImage(Interface):
       required=False,
       default=True)
 
+############
+# Nickname #
+############
 
+class VInvalidNicnameChar(ValidationError):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        msg = 'The character %s is not allowed. '\
+          'Nicknames can only contain ASCII letters, digits, '\
+          'underscores, and dashes.' % repr(self.value)
+        return msg
+    def doc(self):
+        return self.__str__()
+
+class VNicknameUsed(ValidationError):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        msg = 'The nickname %s is already in use.' %\
+          repr(self.value)
+        return msg
+    def doc(self):
+        return self.__str__()
+
+class VUserIDUsed(ValidationError):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        msg = 'The user-identifier %s is already in use.' %\
+          repr(self.value)
+        return msg
+    def doc(self):
+        return self.__str__()
+
+
+class GSNickname(ASCIILine):
+    allowedChars = ascii_letters + digits + '_-'
+    def constraint(self, nickname):
+        for c in nickname:
+            if c not in self.allowedChars:
+                raise VInvalidNicnameChar(c)
+        if self.context.acl_users.getUser(nickname):
+            raise VUserIDUsed(nickname)
+        if self.context.acl_users.get_userIdByNickname(nickname):
+            raise VNicknameUsed(nickname)
+        return True
+
+class IGSSetNickname(Interface):
+    nickname = GSNickname(title=u'Nickname',
+      description=u'The nickname you wish to set.'\
+        u'A nickname can only contain upper or lower case letters, '\
+        u'digits, underscores and dahses. A nickname cannot contain '\
+        u'spaces, and you cannot have a nickname that is used by anyone '\
+        u'else.',
+      required=True)
+   
+#####
+    
 class IGSCreateUserCSV(Interface):
     csvFile = Bytes(title=u'CSV File',
       description=u'The comma-seperated value file that contains the '

@@ -214,6 +214,13 @@
     template="browser/templates/email_settings.pt"
     permission="zope2.ManageProperties" />
 
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="nickname.html"
+    class=".set_nickname.GSSetNickname"
+    template="browser/templates/set_nickname.pt"
+    permission="zope2.ManageProperties" />
+
   <interface 
     interface=".interfaces.IGSUserProfiles" />
   <browser:page
