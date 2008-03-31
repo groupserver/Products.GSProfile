@@ -30,7 +30,7 @@ class RequestPasswordResetForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Reset', failure='handle_reset_action_failure ')
+    @form.action(label=u'Reset', failure='handle_reset_action_failure')
     def handle_reset(self, action, data):
         assert self.context
         assert self.form_fields
