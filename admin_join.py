@@ -41,6 +41,38 @@ class AdminJoinEditProfileForm(EditProfileForm):
 
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
+         
+        stdIfaceName = config.getProperty('profileInterface',
+          'IGSCoreProfile')
+        assert hasattr(interfaces, stdIfaceName), \
+            'Interface "%s" not found.' % stdIfaceName
+        stdIface = getattr(interfaces, stdIfaceName)
+        self.standardFieldIds = [f[0] for f in getFieldsInOrder(stdIface)]
+        
+        self.__standardFields = None
+        self.__adminFields = None
+         
+    @property
+    def standardFields(self):
+        if self.__standardFields == None:
+            self.__standardFields = []
+            for w in self.widgets:
+                n = w.name.split(w._prefix)[1]
+                if n in self.standardFieldIds:
+                    self.__standardFields.append(w)
+        assert type(self.__standardFields) == list
+        return self.__standardFields
+        
+    @property
+    def adminFields(self):
+        if self.__adminFields == None:
+            self.__adminFields = []
+            for w in self.widgets:
+                n = w.name.split(w._prefix)[1]
+                if n not in self.standardFieldIds:
+                    self.__adminFields.append(w)
+        assert type(self.__adminFields) == list
+        return self.__adminFields
             
     @form.action(label=u'Add', failure='handle_add_action_failure')
     def handle_add(self, action, data):

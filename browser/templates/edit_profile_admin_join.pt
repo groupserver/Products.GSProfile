@@ -37,7 +37,9 @@
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="edit-profile">
         <h1 tal:content="view/label">Edit Profile</h1>
-        <tal:block repeat="widget view/widgets">
+        
+        <h2>Invitation-Specific Fields</h2>
+        <tal:block repeat="widget python:view.adminFields">
           <div class="form-widget" id="widget-abc123" 
             tal:define="req widget/required;
               style python:req and 'required' or 'not-required'"
@@ -71,6 +73,44 @@
             </label>
           </div><!--form-widget-->
         </tal:block>
+
+
+        <h2>Standard Profile Fields</h2>
+        <tal:block repeat="widget python:view.standardFields">
+          <div class="form-widget" id="widget-abc123" 
+            tal:define="req widget/required;
+              style python:req and 'required' or 'not-required'"
+            tal:attributes="id string:widget-${widget/name};
+              class string:form-widget ${style}">
+            <label for="abc123" title="The hint for the widget"
+              tal:condition="python:(not hasattr(widget, 'type')) or widget.type != 'checkbox'"
+              tal:attributes="for widget/name; title widget/hint"
+              tal:content="widget/label">
+              A label
+            </label>
+                        
+            <p class="error" tal:condition="widget/error"
+              tal:content="structure widget/error">
+              Error message
+            </p>
+            
+            <span
+              tal:condition="python:hasattr(widget, 'tag')"
+              tal:replace="structure widget">Widget</span>
+              
+            <span class="readonlyWidget"
+              tal:condition="python:not(hasattr(widget, 'tag'))"
+              tal:content="structure widget"/>
+            
+            <label for="abc123" title="The hint for the widget"
+              tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
+              tal:attributes="for widget/name; title widget/hint"
+              tal:content="widget/label">
+              A label
+            </label>
+          </div><!--form-widget-->
+        </tal:block>
+
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
             <div class="formelementbutton">
