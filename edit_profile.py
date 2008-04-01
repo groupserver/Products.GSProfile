@@ -163,8 +163,9 @@ class RegisterEditProfileForm(EditProfileForm):
 
     @form.action(label=u'Edit', failure='handle_set_action_failure')
     def handle_set(self, action, data):
-        assert data
-        
+        self.actual_handle_set(action, data)
+
+    def actual_handle_set(self, action, data):
         if 'joinable_groups' in data.keys():
             # --=mpj17=-- Site member?
             groupsToJoin = data.pop('joinable_groups')
@@ -190,7 +191,7 @@ class RegisterEditProfileForm(EditProfileForm):
         for groupId in groupsToJoin:
             assert groupId in joinableGroups, \
               '%s not a joinable group' % groupId
-            groupInfo = createObject('groupserver.GroupInfo', context)
+            groupInfo = createObject('groupserver.GroupInfo', self.context)
             m = u'RegisterEditProfileForm: adding the user %s (%s) to '\
                 u'the group %s (%s)' %\
                 (self.userInfo.name, self.userInfo.id, 
