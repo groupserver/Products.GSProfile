@@ -406,18 +406,12 @@ class CreateUsersForm(BrowserView):
             m = u'Added existing user <a class="fn" href="%s">%s</a>' %\
               (userInfo.url, userInfo.name)
         else:
-            user = utils.create_user_from_email(self.context, email)
-            userInfo = IGSUserInfo(user)
+            userInfo = self.create_user(fields)
+            user = userInfo.user
             new = 2
-
-            # Add profile attributes 
-            utils.enforce_schema(user, self.profileSchema)
-            changed = form.applyChanges(user, self.profileFields, fields)
             m = u'Created new user <a class="fn" href="%s">%s</a>' %\
               (userInfo.url, userInfo.name)
             
-            utils.send_add_user_notification(user, self.get_admin(),
-              self.groupInfo, u'')
             
         groupMembershipId = '%s_member' % self.groupInfo.get_id()
         if groupMembershipId not in user.getGroups():
@@ -450,6 +444,22 @@ class CreateUsersForm(BrowserView):
         assert result['new'] in range(0, 5), '%d not in range'%result['new']
         return result
         
+    def create_user(self, fields):
+        assert type(fields) == dict
+        assert 'email' in fields
+        assert fields['email']
+        
+        email = fields['email']
+        
+        user = utils.create_user_from_email(self.context, email)
+        userInfo = IGSUserInfo(user)
+        # Add profile attributes 
+        utils.enforce_schema(user, self.profileSchema)
+        changed = form.applyChanges(user, self.profileFields, fields)
+        utils.send_add_user_notification(user, self.get_admin(),
+          self.groupInfo, u'')
+        return userInfo
+                
 class ProfileList(object):
     implements(IVocabulary, IVocabularyTokenized)
     __used_for__ = IEnumerableMapping

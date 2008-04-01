@@ -266,8 +266,7 @@ def escape_c(c):
         retval = str(c)
     else:
         retval = ''.join([hex(ord(d)).replace('0x', r'%') 
-                          for d in c.encode('UTF-8')])
-        assert retval[:1] == r'%', 'First two chars are %s' % retval[:2]
+                          for d in c.encode('UTF-8', 'ignore')])
     assert retval
     assert type(retval) == str
     return retval
