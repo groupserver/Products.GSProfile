@@ -2,9 +2,10 @@
 from zope.app.traversing.interfaces import TraversalError, ITraversable
 from Products.Five.traversable import Traversable
 from zope.interface import implements
+from Products.Five import BrowserView
 
 from interfaces import IGSUserProfiles
-from Products.Five import BrowserView
+from utils import escape_c
 
 import logging
 log = logging.getLogger('GSUserProfiles')
@@ -39,14 +40,15 @@ class GSUserProfiles(BrowserView, Traversable):
             #log.info(m)
             retval = user
         else:
-            user = self.acl_users.get_userByNickname(name)
+            s = ec(name)
+            user = self.acl_users.get_userByNickname(s)
             if user:
                 #m = 'Found user with the nickname %s: %s' %\
                 #  (name, user.getProperty('fn', ''))
                 # log.info(m)
                 
                 cnn = user.get_canonicalNickname()
-                if cnn == name:
+                if cnn == ec(name):
                     retval = user
                 else:
                     url = '/p/%s/' % cnn
@@ -55,11 +57,15 @@ class GSUserProfiles(BrowserView, Traversable):
                     #log.info(m)
                     r = self.request.RESPONSE.redirect(url)
                     return r
-            else:
+            else: 
                 m = 'No user with the ID or nickname %s' % name
                 log.info(m)
                 raise TraversalError
 
         assert retval != None
         return retval
+
+def ec(name):
+    return ''.join([ord(d)>127 and hex(ord(d)).replace('0x', r'%') or d
+                   for d in name])
 

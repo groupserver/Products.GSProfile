@@ -51,6 +51,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         
         self.__standardFields = None
         self.__adminFields = None
+        self.createdUser = None
          
     @property
     def standardFields(self):
@@ -76,6 +77,9 @@ class AdminJoinEditProfileForm(EditProfileForm):
             
     @form.action(label=u'Add', failure='handle_add_action_failure')
     def handle_add(self, action, data):
+        self.actual_handle_add(action, data)
+
+    def actual_handle_add(self, action, data):
         acl_users = self.context.acl_users
         email = data['email']
 
@@ -128,6 +132,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
             self.status = u'%s<li>No changes have been made.</li>' % \
               self.status
         self.status = u'<ul>%s</ul>' % self.status
+        self.createdUser = user
         
     def handle_add_action_failure(self, action, data, errors):
         if len(errors) == 1:

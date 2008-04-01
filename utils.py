@@ -5,6 +5,8 @@ from zope.schema import *
 from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
 
+from string import ascii_lowercase, digits
+
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.CustomUser import CustomUser
 
@@ -238,4 +240,36 @@ def enforce_schema(inputData, schema):
             t = typeMap.get(type(schema.get(field)), 'ustring')
             inputData.manage_addProperty(field, default, t)
     alsoProvides(inputData, schema)
+
+ALLOWED_URL_CHARS = ascii_lowercase + digits + '_-'
+def escape_c(c):
+    """Escape Character
+    
+    DESCRIPTION
+        Escape, into hex, characters that are not allowed in normal 
+        nicknames. This is not a complete implementation of RFC 3987
+        <http://www.ietf.org/rfc/rfc3987.txt>
+    
+    ARGUMENTS
+        c: A character. It can be a Unicode or ASCII character
+    
+    RETURNS
+        A string, that may or may not be escaped. If the character is
+        escaped, then it will be converted into hexadecimal, with a
+        '%x' at the start.
+    
+    SIDE EFFECTS
+        None.
+    """
+    retval = ''
+    if c in ALLOWED_URL_CHARS:
+        retval = str(c)
+    else:
+        retval = ''.join([hex(ord(d)).replace('0x', r'%') 
+                          for d in c.encode('UTF-8')])
+        assert retval[:1] == r'%', 'First two chars are %s' % retval[:2]
+    assert retval
+    assert type(retval) == str
+    return retval
+
 

@@ -1,4 +1,5 @@
 import profileContextMenu, userImage, checkEmail, utils
+from admin_join import AdminJoinEditProfileForm
 from AccessControl import ModuleSecurityInfo
 from AccessControl import allow_class
 utils_security = ModuleSecurityInfo('Products.GSProfile.utils')
