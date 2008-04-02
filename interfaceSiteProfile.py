@@ -57,13 +57,17 @@ class IOGNProfileRegister(IOGNProfile):
 
 class IOGNProfileAdminJoin(IOGNProfile):
     email = ASCIILine(title=u'Email Address',
-      description=u'Your email address.',
+      description=u'The email address of the new group member. '\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the user.',
       required=True,
       constraint=check_email)
 
 class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
     message = Text(title=u'Message',
-      description=u'The message to send to the new group member',
+      description=u'The message to send to the new group member. The '\
+        u'message will appear before the two links that allow the user '\
+        u'to accept or reject the inviation.',
       required=False)
 
 class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
