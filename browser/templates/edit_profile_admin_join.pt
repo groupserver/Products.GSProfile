@@ -58,7 +58,6 @@
             tal:content="python:view.siteInfo.name">this site</span>
           will be noted.</p>
         <div id="invitationRelatedFields">        
-          <h2>Invitation-Related Fields</h2>
           <p>The following two fields are used to create the invitation to 
             the new group member.
             The invitation will be sent to the email address you specify,
@@ -70,7 +69,7 @@
           </tal:block>
         </div><!--invitationFields-->
         <div id="standardProfileFields">
-          <h2>Standard Profile Fields</h2>
+          <h2>Standard Profile Information</h2>
           <p>The following fields are the standard profile fields on
             <span class="site" 
               tal:content="python:view.siteInfo.name">this site</span>.

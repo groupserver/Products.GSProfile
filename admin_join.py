@@ -24,9 +24,12 @@ class AdminJoinEditProfileForm(EditProfileForm):
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
 
-        self.siteInfo = createObject('groupserver.SiteInfo', context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', context)
-        self.groupInfo = createObject('groupserver.GroupInfo', context)
+        siteInfo = self.siteInfo = \
+          createObject('groupserver.SiteInfo', context)
+        groupsInfo = self.groupsInfo = \
+          createObject('groupserver.GroupsInfo', context)
+        groupInfo = self.groupInfo = \
+          createObject('groupserver.GroupInfo', context)
         site_root = context.site_root()
 
         assert hasattr(site_root, 'GlobalConfiguration')
@@ -39,7 +42,12 @@ class AdminJoinEditProfileForm(EditProfileForm):
         self.interface = interface = getattr(interfaces, interfaceName)
         self.form_fields = form.Fields(interface, render_context=False)
 
-        self.form_fields['tz'].custom_widget = select_widget
+        siteTz = siteInfo.get_property('tz', 'UTC')
+        defaultTz = groupInfo.get_property('tz', siteTz)
+        request.form['form.tz'] = defaultTz
+        tz = self.form_fields['tz']
+        tz.custom_widget = select_widget
+        
         self.form_fields['biography'].custom_widget = wym_editor_widget
          
         stdIfaceName = config.getProperty('profileInterface',
