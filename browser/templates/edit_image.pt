@@ -52,35 +52,8 @@
           <samp class="field">Show Image</samp> field.
         </p>
         <div style="clear: both;"/>
-        <tal:block repeat="widget view/widgets">
-          <div class="form-widget" id="widget-abc123" 
-            tal:define="req widget/required;
-              style python:req and 'required' or 'not-required'"
-            tal:attributes="id string:widget-${widget/name};
-              class string:form-widget ${style}">
-            <label for="abc123" title="The hint for the widget"
-              tal:condition="python:widget.type != 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-                        
-            <p class="error" tal:condition="widget/error"
-              tal:content="structure widget/error">
-              Error message
-            </p>
-            
-            <span id="abc123" 
-              tal:replace="structure widget">Widget</span>
-              
-            <label for="abc123" title="The hint for the widget"
-              class="checkboxLabel"
-              tal:condition="python:widget.type == 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-          </div><!--form-widget-->
+        <tal:block define="widgets view/widgets">
+          <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
