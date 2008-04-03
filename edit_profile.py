@@ -147,12 +147,39 @@ class RegisterEditProfileForm(EditProfileForm):
         self.interface = interface = getattr(interfaces, interfaceName)
         utils.enforce_schema(context, interface)
 
+        request.form['form.tz'] = self.get_timezone() # Look, a hack!
         self.form_fields = form.Fields(interface, render_context=True)
 
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
+
+    def get_timezone(self):
+        gTz = siteTz = self.siteInfo.get_property('tz', 'UTC')
+        gIds = self.request.form.get('form.joinable_groups',[])
+        # Zope Sux. For some reason, kept to itself, Zope gives me a 
+        #   Resource Not Found error when I try and create a GroupInfo
+        #   instance. The instance *is* created ok, but it returns a 
+        #   Resource Not Found anyway. Being Zope, actually stating which
+        #   resource could not be found is too hard, or too useful, so
+        #   I am hacking around this. Someone should fix it after some
+        #   heads have been nailed to wardrobe doors.
+        groups = getattr(self.siteInfo.siteObj, 'groups')
+        gTzs = []
+        for gId in gIds:
+            gTzs.append(getattr(groups, gId).getProperty('tz', siteTz))
+        if gTzs:            
+            tzs = {}
+            for tz in gTzs:
+                tzs[tz] = (tzs.get(tz, 0) + 1)
+            assert len(tzs) > 0
+            if len(tzs) == 1:
+                gTz = tzs.keys()[0]
+            else:
+                gTz = siteTz
+        assert gTz
+        return gTz
         
     @property
     def userEmail(self):
