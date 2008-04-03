@@ -418,7 +418,7 @@ class CreateUsersForm(BrowserView):
             utils.join_group(user, self.groupInfo)
         else:
             new = 3
-            m = 'Skipped adding %s to the group %s (%s) as the user '\
+            m = 'Skipped adding %s (%s) to the group %s (%s) as the user '\
               'is already a member' % \
                 (userInfo.name, user.id, 
                  self.groupInfo.name, self.groupInfo.id)
