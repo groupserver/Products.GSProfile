@@ -90,7 +90,7 @@ class CreateUsersForm(BrowserView):
               (self.groupInfo.name,   self.groupInfo.id,
                self.siteInfo.get_name(),    self.siteInfo.get_id(),
                self.__admin.name, self.__admin.id)
-            print m
+            log.info(m)
             
             r = self.process_columns(form)
             result['message'] = '%s\n%s' % \
