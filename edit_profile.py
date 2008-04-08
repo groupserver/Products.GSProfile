@@ -129,6 +129,7 @@ class RegisterEditProfileForm(EditProfileForm):
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
+
         PageForm.__init__(self, context, request)
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
@@ -169,10 +170,9 @@ class RegisterEditProfileForm(EditProfileForm):
         groups = getattr(self.siteInfo.siteObj, 'groups')
 
         gTzs = []
-        print gIds
         for gId in gIds:
-            print gId
-            gTzs.append(getattr(groups, gId).getProperty('tz', siteTz))
+            if hasattr(groups, gId):
+                gTzs.append(getattr(groups, gId).getProperty('tz', siteTz))
 
         if gTzs:            
             tzs = {}
@@ -218,6 +218,7 @@ class RegisterEditProfileForm(EditProfileForm):
         return retval
 
     def join_groups(self, groupsToJoin):
+        ui = IGSUserInfo(self.context)
         joinableGroups = \
             self.groupsInfo.get_joinable_group_ids_for_user(self.context)
         for groupId in groupsToJoin:
@@ -225,8 +226,7 @@ class RegisterEditProfileForm(EditProfileForm):
               '%s not a joinable group' % groupId
             groupInfo = createObject('groupserver.GroupInfo', self.context)
             m = u'RegisterEditProfileForm: adding the user %s (%s) to '\
-                u'the group %s (%s)' %\
-                (self.userInfo.name, self.userInfo.id, 
+                u'the group %s (%s)' % (ui.name, ui.id, 
                  groupInfo.name, groupInfo.id)
             log.info(m)
             
