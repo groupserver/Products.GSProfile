@@ -8,7 +8,7 @@ GSCheckEmailVerified = function () {
     var satusUpdate = null;
     var thingsToCheck = null;
     
-    var ADDRESS = 'verify_email.ajax?email=';
+    var ADDRESS = 'verify_email.ajax';
     var TIMEOUT_DELTA = 8000;
     var CHECKING_MSG = '<strong>Checking</strong> verification ' +
       'status&#160;<img src="/++resource++anim/wait.gif"/>';
@@ -40,7 +40,12 @@ GSCheckEmailVerified = function () {
             GSCheckEmailVerified.checkServer();
         },
         checkServer: function () {
-            jQuery.get(ADDRESS+email, GSCheckEmailVerified.checkReturn);
+            jQuery.ajax({
+              type: "POST",
+              url: ADDRESS, 
+              cache: false,
+              data: 'email='+email,
+              success: GSCheckEmailVerified.checkReturn});
             jQuery(statusUpdate).html(CHECKING_MSG);
         },
         checkReturn: function (data, textStatus) {
