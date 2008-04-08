@@ -129,7 +129,6 @@ class RegisterEditProfileForm(EditProfileForm):
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
-
         PageForm.__init__(self, context, request)
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
@@ -157,7 +156,9 @@ class RegisterEditProfileForm(EditProfileForm):
 
     def get_timezone(self):
         gTz = siteTz = self.siteInfo.get_property('tz', 'UTC')
-        gIds = self.request.form.get('form.joinable_groups',[])
+
+        gIds = [i for i in self.request.form.get('form.joinable_groups',[])
+                if i and i != 'None']
         # Zope Sux. For some reason, kept to itself, Zope gives me a 
         #   Resource Not Found error when I try and create a GroupInfo
         #   instance. The instance *is* created ok, but it returns a 
@@ -166,9 +167,13 @@ class RegisterEditProfileForm(EditProfileForm):
         #   I am hacking around this. Someone should fix it after some
         #   heads have been nailed to wardrobe doors.
         groups = getattr(self.siteInfo.siteObj, 'groups')
+
         gTzs = []
+        print gIds
         for gId in gIds:
+            print gId
             gTzs.append(getattr(groups, gId).getProperty('tz', siteTz))
+
         if gTzs:            
             tzs = {}
             for tz in gTzs:
@@ -178,6 +183,7 @@ class RegisterEditProfileForm(EditProfileForm):
                 gTz = tzs.keys()[0]
             else:
                 gTz = siteTz
+
         assert gTz
         return gTz
         
