@@ -144,6 +144,7 @@ def send_add_user_notification(user, admin, groupInfo, message=u''):
     assert user
     assert isinstance(user, CustomUser)
     assert admin
+    assert admin.get_preferredEmailAddresses(), 'Admin has no preferred email addresses'
     #assert isinstance(admin, CustomUser)
     assert groupInfo
     assert (type(message) in (str, unicode)) or (message == None)

@@ -42,9 +42,10 @@ class AdminJoinEditProfileForm(EditProfileForm):
         self.interface = interface = getattr(interfaces, interfaceName)
         self.form_fields = form.Fields(interface, render_context=False)
 
-        siteTz = siteInfo.get_property('tz', 'UTC')
-        defaultTz = groupInfo.get_property('tz', siteTz)
-        request.form['form.tz'] = defaultTz
+        if not(request.form.get('form.tz', None)):
+            siteTz = siteInfo.get_property('tz', 'UTC')
+            defaultTz = groupInfo.get_property('tz', siteTz)
+            request.form['form.tz'] = defaultTz
         tz = self.form_fields['tz']
         tz.custom_widget = select_widget
         
@@ -166,7 +167,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         
         # Send notification
         utils.send_add_user_notification(user, self.get_admin(), 
-          self.groupInfo, data['message'])
+          self.groupInfo, data.get('message', ''))
         
         return user
 
