@@ -83,40 +83,8 @@
             <div id="privacy-content">Loading&#8230;</div>
           </div>
         </div>
-        <tal:block repeat="widget view/widgets">
-          <div class="form-widget" id="widget-abc123" 
-            tal:define="req widget/required;
-              style python:req and 'required' or 'not-required'"
-            tal:attributes="id string:widget-${widget/name};
-              class string:form-widget ${style}">
-
-            <label for="abc123" title="The hint for the widget"
-              tal:condition="python:(not hasattr(widget, 'type')) or widget.type != 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-                        
-            <p class="error" tal:condition="widget/error"
-              tal:content="structure widget/error">
-              Error message
-            </p>
-            
-            <span
-              tal:condition="python:hasattr(widget, 'tag')"
-              tal:replace="structure widget">Widget</span>
-              
-            <span class="readonlyWidget"
-              tal:condition="python:not(hasattr(widget, 'tag'))"
-              tal:content="structure widget"/>
-            
-            <label for="abc123" title="The hint for the widget"
-              tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-          </div><!--form-widget-->
+        <tal:block define="widgets view/widgets">
+          <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
