@@ -45,7 +45,10 @@ class IGSCoreProfileAdminJoin(IGSCoreProfile):
     email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
       required=True)
-
+    # --=mpj17=-- A normal email address field is used, rather than a
+    #   *new* email address field, because we want to add users who 
+    #   exist on the system :)
+    
 class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
     message = Text(title=u'Message',
       description=u'The message to send to the new group member',

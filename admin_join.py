@@ -12,6 +12,7 @@ from Products.CustomUserFolder.interfaces import IGSUserInfo
 import interfaces
 import utils
 from edit_profile import *
+from emailaddress import NewEmailAddress, EmailAddressExists
 
 import logging
 log = logging.getLogger('GSProfile')
@@ -91,20 +92,27 @@ class AdminJoinEditProfileForm(EditProfileForm):
     def actual_handle_add(self, action, data):
         acl_users = self.context.acl_users
         email = data['email']
+        groupMembershipId = '%s_member' % self.groupInfo.get_id()
 
         admin = self.request.AUTHENTICATED_USER
         assert admin
         adminInfo = IGSUserInfo(admin)
         m = u'AdminJoinEditProfileForm: Admin %s (%s) joining user with '\
-          u'address <%s>' % (admin.name, admin.id, email)
+          u'address <%s>' % (adminInfo.name, adminInfo.id, email)
         log.info(m)
         
-        groupMembershipId = '%s_member' % self.groupInfo.get_id()
-        if utils.address_exists(self.context, email):
+        # --=mpj17=-- As an EmailAddress field is used, we know that the
+        #  email data is valid. However, the address could already on
+        #  our system. So we use a NewEmailAddress field to check this :)
+        emailChecker = NewEmailAddress(title=u'Email')
+        emailChecker.context = self.context # --=mpj17=-- Legit?
+        try:
+            emailChecker.validate(email)
+        except EmailAddressExists, e:
             m = u'AdminJoinEditProfileForm: User with the email address '\
               u'<%s> exists. Adding to %s (%s) on %s (%s).' % \
-              (email, self.groupInfo.get_name(), self.groupInfo.get_id(),
-                 self.siteInfo.get_name(), self.siteInfo.get_id())
+              (email, self.groupInfo.name, self.groupInfo.id,
+                 self.siteInfo.name, self.siteInfo.id)
             log.info(m)
 
             user = acl_users.get_userByEmail(email)
@@ -116,7 +124,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
                   u'<a href="%s" class="fn">%s</a> &#8213; is '\
                   u'already a member of '\
                   u'<a class="group" href="%s">%s</a>.</li>'%\
-                  (email, userInfo.url, user.name, 
+                  (email, userInfo.url, userInfo.name, 
                    self.groupInfo.url, self.groupInfo.name)
             else:
                 self.status=u'<li>Using the existing user with the email '\
@@ -124,12 +132,15 @@ class AdminJoinEditProfileForm(EditProfileForm):
                   u'<a href="%s" class="fn">%s</a></li>' %\
                   (email, userInfo.url, userInfo.name)
         else:
+            # Email address does not exist, but it is a legitimate address
             user = self.create_user(data)
             userInfo = IGSUserInfo(user)
             self.status = u'<li>The user <a href="%s">%s</a> '\
               u'has been created, and given the email address '\
               u'<code class="email">%s</code></li>''' % \
                 (userInfo.url, userInfo.name, email)
+
+        assert user, 'User not created or found'
 
         if groupMembershipId not in user.getGroups():
             utils.join_group(user, self.groupInfo)
