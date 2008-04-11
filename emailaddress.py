@@ -25,8 +25,7 @@ class NotAValidEmailAddress(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return u'The text <code>%s</code> is not a valid email address. '\
-          u'Please enter a valid email address.' % repr(self.value)
+        return u'The text "%s" is not a valid email address.' % self.value
     def doc(self):
         return self.__str__()
 
@@ -35,10 +34,9 @@ class DisposableEmailAddressNotAllowed(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return u'The email address <code class="email">%s</code> is '\
-          u'from a disposable email-address provider. Disposable '\
-          u'email-addresses cannot be used with this system. Please enter '\
-          u'a permanent email address' % self.value
+        return u'The email address "%s" is from a disposable '\
+          u'email-address provider; disposable '\
+          u'email-addresses cannot be used with this site.' % self.value
     def doc(self):
         return self.__str__()
 
@@ -67,8 +65,7 @@ class EmailAddressExists(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return u'The email address <code class="email">%s</code> '\
-          u'already exists on this site. Please enter a new address.' %\
+        return u'The email address "%s" already exists on this site.' %\
           self.value
     def doc(self):
         return self.__str__()

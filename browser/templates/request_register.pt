@@ -102,39 +102,8 @@
             <div id="privacy-content">Loading&#8230;</div>
           </div>
         </div>
-        <tal:block define="widget python:[w for w in view.widgets][0]">
-          <div class="form-widget" id="widget-abc123" 
-            tal:define="req widget/required;
-              style python:req and 'required' or 'not-required'"
-            tal:attributes="id string:widget-${widget/name};
-              class string:form-widget ${style}">
-            <label for="abc123" title="The hint for the widget"
-              tal:condition="python:(not hasattr(widget, 'type')) or widget.type != 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-                        
-            <p class="error" tal:condition="widget/error"
-              tal:content="structure widget/error">
-              Error message
-            </p>
-            
-            <span
-              tal:condition="python:hasattr(widget, 'tag')"
-              tal:replace="structure widget">Widget</span>
-              
-            <span class="readonlyWidget"
-              tal:condition="python:not(hasattr(widget, 'tag'))"
-              tal:content="structure widget"/>
-            
-            <label for="abc123" title="The hint for the widget"
-              tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
-              tal:attributes="for widget/name; title widget/hint"
-              tal:content="widget/label">
-              A label
-            </label>
-          </div><!--form-widget-->
+        <tal:block define="widgets python:[[w for w in view.widgets][0]]">
+          <div tal:replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
         <tal:block define="widget python:[w for w in view.widgets][1]">
           <span tal:replace="structure widget/hidden">Widget</span>

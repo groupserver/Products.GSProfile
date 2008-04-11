@@ -354,16 +354,13 @@ class GSEmailSettings(BrowserView):
             emailChecker.validate(email)
         except DisposableEmailAddressNotAllowed, e:
             error = True
-            message = u'Did not add the address '\
-              u'<code class="email">%s</code>. %s' % (email, unicode(e))
+            message = self.error_msg(email, unicode(e))
         except NotAValidEmailAddress, e:
             error = True
-            message = u'Did not add the address '\
-              u'<code class="email">%s</code>. %s' % (email, unicode(e))
+            message = self.error_msg(email, unicode(e))
         except EmailAddressExists, e:
             error = True
-            message = u'Did not add the address '\
-              u'<code class="email">%s</code>. %s' % (email, unicode(e))
+            message = self.error_msg(email, unicode(e))
         else:
             self.__user.add_emailAddress(email=email, is_preferred=False)
             utils.send_verification_message(self.context, self.__user, email)
@@ -378,6 +375,10 @@ class GSEmailSettings(BrowserView):
         assert type(retval[1]) == unicode
         return retval
         
+    def error_msg(self, email, msg):
+        return\
+          u'Did not add the email address <code class="email">%s</code>. '\
+          u'%s Please enter a new email address.' % (email, unicode(e))
 
 class Address(object):
     """Information about a user's email address
