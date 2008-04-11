@@ -7,7 +7,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 from zope.contentprovider.interfaces import IContentProvider
 from zope.component import createObject
 from interfaceCoreProfile import *
-from checkEmail import check_email
+from emailaddress import EmailAddress
 try:
     # The site profile may not exist.
     from interfaceSiteProfile import *
@@ -43,11 +43,12 @@ class IGSSetPasswordAdminJoin(IGSSetPassword):
         u'join the group.',
       required=True)
 
+# Address Forms
+
 class IGSEmailAddressEntry(Interface):
-    email = ASCIILine(title=u'Email Address',
+    email = EmailAddress(title=u'Email Address',
         description=u'Your email address.',
-        required=True,
-        constraint=check_email)
+        required=True)
 
 class IGSRequestPasswordReset(IGSEmailAddressEntry):
     """Schema used to request that the user's password is reset.

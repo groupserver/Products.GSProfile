@@ -5,7 +5,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from Products.XWFCore import XWFUtils
-from checkEmail import check_email
+from emailaddress import EmailAddress
 
 def display_name_not_nul(text):
     retval = text.strip() != u''
@@ -42,10 +42,9 @@ class IGSCoreProfileRegister(IGSCoreProfile):
       default=[])
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
-    email = ASCIILine(title=u'Email Address',
+    email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
-      required=True,
-      constraint=check_email)
+      required=True)
 
 class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
     message = Text(title=u'Message',

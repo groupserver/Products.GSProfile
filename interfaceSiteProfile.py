@@ -4,7 +4,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
-from interfaceCoreProfile import check_email
+from emailaddress import EmailAddress
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -56,12 +56,11 @@ class IOGNProfileRegister(IOGNProfile):
       default=[])
 
 class IOGNProfileAdminJoin(IOGNProfile):
-    email = ASCIILine(title=u'Email Address',
+    email = EmailAddress(title=u'Email Address',
       description=u'The email address of the new group member. '\
         u'The invitation will be sent to this address, and the address '\
         u'will become the default address for the user.',
-      required=True,
-      constraint=check_email)
+      required=True)
 
 class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
     message = Text(title=u'Message',
@@ -157,10 +156,9 @@ class IABELProfileRegister(IABELProfile):
       default=[])
 
 class IABELProfileAdminJoin(IABELProfile):
-    email = ASCIILine(title=u'Email Address',
+    email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
-      required=True,
-      constraint=check_email)
+      required=True)
 
 class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
     message = Text(title=u'Message',
@@ -333,10 +331,9 @@ class IDoWireProfileRegister(IDoWireProfile):
       default=[])
 
 class IDoWireProfileAdminJoin(IDoWireProfile):
-    email = ASCIILine(title=u'Email Address',
+    email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
-      required=True,
-      constraint=check_email)
+      required=True)
 
 class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
     message = Text(title=u'Message',
@@ -437,10 +434,9 @@ class IEDemProfileRegister(IEDemProfile):
       default=[])
 
 class IEDemProfileAdminJoin(IEDemProfile):
-    email = ASCIILine(title=u'Email Address',
+    email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
-      required=True,
-      constraint=check_email)
+      required=True)
 
 class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
     message = Text(title=u'Message',

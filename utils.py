@@ -24,6 +24,7 @@ def __get_acl_users_for_context(context):
         acl_users = __context_acl_users[context]
     assert acl_users
     return acl_users
+get_acl_users_for_context = __get_acl_users_for_context
 
 def login(context, user):
     assert context

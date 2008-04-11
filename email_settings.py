@@ -12,6 +12,8 @@ from Products.XWFCore.odict import ODict
 import zope.app.apidoc.interface # 
 
 from interfaces import *
+from emailaddress import NewEmailAddress, NotAValidEmailAddress,\
+  DisposableEmailAddressNotAllowed, EmailAddressExists
 import utils
 
 class GSEmailSettings(BrowserView):
@@ -346,11 +348,22 @@ class GSEmailSettings(BrowserView):
 
     def add_email(self, email):
         newEmailHtml = self.__addrs_to_html([email])
-        if utils.address_exists(self.context, email):
+        emailChecker = NewEmailAddress(title=u'Email')
+        emailChecker.context = self.context # --=mpj17=-- Legit?
+        try:
+            emailChecker.validate(email)
+        except DisposableEmailAddressNotAllowed, e:
             error = True
-            message = u'The address %s already exists on '\
-              u'<span class="site">%s</span>' % \
-              (newEmailHtml, self.siteInfo.get_name())
+            message = u'Did not add the address '\
+              u'<code class="email">%s</code>. %s' % (email, unicode(e))
+        except NotAValidEmailAddress, e:
+            error = True
+            message = u'Did not add the address '\
+              u'<code class="email">%s</code>. %s' % (email, unicode(e))
+        except EmailAddressExists, e:
+            error = True
+            message = u'Did not add the address '\
+              u'<code class="email">%s</code>. %s' % (email, unicode(e))
         else:
             self.__user.add_emailAddress(email=email, is_preferred=False)
             utils.send_verification_message(self.context, self.__user, email)
