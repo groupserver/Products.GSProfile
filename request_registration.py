@@ -11,6 +11,7 @@ from Products.GSProfile.interfaces import *
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 import utils
+from emailaddress import NewEmailAddress, EmailAddressExists
 import logging
 log = logging.getLogger('GSProfile')
 
@@ -59,8 +60,12 @@ class RequestRegistrationForm(PageForm):
         assert self.form_fields
         assert action
         assert data
-        
-        if utils.address_exists(self.context, data['email']):
+
+        emailChecker = NewEmailAddress(title=u'Email')
+        emailChecker.context = self.context # --=mpj17=-- Legit?
+        try:
+            emailChecker.validate(data['email'])
+        except EmailAddressExists, e:
             logMsg = 'RequestRegistrationForm: Registration attempted with '\
               'existing address <%s>' % data['email']
             log.info(logMsg)

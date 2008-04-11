@@ -15,7 +15,8 @@ from Products.XWFCore.CSV import CSVFile
 from Products.CustomUserFolder.CustomUser import CustomUser
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 import interfaces, utils
-
+from emailaddress import NewEmailAddress, NotAValidEmailAddress,\
+  DisposableEmailAddressNotAllowed, EmailAddressExists
 from zope.formlib import form
 
 import logging
@@ -398,13 +399,24 @@ class CreateUsersForm(BrowserView):
         new = 0
         
         email = fields['email']
-        if utils.address_exists(self.context, email):
+        
+        emailChecker = NewEmailAddress(title=u'Email')
+        emailChecker.context = self.context # --=mpj17=-- Legit?
+        try:
+            emailChecker.validate(email)
+        except EmailAddressExists, e:
             new = 1 # Possibly changed to 3 later
             user = self.acl_users.get_userByEmail(email)
             assert user, 'User for <%s> not found' % email
             userInfo = IGSUserInfo(user)
             m = u'Added existing user <a class="fn" href="%s">%s</a>' %\
               (userInfo.url, userInfo.name)
+        except DisposableEmailAddressNotAllowed, e:
+            error = True
+            m = self.error_msg(email, unicode(e))
+        except NotAValidEmailAddress, e:
+            error = True
+            m = self.error_msg(email, unicode(e))
         else:
             userInfo = self.create_user(fields)
             user = userInfo.user
@@ -412,22 +424,23 @@ class CreateUsersForm(BrowserView):
             m = u'Created new user <a class="fn" href="%s">%s</a>' %\
               (userInfo.url, userInfo.name)
             
+        if user:            
+            groupMembershipId = '%s_member' % self.groupInfo.get_id()
+            if groupMembershipId not in user.getGroups():
+                utils.join_group(user, self.groupInfo)
+            else:
+                new = 3
+                m = 'Skipped adding %s (%s) to the group %s (%s) as the user '\
+                  'is already a member' % \
+                    (userInfo.name, user.id, 
+                     self.groupInfo.name, self.groupInfo.id)
+                log.info(m)
+                m = u'Skipped existing group member '\
+                  u'<a class="fn" href="%s">%s</a>' %\
+                  (userInfo.url, userInfo.name)
+            error = False
             
-        groupMembershipId = '%s_member' % self.groupInfo.get_id()
-        if groupMembershipId not in user.getGroups():
-            utils.join_group(user, self.groupInfo)
-        else:
-            new = 3
-            m = 'Skipped adding %s (%s) to the group %s (%s) as the user '\
-              'is already a member' % \
-                (userInfo.name, user.id, 
-                 self.groupInfo.name, self.groupInfo.id)
-            log.info(m)
-            m = u'Skipped existing group member '\
-              u'<a class="fn" href="%s">%s</a>' %\
-              (userInfo.url, userInfo.name)
-
-        result = {'error':      False,
+        result = {'error':      error,
                   'message':    m,
                   'user':       user,
                   'new':        new}
@@ -459,7 +472,13 @@ class CreateUsersForm(BrowserView):
         utils.send_add_user_notification(user, self.get_admin(),
           self.groupInfo, u'')
         return userInfo
-                
+
+    def error_msg(self, email, msg):
+        return\
+          u'Did not create a user for the email address '\
+          u'<code class="email">%s</code>. %s' % (email, unicode(e))
+
+
 class ProfileList(object):
     implements(IVocabulary, IVocabularyTokenized)
     __used_for__ = IEnumerableMapping
