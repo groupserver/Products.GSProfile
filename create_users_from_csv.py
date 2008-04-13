@@ -451,7 +451,8 @@ class CreateUsersForm(BrowserView):
         assert result.has_key('message')
         assert type(result['message']) == unicode
         assert result.has_key('user')
-        assert isinstance(result['user'], CustomUser)
+        # If an email address is invalid or disposable, user==None
+        #assert isinstance(result['user'], CustomUser)
         assert result.has_key('new')
         assert type(result['new']) == int
         assert result['new'] in range(0, 5), '%d not in range'%result['new']
