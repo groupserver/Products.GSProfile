@@ -334,7 +334,7 @@ class CreateUsersForm(BrowserView):
             wasWere = existingUserCount == 1 and 'was' or 'were'
             message = u'%s<li id="existingUserInfo"'\
               u'class="disclosureWidget">'\
-              u'<a href="#" class="disclosureButton"><strong>%d exisiting '\
+              u'<a href="#" class="disclosureButton"><strong>%d existing '\
               u'%s</strong> %s added to %s.</a>\n'\
               u'<div class="disclosureShowHide" style="display:none;">'\
               u'%s</div></li>' % (message, existingUserCount,  userUsers, 
