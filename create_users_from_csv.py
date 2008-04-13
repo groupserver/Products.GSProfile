@@ -353,7 +353,7 @@ class CreateUsersForm(BrowserView):
             wasWere = errorCount == 1 and 'was' or 'were'
             errorErrors = errorCount == 1 and 'error' or 'errors'
             message = u'%s<p>There %s %d %s:</p>\n' % \
-              (message, wasWere, errorErrors)
+              (message, wasWere, errorCount, errorErrors)
             message = u'%s%s\n' % (message, errorMessage)
             
         result = {'error':      error,
