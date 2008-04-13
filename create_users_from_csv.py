@@ -476,7 +476,7 @@ class CreateUsersForm(BrowserView):
     def error_msg(self, email, msg):
         return\
           u'Did not create a user for the email address '\
-          u'<code class="email">%s</code>. %s' % (email, unicode(e))
+          u'<code class="email">%s</code>. %s' % (email, msg)
 
 
 class ProfileList(object):
