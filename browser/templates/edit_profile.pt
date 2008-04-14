@@ -85,7 +85,7 @@
             GSPopupFormHelp.init('#edit-profile');
 
             jQuery("#privacy-button").click( function () {
-                var gsUri = "/about/policies/privacy/ #privacy";
+                var gsUri = "/policies/privacy/ #privacy";
                 jQuery("#privacy-content").load(gsUri);
             });
         });

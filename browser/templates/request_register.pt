@@ -172,12 +172,12 @@
                 '#emailHelp');
         
             jQuery("#privacy-button").click( function () {
-                var uri = "/about/policies/privacy/ #privacy";
+                var uri = "/policies/privacy/ #privacy";
                 jQuery("#privacy-content").load(uri);
             });
 
             jQuery("#tc-button").click( function () {
-                var uri = "/about/policies/aup/ #aup";
+                var uri = "/policies/aup/ #aup";
                 jQuery("#tc-content").load(uri);
             });
         });
