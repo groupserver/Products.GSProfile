@@ -7,35 +7,21 @@ from zope.interface import implements
 from zope.component import createObject
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 
+from Products.GSRedirect.view import GSRedirectBase
+
 from interfaces import *
 import utils
 
 import logging
 log = logging.getLogger('GSProfile')
 
-class GSProfileRedirect(BrowserView, Traversable):
-    implements(ITraversable)
-    
-    '''View object for standard GroupServer User-Profile Instances'''
-    def __init__(self, context, request):
-        assert context
-        assert request
-        self.context = context
-        self.request = request
-
-        request.form['subpaths'] = []
-
-    def traverse(self, name, furtherPath):
-        self.request.form['subpaths'].append(name)
-        
-        return self
-
-    def login_redirect(self):
+class GSRedirectLogin(GSRedirectBase):
+    def __call__(self):
         site_root = self.context.site_root()
         acl_users = site_root.acl_users
 
-        if len(self.request.form['subpaths']) == 1:
-            verificationId = self.request.form['subpaths'][0]
+        if len(self.traverse_subpath) == 1:
+            verificationId = self.traverse_subpath[0]
             user = acl_users.get_userByPasswordVerificationId(verificationId)
             
             if user:
@@ -51,17 +37,19 @@ class GSProfileRedirect(BrowserView, Traversable):
                 
                 uri = '%s/password.html' % userInfo.url
             else: # Cannot find user
-                uri = '/r/user-not-found?id=%s' % verificationId
+                uri = '/user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
-            uri = '/r/user-no-id'
+            uri = '/user-no-id'
         return self.request.RESPONSE.redirect(uri)
 
-    def verify_redirect(self):
+
+class GSRedirectVerify(GSRedirectBase):
+    def __call__(self):
         site_root = self.context.site_root()
         acl_users = site_root.acl_users
 
-        if len(self.request.form['subpaths']) == 1:
-            verificationId = self.request.form['subpaths'][0]
+        if len(self.traverse_subpath) == 1:
+            verificationId = self.traverse_subpath[0]
             user = acl_users.get_userByEmailVerificationId(verificationId)
             
             if user:
@@ -81,17 +69,18 @@ class GSProfileRedirect(BrowserView, Traversable):
                 uri = '%s/verify_address.html?email=%s' %\
                   (userInfo.url, emailAddress)
             else: # Cannot find user
-                uri = '/r/verify-user-not-found?id=%s' % verificationId
+                uri = '/verify-user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
-            uri = '/r/verify-user-no-id'
+            uri = '/verify-user-no-id'
         return self.request.RESPONSE.redirect(uri)
 
-    def admin_verified_redirect(self):
+class GSRedirectAdminVerified(GSRedirectBase):
+    def __call__(self):
         site_root = self.context.site_root()
         acl_users = site_root.acl_users
 
-        if len(self.request.form['subpaths']) == 1:
-            verificationId = self.request.form['subpaths'][0]
+        if len(self.traverse_subpath) == 1:
+            verificationId = self.traverse_subpath[0]
             user = acl_users.get_userByPasswordVerificationId(verificationId)
             
             if user:
@@ -105,19 +94,20 @@ class GSProfileRedirect(BrowserView, Traversable):
                 
                 uri = '%s/register_password.html' % userInfo.url
             else: # Cannot find user
-                uri = '/r/user-not-found?id=%s' % verificationId
+                uri = '/user-not-found?id=%s' % verificationId
         else: # Verification ID not specified
-            uri = '/r/user-no-id'
+            uri = '/user-no-id'
         return self.request.RESPONSE.redirect(uri)
 
-    def reject_invite(self):
+class GSRedirectRejectInvite(GSRedirectBase):
+    def __call__(self):
         """Reject an invitation to join a group
         """
         site_root = self.context.site_root()
         acl_users = site_root.acl_users
 
-        if len(self.request.form['subpaths']) == 1:
-            invitationId = self.request.form['subpaths'][0]
+        if len(self.traverse_subpath) == 1:
+            invitationId = self.traverse_subpath[0]
             user = acl_users.get_userByInvitationId(invitationId) 
             
             uri = ''
@@ -171,24 +161,25 @@ class GSProfileRedirect(BrowserView, Traversable):
                     m = u'reject_invite: Deleting user "%s"' % user.getId()
                     log.info(m)
                     acl_users.userFolderDelUsers([user.getId()])
-                    uri = '/r/rejected-invitation-delete'
+                    uri = '/rejected-invitation-delete'
                 else:
-                    uri = '/r/rejected-invitation'
+                    uri = '/rejected-invitation'
             else: # Cannot find user
-                uri = '/r/user-not-found?id=%s' % invitationId
+                uri = '/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified
-            uri = '/r/user-no-id'
+            uri = '/user-no-id'
         assert uri
         return self.request.RESPONSE.redirect(uri)
 
-    def accept_invite(self):
+class GSRedirectAcceptInvite(GSRedirectBase):
+    def __call__(self):
         """Accept an invitation to join a group
         """
         site_root = self.context.site_root()
         acl_users = site_root.acl_users
 
-        if len(self.request.form['subpaths']) == 1:
-            invitationId = self.request.form['subpaths'][0]
+        if len(self.traverse_subpath) == 1:
+            invitationId = self.traverse_subpath[0]
             user = acl_users.get_userByInvitationId(invitationId) 
             if user:
                 userInfo = IGSUserInfo(user)
@@ -197,9 +188,9 @@ class GSProfileRedirect(BrowserView, Traversable):
                 uri = '%s/join_password.html?form.invitationId=%s' % \
                   (userInfo.url, invitationId)
             else: # Cannot find user
-                uri = '/r/user-not-found?id=%s' % invitationId
+                uri = '/user-not-found?id=%s' % invitationId
         else: # Verification ID not specified
-            uri = '/r/user-no-id'
+            uri = '/user-no-id'
         assert uri
         return self.request.RESPONSE.redirect(uri)
 

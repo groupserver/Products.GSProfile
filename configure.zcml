@@ -108,28 +108,34 @@
     class=".view_address_verified.GSAddressVerifiedView"
     permission="zope2.ManageProperties" />
 
+
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory=".profile_redirect.GSRedirectLogin"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="password" />
+
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory=".profile_redirect.GSRedirectVerify"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="verify" />  
+
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory=".profile_redirect.GSRedirectAdminVerified"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="initlogin" />  
+
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory=".profile_redirect.GSRedirectRejectInvite"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="reject_invite" />  
+
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory=".profile_redirect.GSRedirectAcceptInvite"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="join_group" />  
+
   <browser:pages
-    for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
-    class=".profile_redirect.GSProfileRedirect"
-    permission="zope2.View">
-    <browser:page
-      name="password"
-      attribute="login_redirect"/>
-    <browser:page
-      name="verify"
-      attribute="verify_redirect"/>
-    <browser:page
-      name="initlogin"
-      attribute="admin_verified_redirect"/>      
-    <browser:page
-      name="reject_invite"
-      attribute="reject_invite"/>      
-    <browser:page
-      name="join_group"
-      attribute="accept_invite"/>      
-  </browser:pages>
-  <browser:pages
-    for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
+    for="Products.GSContent.interfaces.IGSSiteFolder"
     class="Products.GSContent.view.GSContentView"
     permission="zope2.View">
     <browser:page
