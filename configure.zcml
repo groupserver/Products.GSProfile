@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:rdb="http://namespaces.zope.org/rdb"
+  xmlns:sqlos="http://namespaces.sqlobject.org/sqlos"
+  xmlns:five="http://namespaces.zope.org/five">
+
+  <!-- declare a marker interface on the Folder class to allow us 
+    to add marker Interfaces, views and adaptation -->
+  <five:implements 
+    class="OFS.Folder.Folder"
+    interface="zope.app.folder.interfaces.IFolder" />
+  <!-- make it known to Five -->
+  <five:traversable 
+    class="OFS.Folder.Folder" />
+  
+  <!-- Generic resources -->
+  <browser:resource name="check_email-20080214.js" 
+    file="browser/javascript/check_email.js"
+    permission="zope2.Public" />
+  <browser:resource name="check_required-20071214.js"
+    file="browser/javascript/check_required.js"
+    permission="zope2.Public" />
+  <browser:resource name="popup_help-20071218.js" 
+    file="browser/javascript/popup_help.js"
+    permission="zope2.Public" />
+  <browser:resource name="check_password-20080212.js" 
+    file="browser/javascript/check_password.js"
+    permission="zope2.View" />
+  <browser:resource name="check_email_verified-20080408.js"
+    file="browser/javascript/check_email_verified.js"
+    permission="zope2.View" />
+
+  <!-- Form schemas -->
+  
+  <interface 
+    interface=".interfaces.IGSSetPassword" />
+  <interface 
+    interface=".interfaces.IGSEmailAddressEntry" />
+  <interface 
+    interface=".interfaces.IGSRequestPasswordReset" />
+  <interface 
+    interface=".interfaces.IGSRequestRegistration" />
+  <interface 
+    interface=".interfaces.IGSResendVerification" />
+  <interface 
+    interface=".interfaces.IGSVerifyAddress" />
+
+  <interface 
+    interface=".interfaces.IGSProfileContextMenuContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <interface 
+    interface=".interfaces.IGSUserImage"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+  <interface 
+    interface=".interfaceCoreProfile.IGSCoreProfile" />
+
+  <include files="*-site.zcml" />
+
+  <!--Utilities-->
+  <vocabulary 
+      name="JoinableGroups"
+      factory=".group_membership.JoinableGroupsForSite"/>
+
+  <!-- Marker interfaces and views -->
+  <interface 
+    interface=".interfaces.IGSReigstration" 
+    type="zope.app.content.interfaces.IContentType" />
+  <browser:page 
+    for="*"
+    name="request_registration.html"
+    class=".request_registration.RequestRegistrationForm"
+    permission="zope2.Public"/>
+
+  <browser:page 
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="admin_join.html"
+    class=".admin_join.AdminJoinEditProfileForm"
+    permission="zope2.ManageUsers"/>
+    
+  <browser:page 
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="admin_join_csv.html"
+    class=".create_users_from_csv.CreateUsersForm"
+    template="browser/templates/admin_create_users_from_csv.pt"
+    permission="zope2.ManageUsers"/>
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="registration_profile.html"
+    class=".edit_profile.RegisterEditProfileForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_address.html"
+    class="Products.GSContent.view.GSContentView"
+    template="browser/templates/verify_address.pt"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_wait.html"
+    class=".verify_wait.VerifyWaitForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_email.ajax"
+    class=".view_address_verified.GSAddressVerifiedView"
+    permission="zope2.ManageProperties" />
+
+  <browser:pages
+    for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
+    class=".profile_redirect.GSProfileRedirect"
+    permission="zope2.View">
+    <browser:page
+      name="password"
+      attribute="login_redirect"/>
+    <browser:page
+      name="verify"
+      attribute="verify_redirect"/>
+    <browser:page
+      name="initlogin"
+      attribute="admin_verified_redirect"/>      
+    <browser:page
+      name="reject_invite"
+      attribute="reject_invite"/>      
+    <browser:page
+      name="join_group"
+      attribute="accept_invite"/>      
+  </browser:pages>
+  <browser:pages
+    for="Products.GSRedirect.interfaces.IGSRedirectForFolder"
+    class="Products.GSContent.view.GSContentView"
+    permission="zope2.View">
+    <browser:page
+      name="user-no-id"
+      template="browser/templates/user_no_id.pt" />
+    <browser:page
+      name="user-not-found"
+      template="browser/templates/user_not_found.pt" />
+    <browser:page
+      name="rejected-invitation"
+      template="browser/templates/reject_invite.pt" />
+    <browser:page
+      name="rejected-invitation-delete"
+      template="browser/templates/reject_invite_delete.pt" />
+  </browser:pages>
+
+  <interface 
+    interface=".interfaces.IGSRequestPasswordResetMarker" 
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for="*"
+    name="reset_password.html"
+    class=".request_password_reset.RequestPasswordResetForm"
+    permission="zope2.Public" />
+
+  <interface 
+    interface=".interfaces.IGSRequestRegistrationMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSRequestRegistrationMarker"
+    name="index.html"
+    class=".request_registration.RequestRegistrationForm"
+    permission="zope2.View" />
+ 
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="password.html"
+    class=".set_password.SetPasswordForm"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="register_password.html"
+    class=".set_password.SetPasswordRegisterForm"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="join_password.html"
+    class=".set_password.SetPasswordAdminJoinForm"
+    permission="zope2.ManageProperties" />
+
+  <interface
+    interface=".interfaces.IGSEditProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="edit.html"
+    class=".edit_profile.EditProfileForm"
+    permission="zope2.ManageProperties" />
+
+  <interface 
+    interface=".interfaces.IGSUserProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="index.html"
+    class=".view_profile.GSProfileView"
+    template="browser/templates/view_profile.pt"
+    permission="zope2.View" />
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="image.html"
+    class=".edit_image.GSEditImageForm"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="email.html"
+    class=".email_settings.GSEmailSettings"
+    template="browser/templates/email_settings.pt"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="nickname.html"
+    class=".set_nickname.GSSetNickname"
+    template="browser/templates/set_nickname.pt"
+    permission="zope2.ManageProperties" />
+
+  <interface 
+    interface=".interfaces.IGSUserProfiles" />
+  <browser:page
+    for="Products.GSContent.interfaces.IGSSiteFolder"
+    name="p"
+    class=".userprofiles.GSUserProfiles"
+    permission="zope2.View" />
+
+  <interface 
+    interface=".interfaces.IGSFormWidgets"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+
+</configure>
+

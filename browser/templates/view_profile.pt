@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      Profile of 
+      <span tal:replace="python:view.userInfo.name">
+        A. Person
+      </span>:
+      <span tal:replace="view/siteInfo/get_name">A Site</span>
+    </title>
+    
+    <tal:block metal:fill-slot="metadata"
+      tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
+      <link rel="alternate" type="application/atom+xml"
+        href="#" title="Posts"
+        tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;p=1;
+          title string:All posts by ${fn}: ${view/siteInfo/get_name}"/>
+      <link rel="alternate" type="application/atom+xml"
+        href="#" title="Files"
+        tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;f=1;
+          title string:All files by ${fn}: ${view/siteInfo/get_name}"/>
+    </tal:block>
+  </head>
+  <body>
+    <tal:block metal:fill-slot="contextnavigation">
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
+    </tal:block>
+    <div metal:fill-slot="body" class="userProfile"
+      tal:define="authenticated python:user.has_role('Authenticated')">
+      <div class="vcard">
+        <h1>Profile of 
+          <span class="fn" 
+            tal:content="python:view.userInfo.name">A. Person</span>
+        </h1>
+        <div tal:define="user view/context"
+          tal:replace="structure provider:groupserver.UserImage" />
+        <table id="profileAtributes"
+          tal:condition="authenticated">
+          <tbody tal:define="properties view/properties">
+            <tal:block tal:repeat="prop python:properties.keys()">
+              <tr tal:define="val python:view.get_property(prop)"
+                tal:condition="val">
+                <th tal:define="propField python:properties[prop]">
+                  <abbr tal:attributes="title propField/description"
+                    tal:content="propField/title"/>
+                </th>
+                <td class="property"
+                  tal:attributes="class python:' '.join(prop.split('_'))">
+                  <a tal:condition="python:val[:7]=='http://'" class="val"
+                    tal:content="val" tal:attributes="href val;"/>
+                  <div tal:condition="python:val[:7]!='http://'" class="val"
+                    tal:content="structure val"/>
+                </td>
+              </tr>
+            </tal:block>
+          </tbody>
+        </table>
+      
+        <div id="emailContact" 
+          tal:condition="authenticated"
+          tal:define="vis view/emailVisibility">
+          <h2 tal:condition="python:vis != 'nobody'">Email</h2>
+          <p tal:condition="python:vis == 'request'">
+            <a href="user-request-contact">Request email contact with
+              <span class="fn" 
+                tal:content="python:view.userInfo.name">A. Person</span></a>
+          </p>
+          <ul tal:condition="python:vis == 'everybody'">
+            <tal:block repeat="address view/userEmailAddresses">
+              <li>
+                <a href="#" class="email emaillink" 
+                  tal:content="address" 
+                  tal:attributes="href string:mailto:${address};"/>
+              </li>
+            </tal:block>
+          </ul>
+        </div>
+      </div><!--vcard-->      
+      <div id="groups" 
+        tal:define="groups view/groupMembership"
+        tal:condition="groups">
+        <h2>Group Membership</h2>
+        <ul>
+          <tal:block repeat="group groups">
+            <li><a href="#" class="group"
+              tal:content="group/get_name" 
+              tal:attributes="href group/get_url">Group!</a></li>
+          </tal:block>
+        </ul>
+      </div><!--groups-->
+      
+      <div class="cols"
+        tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
+        <div id="files" class="rightColumn">
+          <h2>Latest Files</h2>
+          <div id="latestFiles"><img src="/++resource++anim/wait.gif"/>
+            Loading the latest files by
+            <span class="fn" tal:content="fn"/>
+          </div>
+          <p>
+            <a title="More files by A. Person"
+              href="#"
+              tal:attributes="href string:/s/?p=0&amp;t=0&amp;f=1&amp;a=${uid};
+                title string:More files by ${fn};">More&#8230;</a>
+          </p>
+        </div><!--Files-->
+        <div id="posts" class="leftColumn">
+          <h2>Latest Posts</h2>
+          <div id="latestPosts"><img src="/++resource++anim/wait.gif"/>
+            Loading the latest posts by
+            <span class="fn" tal:content="fn"/>
+          </div>
+          <p>
+            <a title="More posts by A. Person"
+              href="#"
+              tal:attributes="href string:/s/?p=1&amp;t=0&amp;a=${uid};
+                title string:More posts by ${fn};">More&#8230;</a>
+          </p>
+        </div><!--Posts-->
+      </div><!--cols-->
+    </div><!--profile-->
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript"
+        tal:define="uid python:view.userInfo.id">
+        jQuery.noConflict();
+        jQuery(document).ready( function () {
+            var ajaxUri = "/s/search.ajax?a=<span tal:replace="uid"/>";
+
+            var postsUri = ajaxUri + "&amp;t=0&amp;p=1&amp;f=0&amp;r=0";
+            jQuery("#latestPosts").load(postsUri);
+            
+            var filesUri = ajaxUri + "&amp;t=0&amp;p=0&amp;f=1&amp;r=0";
+            jQuery("#latestFiles").load(filesUri);
+        });
+      </script>
+    </tal:block>
+  </body>
+</html>
+
