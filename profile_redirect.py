@@ -1,8 +1,6 @@
 # coding=utf-8
 import Globals
 from Products.Five import BrowserView
-from Products.Five.traversable import Traversable
-from zope.app.traversing.interfaces import ITraversable
 from zope.interface import implements
 from zope.component import createObject
 from Products.CustomUserFolder.interfaces import IGSUserInfo
