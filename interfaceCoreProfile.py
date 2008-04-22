@@ -98,7 +98,7 @@ class GSImage(Bytes):
 
         tmpImageName = '%s.jpg_temp' % self.context.getId()
         if hasattr(images, tmpImageName):
-            context.contactsimages.manage_delObjects([tmpImageName])
+            self.context.contactsimages.manage_delObjects([tmpImageName])
         userName = XWFUtils.get_user_realnames(self.context)
         images.manage_addImage(tmpImageName, image, userName)
         
