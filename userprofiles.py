@@ -1,8 +1,18 @@
 # coding=utf-8
-from zope.app.traversing.interfaces import TraversalError, ITraversable
-from Products.Five.traversable import Traversable
+from zope.publisher.interfaces import IPublishTraverse
+from zope.app.publisher.browser import queryDefaultViewName
 from zope.interface import implements
 from Products.Five import BrowserView
+
+from zope.publisher.interfaces.browser import IBrowserView
+
+from zope.publisher.interfaces.browser import IBrowserPublisher 
+
+from zope.component import getMultiAdapter, getAdapter, ComponentLookupError
+
+from Acquisition import aq_inner, aq_base, aq_chain
+
+from zExceptions import NotFound
 
 from interfaces import IGSUserProfiles
 from utils import escape_c
@@ -10,62 +20,43 @@ from utils import escape_c
 import logging
 log = logging.getLogger('GSUserProfiles')
 
-class GSUserProfiles(BrowserView, Traversable):
-    implements(ITraversable, IGSUserProfiles)
+def ec(name):
+    return ''.join([ord(d)>127 and hex(ord(d)).replace('0x', r'%') or d
+                   for d in name])
+
+class GSUserProfiles(BrowserView):
+    implements(IGSUserProfiles, IPublishTraverse)
     
     def __init__(self, context, request):
         self.context = context
         self.request = request
         
         self.acl_users = context.acl_users
-        assert self.acl_users
-            
-    def traverse(self, name, furtherPath):
-        """Get the next item on the path
-
-        Should return the item corresponding to 'name' or raise
-        TraversalError where appropriate.
-
-        furtherPath is a list of names still to be traversed. This method is
-        allowed to change the contents of furtherPath.
-
-        """
-        assert name
+        
+        self.traverse_subpath = []
+    
+    def publishTraverse(self, request, name):
         retval = None
+        
+        user = (self.context.acl_users.getUser(name) or
+                self.context.acl_users.get_userByNickname(ec(name)))
 
-        user = self.acl_users.getUser(name)
         if user:
-            #m = 'Found user with the ID %s: %s' %\
-            #  (name, user.getProperty('fn', ''))
-            #log.info(m)
-            retval = user
+            cnn = user.get_canonicalNickname()
+            if cnn == ec(name):
+                retval = user            
+                log.info("Found user with nickname %s" % cnn)
+            else:       
+                url = '/p/%s/' % cnn
+                retval = self.request.response.redirect(url)
         else:
-            s = ec(name)
-            user = self.acl_users.get_userByNickname(s)
-            if user:
-                #m = 'Found user with the nickname %s: %s' %\
-                #  (name, user.getProperty('fn', ''))
-                # log.info(m)
-                
-                cnn = user.get_canonicalNickname()
-                if cnn == ec(name):
-                    retval = user
-                else:
-                    url = '/p/%s/' % cnn
-                    #m = 'Redirecting to %s for user %s (%s)' %\
-                    #  (url, user.getProperty('fn', ''), user.getId())
-                    #log.info(m)
-                    r = self.request.RESPONSE.redirect(url)
-                    return r
-            else: 
-                m = 'No user with the ID or nickname %s' % name
-                log.info(m)
-                raise TraversalError
-
+            m  = "No user with the nickname %s" % cnn
+            log.info(m)
+                   
+            raise NotFound, m
+   
         assert retval != None
         return retval
 
-def ec(name):
-    return ''.join([ord(d)>127 and hex(ord(d)).replace('0x', r'%') or d
-                   for d in name])
+
 
