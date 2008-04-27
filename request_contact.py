@@ -68,5 +68,5 @@ class GSRequestContact(PageForm):
                 'siteURL'        : self.siteInfo.url,
                 'requestingId'   : authUserInfo.id
             }
-            self.userInfo.user.send_notification('request_contact', 'new_default', n_dict=n_dict)
+            self.userInfo.user.send_notification('request_contact', 'default', n_dict=n_dict)
 
