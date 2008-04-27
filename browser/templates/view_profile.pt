@@ -69,7 +69,7 @@
           tal:define="vis view/emailVisibility">
           <h2 tal:condition="python:vis != 'nobody'">Email</h2>
           <p tal:condition="python:vis == 'request'">
-            <a href="user-request-contact">Request email contact with
+            <a href="request_contact.html">Request email contact with
               <span class="fn" 
                 tal:content="python:view.userInfo.name">A. Person</span></a>
           </p>

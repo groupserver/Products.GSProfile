@@ -196,3 +196,5 @@ class IGSCreateUserCSV(Interface):
       required=True,
       default=None)
 
+class IGSRequestContact(Interface):
+    pass
