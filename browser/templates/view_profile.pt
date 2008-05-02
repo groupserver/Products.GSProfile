@@ -109,7 +109,11 @@
             <a title="More files by A. Person"
               href="#"
               tal:attributes="href string:/s/?p=0&amp;t=0&amp;f=1&amp;a=${uid};
-                title string:More files by ${fn};">More&#8230;</a>
+                title string:More files by ${fn};">More files&#8230;</a>
+            <a class="alternateATOM" href="#" 
+              style="margin-left: 1.4em;"
+              tal:attributes="href string:/s/search.atom?p=0&amp;t=0&amp;f=1&amp;a=${uid};
+              title string:Web feed of files posted by ${fn};">Web feed</a>
           </p>
         </div><!--Files-->
         <div id="posts" class="leftColumn">
@@ -122,7 +126,11 @@
             <a title="More posts by A. Person"
               href="#"
               tal:attributes="href string:/s/?p=1&amp;t=0&amp;a=${uid};
-                title string:More posts by ${fn};">More&#8230;</a>
+                title string:More posts by ${fn};">More posts&#8230;</a>
+            <a class="alternateATOM" href="#" 
+              style="margin-left: 1.4em;"
+              tal:attributes="href string:/s/search.atom?p=1&amp;t=0&amp;a=${uid};
+              title string:Web feed of posts by ${fn};">Web feed</a>
           </p>
         </div><!--Posts-->
       </div><!--cols-->
