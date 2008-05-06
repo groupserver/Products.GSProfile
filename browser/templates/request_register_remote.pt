@@ -7,9 +7,7 @@
   metal:use-macro="context/@@groupserver_site_home_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="view/label">
-        Remote Registration Form
-      </span>:
+      Remote Registration Form:
       <span tal:replace="view/groupInfo/get_name">this group</span>:
       <span tal:replace="view/siteInfo/get_name">this site</span>
     </title>
