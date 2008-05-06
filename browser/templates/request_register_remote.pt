@@ -24,17 +24,17 @@
     <tal:block metal:fill-slot="body">
       <pre class="code"
         tal:define="actionUrl python:'%s/request_registration.html ' % view.siteInfo.url;">
-&gt;form enctype="multipart/form-data"  method="post" id="register.form"
-  action="<span tal:replace="actionUrl"/>"&lt;
-  &gt;label for="form.email" 
-    title="Your email address."&lt;Email Address&gt;/label&lt;
-  &gt;input class="textType" id="form.email" name="form.email" 
-    size="20" type="text" value="" /&lt;
-  &gt;input class="hiddenType" id="form.groupId" name="form.groupId" 
-  type="hidden" value="<span tal:replace="view/groupInfo/get_id"/>" /&lt;
-  &gt;input type="submit" id="form.actions.register" 
-    name="form.actions.register" value="Register" class="button" /&lt;
-&gt;/form&lt;&gt;--GroupSever Signup Form--&lt;
+&lt;form enctype="multipart/form-data"  method="post" id="register.form"
+  action="<span tal:replace="actionUrl"/>"&gt;
+  &lt;label for="form.email" 
+    title="Your email address."&gt;Email Address&lt;/label&gt;
+  &lt;input class="textType" id="form.email" name="form.email" 
+    size="20" type="text" value="" /&gt;
+  &lt;input class="hiddenType" id="form.groupId" name="form.groupId" 
+  type="hidden" value="<span tal:replace="view/groupInfo/get_id"/>" /&gt;
+  &lt;input type="submit" id="form.actions.register" 
+    name="form.actions.register" value="Register" class="button" /&gt;
+&lt;/form&gt;&lt;--GroupSever Signup Form--&gt;
       </pre>
     </tal:block>
   </body>
