@@ -46,7 +46,7 @@
     type="hidden" value="<span tal:replace="view/groupInfo/get_id"/>" /&gt;
   &lt;input type="submit" id="form.actions.register" 
     name="form.actions.register" value="Register" /&gt;
-&lt;/form&gt;&lt;--GroupSever Signup Form--&gt;
+&lt;/form&gt;&lt;!--GroupSever Signup Form--&gt;
       </pre>
     </tal:block>
   </body>
