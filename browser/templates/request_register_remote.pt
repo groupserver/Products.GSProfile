@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="view/label">
+        Remote Registration Form
+      </span>:
+      <span tal:replace="view/groupInfo/get_name">this group</span>:
+      <span tal:replace="view/siteInfo/get_name">this site</span>
+    </title>
+    <!--=mpj17=-->
+    <!--
+      All forms submit to themselves, as the view handles the data, as it
+      does with the XForms in GroupServer 0.9. We always post, as the form
+      may have a side-effect.
+      
+      2007-08-10
+    -->
+  </head>
+  <body>
+    <tal:block metal:fill-slot="body">
+      <pre class="code"
+        tal:define="actionUrl python:'%s/request_registration.html ' % view.siteInfo.url;">
+&gt;form enctype="multipart/form-data"  method="post" id="register.form"
+  action="<span tal:replace="actionUrl"/>"&lt;
+  &gt;label for="form.email" 
+    title="Your email address."&lt;Email Address&gt;/label&lt;
+  &gt;input class="textType" id="form.email" name="form.email" 
+    size="20" type="text" value="" /&lt;
+  &gt;input class="hiddenType" id="form.groupId" name="form.groupId" 
+  type="hidden" value="<span tal:replace="view/groupInfo/get_id"/>" /&lt;
+  &gt;input type="submit" id="form.actions.register" 
+    name="form.actions.register" value="Register" class="button" /&lt;
+&gt;/form&lt;&gt;--GroupSever Signup Form--&lt;
+      </pre>
+    </tal:block>
+  </body>
+</html>
+
