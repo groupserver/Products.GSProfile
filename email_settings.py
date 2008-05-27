@@ -347,7 +347,7 @@ class GSEmailSettings(BrowserView):
         return retval
 
     def add_email(self, email):
-        newEmailHtml = self.__addrs_to_html([email])
+        newEmailHtml = self.__addrs_to_html([email])example_user@groupserver
         emailChecker = NewEmailAddress(title=u'Email')
         emailChecker.context = self.context # --=mpj17=-- Legit?
         try:
@@ -378,7 +378,7 @@ class GSEmailSettings(BrowserView):
     def error_msg(self, email, msg):
         return\
           u'Did not add the email address <code class="email">%s</code>. '\
-          u'%s Please enter a new email address.' % (email, unicode(e))
+          u'%s Please enter a new email address.' % (email, msg)
 
 class Address(object):
     """Information about a user's email address
