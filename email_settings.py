@@ -347,7 +347,7 @@ class GSEmailSettings(BrowserView):
         return retval
 
     def add_email(self, email):
-        newEmailHtml = self.__addrs_to_html([email])example_user@groupserver
+        newEmailHtml = self.__addrs_to_html([email])
         emailChecker = NewEmailAddress(title=u'Email')
         emailChecker.context = self.context # --=mpj17=-- Legit?
         try:
