@@ -87,6 +87,13 @@
     permission="zope2.ManageUsers"/>
 
    <browser:page 
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="admin_remote_request_register.html"
+    class=".request_registration_remote.GSRemoteRequestRegistration"
+    template="browser/templates/request_register_remote.pt"
+    permission="zope2.View" />
+
+   <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="registration_profile.html"
     class=".edit_profile.RegisterEditProfileForm"
