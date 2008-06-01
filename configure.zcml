@@ -115,7 +115,6 @@
     class=".view_address_verified.GSAddressVerifiedView"
     permission="zope2.ManageProperties" />
 
-
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory=".profile_redirect.GSRedirectLogin"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
