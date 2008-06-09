@@ -143,7 +143,7 @@
   <browser:pages
     for="Products.GSContent.interfaces.IGSSiteFolder"
     class="Products.GSContent.view.GSContentView"
-    permission="zope2.View">
+    permission="zope2.Public">
     <browser:page
       name="user-no-id"
       template="browser/templates/user_no_id.pt" />
