@@ -243,7 +243,7 @@ def enforce_schema(inputData, schema):
             inputData.manage_addProperty(field, default, t)
     alsoProvides(inputData, schema)
 
-ALLOWED_URL_CHARS = ascii_lowercase + digits + '_-.'
+ALLOWED_URL_CHARS = ascii_lowercase + digits + "_-.'"
 def escape_c(c):
     """Escape Character
     
