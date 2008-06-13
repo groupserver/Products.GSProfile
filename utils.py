@@ -51,13 +51,13 @@ def address_exists(context, emailAddress):
     assert type(retval) == bool
     return retval
       
-def send_verification_message(context, user, emailForVerification):
+def send_verification_message(context, user, email):
     '''Send a email-address verification message to a user
     
     ARGUMENTS
       context: The context for the operation
       user:    The user who is reciving the email message
-      emailForVerification:   The email address to verify
+      email:   The email address to verify
       
     RETURNS
       None
@@ -67,7 +67,6 @@ def send_verification_message(context, user, emailForVerification):
     '''
     assert context != None
     assert user!= None
-    email = emailForVerification.lower()
     assert email in user.get_emailAddresses(), \
       'Email <%s> not in %s' % (email, user.get_emailAddresses())
     siteInfo = createObject('groupserver.SiteInfo', context)
