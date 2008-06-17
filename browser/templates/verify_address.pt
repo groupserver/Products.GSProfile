@@ -34,7 +34,16 @@
           tal:content="view/siteInfo/get_name">this site</span>.
       </p>
     </div>
+    <tal:block metal:fill-slot="contextnavigation">
+    </tal:block>
+    <tal:block metal:fill-slot="sitenavigation">
+      <div id="sitenavigation">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="utilitylinks">
+      <div id="utilitylinks">&#160;</div>
+    </tal:block>
     <tal:block metal:fill-slot="body">
+      &#160;
     </tal:block>
   </body>
 </html>

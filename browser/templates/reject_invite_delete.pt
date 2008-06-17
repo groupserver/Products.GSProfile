@@ -12,8 +12,17 @@
     </title>
     
   </head>
-  <body metal:fill-slot="body">
-    <h1>Invitation Rejected</h1>
+  <body>
+    <tal:block metal:fill-slot="contextnavigation">
+    </tal:block>
+    <tal:block metal:fill-slot="sitenavigation">
+      <div id="sitenavigation">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="utilitylinks">
+      <div id="utilitylinks">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="body">
+      <h1>Invitation Rejected</h1>
       <p>
         You have rejected your invitation to join 
         <span class="group">the group</span>,
@@ -29,6 +38,7 @@
           <span class="site"
             tal:content="view/siteInfo/get_name">this site</span> Team.</a>
       </p>
+    </tal:block>        
   </body>
 </html>
 
