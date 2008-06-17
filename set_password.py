@@ -13,7 +13,7 @@ log = logging.getLogger('GSSetPassword')
 
 class SetPasswordForm(PageForm):
     form_fields = form.Fields(IGSSetPassword)
-    label = u'Set Password'
+    label = u'Change Password'
     pageTemplateFileName = 'browser/templates/set_password.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -34,7 +34,7 @@ class SetPasswordForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Set', failure='handle_set_action_failure')
+    @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
         assert self.form_fields
@@ -45,7 +45,7 @@ class SetPasswordForm(PageForm):
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
         
-        self.status = u'Your password has been set.'
+        self.status = u'Your password has been changed.'
         assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):

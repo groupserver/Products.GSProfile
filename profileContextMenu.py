@@ -72,10 +72,10 @@ class GSProfileContextMenuContentProvider(object):
 
     def get_edit_pages(self):
         pages = ODict()
-        pages['edit.html']     = 'Edit Profile'
-        pages['image.html']    = 'Edit Image'
-        pages['email.html']     = 'Edit Email Settings'
-        pages['password.html'] = 'Set Password'
+        pages['edit.html']     = 'Change Profile'
+        pages['image.html']    = 'Change Image'
+        pages['email.html']     = 'Change Email Settings'
+        pages['password.html'] = 'Change Password'
         return pages        
 
     def get_request_pages(self):

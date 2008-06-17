@@ -16,6 +16,9 @@ from emailaddress import NewEmailAddress, NotAValidEmailAddress,\
   DisposableEmailAddressNotAllowed, EmailAddressExists
 import utils
 
+import logging
+log = logging.getLogger('GSProfile GSEmailSettings')
+
 class GSEmailSettings(BrowserView):
     '''View object for standard GroupServer User-Profile Instances'''
     def __init__(self, context, request):
@@ -29,6 +32,7 @@ class GSEmailSettings(BrowserView):
         self.__user = self.__get_user()
         self.__addressData = []
         self.__preferredAddresses = []
+        self.__verifiedAddresses  = []
         self.__groupEmailSettings = []
 
     def __get_user(self):
@@ -49,6 +53,14 @@ class GSEmailSettings(BrowserView):
         retval = u''
         retval = XWFUtils.get_user_realnames(self.__user)
 
+        return retval
+    
+    @property
+    def modifyAddresses(self):
+        retval = ((len(self.userAddresses) > 1)        # Multiple address
+          or (((len(self.userAddresses) == 1)          # or 1 address and
+              and len(self.preferredAddresses) == 0))) # no preferred
+        assert type(retval) == bool
         return retval
         
     def emailVisibility(self):
@@ -72,6 +84,27 @@ class GSEmailSettings(BrowserView):
         return retval
 
     @property
+    def singleAddressBouncing(self):
+        retval = \
+          (len(self.userAddresses) == 1) and (len(self.preferredAddresses) < 1)
+        assert type(retval) == bool
+        return retval
+        
+    @property
+    def multipleAddressesAllUnverified(self):
+        retval = \
+          (len(self.userAddresses) > 1) and (len(self.verifiedAddresses) < 1)
+        assert type(retval) == bool
+        return retval
+
+    @property
+    def verifiedAddressesNoDefault(self):
+        retval =\
+          (len(self.preferredAddresses) < 1) and (len(self.verifiedAddresses) > 0)
+        assert type(retval) == bool
+        return retval
+
+    @property
     def userAddresses(self):
         if self.__addressData == []:
             addr = self.__user.get_emailAddresses()
@@ -90,12 +123,29 @@ class GSEmailSettings(BrowserView):
             self.__preferredAddresses = self.__user.get_preferredEmailAddresses()
         retval = self.__preferredAddresses
         assert type(retval) == list
-        assert len(retval) > 0
+        # --=mpj17=-- We cannot assume that the user has a preferred, 
+        #   address, as the preferred address may have been bou bouncing.
+        # assert len(retval) > 0
+        return retval
+        
+    @property
+    def verifiedAddresses(self):
+        if self.__verifiedAddresses == []:
+            self.__verifiedAddresses = self.__user.get_verifiedEmailAddresses()
+        retval = self.__verifiedAddresses
+        assert type(retval) == list
+        log.info('verifiedAddresses %s'%retval)
         return retval
         
     @property
     def multipleDefault(self):
         retval = len(self.preferredAddresses) > 1
+        assert type(retval) == bool
+        return retval
+
+    @property
+    def multipleAddresses(self):
+        retval = len(self.userAddresses) > 1
         assert type(retval) == bool
         return retval
 
@@ -307,7 +357,8 @@ class GSEmailSettings(BrowserView):
         message = u'<li>Added the default address %s.</li>' % htmlAddr
 
         newDefl = self.preferredAddresses
-        newDefl.append(address.address)
+        if address.address not in newDefl:
+            newDefl.append(address.address)
         deflHtmlAddrs = self.__addrs_to_html(newDefl)
         message = u'%s\n<li>Your default email addresses are %s</li>' %\
           (message, deflHtmlAddrs)

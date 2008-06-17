@@ -16,7 +16,7 @@ from interfaceCoreProfile import *
 from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
 
 class GSEditImageForm(PageForm):
-    label = u'Edit Image'
+    label = u'Change Image'
     pageTemplateFileName = 'browser/templates/edit_image.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
     form_fields = form.Fields(IGSProfileImage, render_context=True)
@@ -49,7 +49,7 @@ class GSEditImageForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Edit" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Edit', failure='handle_set_action_failure')
+    @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_reset(self, action, data):
         # This may seem a bit daft, but there is method to my madness. The
         #   "showImage" value is set by simple assignment, while the

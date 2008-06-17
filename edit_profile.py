@@ -51,7 +51,7 @@ def wym_editor_widget(field, request):
     return retval
 
 class EditProfileForm(PageForm):
-    label = u'Edit Profile'
+    label = u'Change Profile'
     pageTemplateFileName = 'browser/templates/edit_profile.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -84,7 +84,7 @@ class EditProfileForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Edit" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Edit', failure='handle_set_action_failure')
+    @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         self.status = self.set_data(data)
         
@@ -124,7 +124,7 @@ class EditProfileForm(PageForm):
         return retval
 
 class RegisterEditProfileForm(EditProfileForm):
-    label = u'Edit Profile'
+    label = u'Change Profile'
     pageTemplateFileName = 'browser/templates/edit_profile_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -193,7 +193,7 @@ class RegisterEditProfileForm(EditProfileForm):
         assert retval
         return retval
 
-    @form.action(label=u'Edit', failure='handle_set_action_failure')
+    @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         self.actual_handle_set(action, data)
 
