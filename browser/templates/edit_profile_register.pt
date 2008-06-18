@@ -83,8 +83,11 @@
             <div id="privacy-content">Loading&#8230;</div>
           </div>
         </div>
-        <tal:block define="widgets view/widgets">
+        <tal:block define="widgets python:[w for w in view.widgets][:-1]">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
+        </tal:block>
+        <tal:block repeat="widget python:[[w for w in view.widgets][-1]]">
+          <span tal:replace="structure widget/hidden"/>
         </tal:block>
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">

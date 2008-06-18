@@ -204,12 +204,18 @@ class RegisterEditProfileForm(EditProfileForm):
             self.join_groups(groupsToJoin)
         self.form_fields = self.form_fields.omit('joinable_groups')
         self.set_data(data)
+
+        cf = str(data.get('came_from'))
+        if cf == 'None':
+          cf = ''
         
         if self.user_has_verified_email():
-            uri = 'register_password.html'
+            uri = 'register_password.html?form.came_from=%s' % cf
         else:
             email = self.context.get_emailAddresses()[0]
-            uri = 'verify_wait.html?form.email=%s' % email
+            uri = 'verify_wait.html?form.email=%s&form.came_from=%s' %\
+              (email, cf)
+
         return self.request.RESPONSE.redirect(uri)
         
     def user_has_verified_email(self):

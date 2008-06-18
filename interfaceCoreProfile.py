@@ -40,6 +40,10 @@ class IGSCoreProfileRegister(IGSCoreProfile):
       value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
       unique=True,
       default=[])
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
     email = EmailAddress(title=u'Email Address',
@@ -198,3 +202,4 @@ class IGSCreateUserCSV(Interface):
 
 class IGSRequestContact(Interface):
     pass
+

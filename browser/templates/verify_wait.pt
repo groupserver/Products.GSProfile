@@ -64,7 +64,9 @@
             tal:content="action">Big R</samp> 
           button will become avaliable, and you should click it.
         </p>
-
+        <tal:block repeat="widget python:[[w for w in view.widgets][-1]]">
+          <span tal:replace="structure widget/hidden"/>
+        </tal:block>
         <div class="buttons" tal:condition="view/availableActions">
           <span id="checking">
             Checking verification status

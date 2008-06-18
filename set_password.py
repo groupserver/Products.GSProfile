@@ -55,7 +55,7 @@ class SetPasswordForm(PageForm):
             self.status = u'<p>There were errors:</p>'
 
 class SetPasswordRegisterForm(SetPasswordForm):
-    form_fields = form.Fields(IGSSetPassword)
+    form_fields = form.Fields(IGSSetPasswordRegister)
     label = u'Set Password'
     pageTemplateFileName = 'browser/templates/set_password_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
@@ -73,8 +73,11 @@ class SetPasswordRegisterForm(SetPasswordForm):
 
         # Clean up
         user.clear_userPasswordResetVerificationIds()
-        
-        return self.request.RESPONSE.redirect('/?welcome=1')
+        uri = str(data.get('came_from'))
+        if uri == 'None':
+          uri = '/'
+        uri = '%s?welcome=1' % uri
+        return self.request.RESPONSE.redirect(uri)
 
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
