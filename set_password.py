@@ -7,6 +7,7 @@ from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.XWFCore import XWFUtils
 from Products.GSProfile.interfaces import *
+from Products.CustomUserFolder.userinfo import GSUserInfo
 
 import logging
 log = logging.getLogger('GSSetPassword')
@@ -20,13 +21,7 @@ class SetPasswordForm(PageForm):
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
-
-    @property
-    def userName(self):
-        retval = u''
-        retval = XWFUtils.get_user_realnames(self.context)
-        return retval
-
+        self.userInfo = GSUserInfo(context)
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_set" set to the success handler,
