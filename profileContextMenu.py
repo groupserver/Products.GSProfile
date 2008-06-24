@@ -74,7 +74,8 @@ class GSProfileContextMenuContentProvider(object):
         pages = ODict()
         pages['edit.html']     = 'Change Profile'
         pages['image.html']    = 'Change Image'
-        pages['email.html']     = 'Change Email Settings'
+        pages['email.html']    = 'Change Email Settings'
+        pages['nickname.html'] = 'Change Nickname'
         pages['password.html'] = 'Change Password'
         return pages        
 

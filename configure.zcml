@@ -67,6 +67,7 @@
   <interface 
     interface=".interfaces.IGSReigstration" 
     type="zope.app.content.interfaces.IContentType" />
+
   <browser:page 
     for="*"
     name="request_registration.html"

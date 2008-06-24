@@ -54,7 +54,7 @@ class SetPasswordRegisterForm(SetPasswordForm):
     label = u'Set Password'
     pageTemplateFileName = 'browser/templates/set_password_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-
+        
     @form.action(label=u'Set', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
