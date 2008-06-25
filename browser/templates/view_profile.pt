@@ -96,7 +96,7 @@
           </tal:block>
         </ul>
       </div><!--groups-->
-      
+            
       <div class="cols"
         tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
         <div id="files" class="rightColumn">

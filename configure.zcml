@@ -49,6 +49,11 @@
   <interface 
     interface=".interfaces.IGSProfileContextMenuContentProvider"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <adapter
+    factory=".profileContextMenu.GSProfileContextMenuContentProvider"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    name="groupserver.ProfileContextMenu"/>
+    
   <interface 
     interface=".interfaces.IGSUserImage"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
@@ -195,14 +200,44 @@
     class=".set_password.SetPasswordAdminJoinForm"
     permission="zope2.ManageProperties" />
 
-  <interface
-    interface=".interfaces.IGSEditProfileMarker"
-    type="zope.app.content.interfaces.IContentType" />
-   <browser:page 
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="edit.html"
-    class=".edit_profile.EditProfileForm"
-    permission="zope2.ManageProperties" />
+  <browser:menu 
+    id="user_profile_menu"
+    title="Test of the profile menus" />
+
+  <browser:menuItems
+    menu="user_profile_menu"
+    for="Products.CustomUserFolder.interfaces.ICustomUser">
+    <browser:menuItem 
+      action="edit.html"
+      title="Change Profile"
+      description="Change what you show in your profile"
+      order="1"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="image.html"
+      title="Change Image"
+      description="Change the image that is shown on your profile and posts"
+      order="2"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="email.html"
+      title="Change Email Settings"
+      description="Change your email addresses and delivery options"
+      order="3"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="nickname.html"
+      title="Change Nickname"
+      description="Change the link to your profile"
+      order="4"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="password.html"
+      title="Change Password"
+      description="Change the password you use to log in"
+      order="5"
+      permission="zope2.ManageProperties"/>
+  </browser:menuItems>
 
   <interface 
     interface=".interfaces.IGSUserProfileMarker"
@@ -213,6 +248,16 @@
     class=".view_profile.GSProfileView"
     template="browser/templates/view_profile.pt"
     permission="zope2.View" />
+
+  <interface
+    interface=".interfaces.IGSEditProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="edit.html"
+    class=".edit_profile.EditProfileForm"
+    permission="zope2.ManageProperties" />
+
 
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
@@ -252,7 +297,6 @@
   <interface 
     interface=".interfaces.IGSFormWidgets"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
-
 
 </configure>
 
