@@ -242,4 +242,3 @@ class RegisterEditProfileForm(EditProfileForm):
         siteGroup = '%s_member' % self.siteInfo.get_id()
         self.context.add_groupWithNotification(siteGroup)
 
-

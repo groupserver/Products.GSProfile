@@ -67,7 +67,6 @@
         tal:condition="view/verifiedAddressesNoDefault">
         <p tal:define="nV python:len(view.verifiedAddresses)">
           You have no default email address, but you do have
-          You have 
           <span tal:condition="python:nV==1">a verified address.</span>
           <span tal:condition="python:nV&gt;1">verified addresses.</span>
           You will need to either
