@@ -13,6 +13,7 @@ from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
+from Products.GSGroupMember.groupmembership import join_group
 import interfaces
 import utils
 from zope.app.form.browser.widget import renderElement
@@ -227,18 +228,14 @@ class RegisterEditProfileForm(EditProfileForm):
         ui = IGSUserInfo(self.context)
         joinableGroups = \
             self.groupsInfo.get_joinable_group_ids_for_user(self.context)
+        print self.siteInfo.siteObj
+        print self.groupsInfo.groupsObj
+
         for groupId in groupsToJoin:
             assert groupId in joinableGroups, \
               '%s not a joinable group' % groupId
-            groupInfo = createObject('groupserver.GroupInfo', self.context)
-            m = u'RegisterEditProfileForm: adding the user %s (%s) to '\
-                u'the group %s (%s)' % (ui.name, ui.id, 
-                 groupInfo.name, groupInfo.id)
-            log.info(m)
+            groupInfo = createObject('groupserver.GroupInfo', self.groupsInfo.groupsObj,
+                                     groupId)
             
-            userGroup = '%s_member' % groupId
-            self.context.add_groupWithNotification(userGroup)
-
-        siteGroup = '%s_member' % self.siteInfo.get_id()
-        self.context.add_groupWithNotification(siteGroup)
+            join_group(self.context, groupInfo)
 

@@ -9,6 +9,7 @@ from zope.schema import *
 
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
+from Products.GSGroupMember.groupmembership import join_group
 import interfaces
 import utils
 from edit_profile import *
@@ -143,7 +144,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         assert user, 'User not created or found'
 
         if groupMembershipId not in user.getGroups():
-            utils.join_group(user, self.groupInfo)
+            join_group(user, self.groupInfo)
             self.status = u'%s<li><a href="%s" class="fn">%s</a> is now '\
               u'a member of <a class="group" href="%s">%s</a>.</li>'%\
               (self.status, userInfo.url, userInfo.name, 

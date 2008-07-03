@@ -63,11 +63,6 @@
 
   <include files="*-site.zcml" />
 
-  <!--Utilities-->
-  <vocabulary 
-      name="JoinableGroups"
-      factory=".group_membership.JoinableGroupsForSite"/>
-
   <!-- Marker interfaces and views -->
   <interface 
     interface=".interfaces.IGSReigstration" 

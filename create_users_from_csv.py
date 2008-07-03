@@ -14,6 +14,7 @@ from Products.XWFCore.odict import ODict
 from Products.XWFCore.CSV import CSVFile
 from Products.CustomUserFolder.CustomUser import CustomUser
 from Products.CustomUserFolder.interfaces import IGSUserInfo
+from Products.GSGroupMember.groupmembership import join_group
 import interfaces, utils
 from emailaddress import NewEmailAddress, NotAValidEmailAddress,\
   DisposableEmailAddressNotAllowed, EmailAddressExists
@@ -427,7 +428,7 @@ class CreateUsersForm(BrowserView):
         if user:            
             groupMembershipId = '%s_member' % self.groupInfo.get_id()
             if groupMembershipId not in user.getGroups():
-                utils.join_group(user, self.groupInfo)
+                join_group(user, self.groupInfo)
             else:
                 new = 3
                 m = 'Skipped adding %s (%s) to the group %s (%s) as the user '\

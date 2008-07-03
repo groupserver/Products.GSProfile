@@ -180,42 +180,6 @@ def send_add_user_notification(user, admin, groupInfo, message=u''):
       n_dict=n_dict, 
       email_only=[email])
 
-def join_group(user, groupInfo):
-    assert user
-    assert isinstance(user, CustomUser)
-    assert groupInfo
-    assert groupInfo.siteInfo
-    
-    siteInfo = groupInfo.siteInfo
-
-    fn = user.getProperty('fn', '')
-    uid = user.getId()
-    m = u'utils.join_group: adding the user %s (%s) to the group %s (%s) '\
-        u'on %s (%s)' % \
-        (fn,                   uid, 
-         groupInfo.get_name(), groupInfo.get_id(),
-         siteInfo.get_name(), siteInfo.get_id())
-    log.info(m)
-
-    userGroups = user.getGroups()
-    userGroup = '%s_member' % groupInfo.get_id()
-    assert userGroup not in userGroups, 'User %s (%s) already in %s' % \
-      (fn, uid, userGroup)
-    user.add_groupWithNotification(userGroup)
-
-    siteGroup = '%s_member' % siteInfo.get_id()
-    if siteGroup not in userGroups:
-        m = u'AdminJoinEditProfileForm: the user %s (%s) is not a '\
-            u' member of the site %s (%s)' % \
-              (fn, uid, siteInfo.get_name(), siteInfo.get_id())
-        log.info(m)
-        user.add_groupWithNotification(siteGroup)
-
-    userGroupsAssert = user.getGroups()
-    assert userGroup in userGroupsAssert
-    assert siteGroup in userGroupsAssert
-
-
 def enforce_schema(inputData, schema):
     """
     SIDE EFFECTS
@@ -272,5 +236,4 @@ def escape_c(c):
     assert retval
     assert type(retval) == str
     return retval
-
 
