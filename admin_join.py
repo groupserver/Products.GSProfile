@@ -9,7 +9,8 @@ from zope.schema import *
 
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
-from Products.GSGroupMember.groupmembership import join_group
+from Products.GSGroupMember.groupmembership import \
+  join_group, user_member_of_group, invite_to_groups, user_admin_of_group
 import interfaces
 import utils
 from edit_profile import *
@@ -93,10 +94,8 @@ class AdminJoinEditProfileForm(EditProfileForm):
     def actual_handle_add(self, action, data):
         acl_users = self.context.acl_users
         email = data['email']
-        groupMembershipId = '%s_member' % self.groupInfo.get_id()
 
-        admin = self.request.AUTHENTICATED_USER
-        assert admin
+        admin = self.get_admin()
         adminInfo = IGSUserInfo(admin)
         m = u'AdminJoinEditProfileForm: Admin %s (%s) joining user with '\
           u'address <%s>' % (adminInfo.name, adminInfo.id, email)
@@ -119,7 +118,8 @@ class AdminJoinEditProfileForm(EditProfileForm):
             user = acl_users.get_userByEmail(email)
             assert user, 'User for address <%s> not found' % email
             userInfo = IGSUserInfo(user)
-            if groupMembershipId in user.getGroups():
+            
+            if user_member_of_group(user, self.groupInfo):
                 self.status=u'<li>The user with the email address '\
                   u'<code class="email">%s</code> &#8213;'\
                   u'<a href="%s" class="fn">%s</a> &#8213; is '\
@@ -127,11 +127,16 @@ class AdminJoinEditProfileForm(EditProfileForm):
                   u'<a class="group" href="%s">%s</a>.</li>'%\
                   (email, userInfo.url, userInfo.name, 
                    self.groupInfo.url, self.groupInfo.name)
+                self.status = u'%s<li>No changes have been made.</li>' % \
+                  self.status
             else:
-                self.status=u'<li>Using the existing user with the email '\
-                  u'address <code class="email">%s</code>: '\
-                  u'<a href="%s" class="fn">%s</a></li>' %\
-                  (email, userInfo.url, userInfo.name)
+                self.status=u'<li>Inviting the existing user with the '\
+                  u'email address <code class="email">%s</code> &#8213;'\
+                  u'<a href="%s" class="fn">%s</a> &#8213; to join '\
+                  u'<a class="group" href="%s">%s</a>.</li>'%\
+                  (email, userInfo.url, userInfo.name, 
+                   self.groupInfo.url, self.groupInfo.name)
+                invite_to_groups(userInfo, adminInfo, self.groupInfo)
         else:
             # Email address does not exist, but it is a legitimate address
             user = self.create_user(data)
@@ -140,20 +145,15 @@ class AdminJoinEditProfileForm(EditProfileForm):
               u'has been created, and given the email address '\
               u'<code class="email">%s</code></li>''' % \
                 (userInfo.url, userInfo.name, email)
-
-        assert user, 'User not created or found'
-
-        if groupMembershipId not in user.getGroups():
             join_group(user, self.groupInfo)
             self.status = u'%s<li><a href="%s" class="fn">%s</a> is now '\
               u'a member of <a class="group" href="%s">%s</a>.</li>'%\
               (self.status, userInfo.url, userInfo.name, 
                self.groupInfo.url, self.groupInfo.name)
-        else:
-            self.status = u'%s<li>No changes have been made.</li>' % \
-              self.status
+
         self.status = u'<ul>%s</ul>' % self.status
         self.createdUser = user
+        assert self.createdUser, 'User not created or found'
         
     def handle_add_action_failure(self, action, data, errors):
         if len(errors) == 1:
@@ -186,8 +186,6 @@ class AdminJoinEditProfileForm(EditProfileForm):
     def get_admin(self):
         loggedInUser = self.request.AUTHENTICATED_USER
         assert loggedInUser
-        roles = loggedInUser.getRolesInContext(self.groupInfo.groupObj)
-        assert ('GroupAdmin' in roles) or ('DivisionAdmin' in roles), \
-          '%s is not a group admin' % loggedInUser
+        assert user_admin_of_group(loggedInUser, self.groupInfo.groupObj)
         return loggedInUser
 

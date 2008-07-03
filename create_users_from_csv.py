@@ -14,7 +14,7 @@ from Products.XWFCore.odict import ODict
 from Products.XWFCore.CSV import CSVFile
 from Products.CustomUserFolder.CustomUser import CustomUser
 from Products.CustomUserFolder.interfaces import IGSUserInfo
-from Products.GSGroupMember.groupmembership import join_group
+from Products.GSGroupMember.groupmembership import *
 import interfaces, utils
 from emailaddress import NewEmailAddress, NotAValidEmailAddress,\
   DisposableEmailAddressNotAllowed, EmailAddressExists
@@ -66,15 +66,10 @@ class CreateUsersForm(BrowserView):
 
     def get_admin(self):
         if self.__admin == None:
-            self.__admin = self.request.AUTHENTICATED_USER
-            assert self.__admin
-            self.__adminInfo = IGSUserInfo(self.__admin)
-            roles = self.__admin.getRolesInContext(self.groupInfo.groupObj)
-            assert ('GroupAdmin' in roles) or ('DivisionAdmin' in roles), \
-              '%s (%s) is not an administrator of %s (%s) on %s (%s)' % \
-                (self.__adminInfo.name, self.__adminInfo.id, 
-                 self.groupInfo.name, self.groupInfo.id,
-                 self.siteInfo.get_name(), self.siteInfo.get_id())
+            user = self.request.AUTHENTICATED_USER
+            assert user
+            self.__admin = IGSUserInfo(user)
+            assert user_admin_of_group(self.__admin, self.groupInfo)
         return self.__admin
         
     def process_form(self):
@@ -336,7 +331,7 @@ class CreateUsersForm(BrowserView):
             message = u'%s<li id="existingUserInfo"'\
               u'class="disclosureWidget">'\
               u'<a href="#" class="disclosureButton"><strong>%d existing '\
-              u'%s</strong> %s added to %s.</a>\n'\
+              u'%s</strong> %s invited to join to %s.</a>\n'\
               u'<div class="disclosureShowHide" style="display:none;">'\
               u'%s</div></li>' % (message, existingUserCount,  userUsers, 
                 wasWere, self.groupInfo.get_name(), existingUserMessage)
@@ -410,8 +405,22 @@ class CreateUsersForm(BrowserView):
             user = self.acl_users.get_userByEmail(email)
             assert user, 'User for <%s> not found' % email
             userInfo = IGSUserInfo(user)
-            m = u'Added existing user <a class="fn" href="%s">%s</a>' %\
-              (userInfo.url, userInfo.name)
+
+            if user_member_of_group(user, self.groupInfo):
+                new = 3
+                m = u'Skipped adding %s (%s) to the group %s (%s) as the '\
+                  u'user is already a member' % \
+                  (userInfo.name, user.id, 
+                   self.groupInfo.name, self.groupInfo.id)
+                log.info(m)
+                m = u'Skipped existing group member '\
+                  u'<a class="fn" href="%s">%s</a>' %\
+                  (userInfo.url, userInfo.name)
+            else:
+                m = u'Invited existing user <a class="fn" href="%s">%s</a>' %\
+                (userInfo.url, userInfo.name)
+                invite_to_groups(userInfo, self.get_admin(), self.groupInfo)
+            error = False
         except DisposableEmailAddressNotAllowed, e:
             error = True
             m = self.error_msg(email, unicode(e))
@@ -422,24 +431,10 @@ class CreateUsersForm(BrowserView):
             userInfo = self.create_user(fields)
             user = userInfo.user
             new = 2
+            join_group(user, self.groupInfo)
+            error = False
             m = u'Created new user <a class="fn" href="%s">%s</a>' %\
               (userInfo.url, userInfo.name)
-            
-        if user:            
-            groupMembershipId = '%s_member' % self.groupInfo.get_id()
-            if groupMembershipId not in user.getGroups():
-                join_group(user, self.groupInfo)
-            else:
-                new = 3
-                m = 'Skipped adding %s (%s) to the group %s (%s) as the user '\
-                  'is already a member' % \
-                    (userInfo.name, user.id, 
-                     self.groupInfo.name, self.groupInfo.id)
-                log.info(m)
-                m = u'Skipped existing group member '\
-                  u'<a class="fn" href="%s">%s</a>' %\
-                  (userInfo.url, userInfo.name)
-            error = False
             
         result = {'error':      error,
                   'message':    m,

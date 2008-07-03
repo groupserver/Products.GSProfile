@@ -9,6 +9,7 @@ from string import ascii_lowercase, digits
 
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.CustomUser import CustomUser
+from Products.GSGroupMember.groupmembership import userInfo_to_user
 
 import logging
 log = logging.getLogger('GSProfile Utilities')
@@ -119,7 +120,7 @@ def create_user_from_email(context, email):
     assert isinstance(user, CustomUser)
     return user
 
-def send_add_user_notification(user, admin, groupInfo, message=u''):
+def send_add_user_notification(u, a, groupInfo, message=u''):
     """Send an Add User notification to a new user
     
     DESCRIPTION
@@ -142,9 +143,10 @@ def send_add_user_notification(user, admin, groupInfo, message=u''):
       * Sends an "admin_create_new_user" message to the user, containing
         "message".
     """
-    assert user
-    assert isinstance(user, CustomUser)
-    assert admin
+    assert u
+    user = userInfo_to_user(u)
+    assert a
+    admin = userInfo_to_user(a)
     assert admin.get_preferredEmailAddresses(), 'Admin has no preferred email addresses'
     #assert isinstance(admin, CustomUser)
     assert groupInfo
