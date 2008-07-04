@@ -8,6 +8,7 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.XWFCore import XWFUtils
 from Products.GSProfile.interfaces import *
 from Products.CustomUserFolder.userinfo import GSUserInfo
+from Products.GSGroupMember.utils import inform_ptn_coach_of_join
 
 import logging
 log = logging.getLogger('GSSetPassword')
@@ -104,6 +105,12 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         assert userGroup in user.getGroups()
         user.remove_invitations()
         user.verify_emailAddress(data['invitationId'])
+
+        ptnCoachId = groupInfo.get_property('ptn_coach_id', '')
+        if ptnCoachId:
+            ptnCoachInfo = createObject('groupserver.UserFromId', 
+                                        self.context, ptnCoachId)
+            inform_ptn_coach_of_join(ptnCoachInfo, self.userInfo, groupInfo)
         
         uri = '%s?welcome=1' % groupInfo.get_url()
         m = u'SetPasswordAdminJoinForm: redirecting user to %s' % uri

@@ -14,6 +14,7 @@ from zope.schema import *
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.GSGroupMember.groupmembership import join_group
+from Products.GSGroupMember.utils import inform_ptn_coach_of_join
 import interfaces
 import utils
 from zope.app.form.browser.widget import renderElement
@@ -135,6 +136,7 @@ class RegisterEditProfileForm(EditProfileForm):
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
+        self.userInfo = IGSUserInfo(self.context)
         site_root = context.site_root()
         assert hasattr(site_root, 'GlobalConfiguration')
         config = site_root.GlobalConfiguration
@@ -234,8 +236,16 @@ class RegisterEditProfileForm(EditProfileForm):
         for groupId in groupsToJoin:
             assert groupId in joinableGroups, \
               '%s not a joinable group' % groupId
-            groupInfo = createObject('groupserver.GroupInfo', self.groupsInfo.groupsObj,
-                                     groupId)
+            groupInfo = createObject('groupserver.GroupInfo', 
+                                      self.groupsInfo.groupsObj,
+                                      groupId)
             
             join_group(self.context, groupInfo)
+
+            ptnCoachId = groupInfo.get_property('ptn_coach_id', '')
+            if ptnCoachId:
+                ptnCoachInfo = createObject('groupserver.UserFromId', 
+                                            self.context, ptnCoachId)
+                inform_ptn_coach_of_join(ptnCoachInfo, self.userInfo,
+                                         groupInfo)
 
