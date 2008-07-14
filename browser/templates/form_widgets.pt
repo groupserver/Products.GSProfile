@@ -24,7 +24,7 @@
       tal:condition="python:not(hasattr(widget, 'tag'))"
       tal:content="structure widget"/>
     
-    <label for="abc123" title="The hint for the widget"
+    <label for="abc123" title="The hint for the widget" class="checkboxLabel"
       tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
       tal:attributes="for widget/name; title widget/hint"
       tal:content="widget/label">

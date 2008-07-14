@@ -14,11 +14,12 @@ import zope.app.apidoc.interface
 
 from interfaces import *
 
+import logging
+log = logging.getLogger('GSProfile')
+
 class GSProfileView(BrowserView):
     '''View object for standard GroupServer User-Profile Instances'''
     def __init__(self, context, request):
-        assert context
-        assert request
         self.context = context
         self.request = request
         self.siteInfo = createObject('groupserver.SiteInfo', context)

@@ -5,6 +5,10 @@ import zope.viewlet.interfaces, zope.contentprovider.interfaces
 from Products.XWFCore import XWFUtils, ODict
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from interfaces import *
+from zope.app.publisher.browser.menu import getMenu
+
+import logging
+log = logging.getLogger('GSProfileContextMenuContentProvider')
 
 class GSProfileContextMenuContentProvider(object):
     """GroupServer context-menu for the user profile area.
@@ -21,7 +25,6 @@ class GSProfileContextMenuContentProvider(object):
 
         self.context = context
         self.request = request
-
         
     def update(self):
         self.__updated = True
@@ -32,11 +35,10 @@ class GSProfileContextMenuContentProvider(object):
           self.context)
         self.userInfo = IGSUserInfo(self.context)
 
-        self.__pages__ = self.get_pages()
+        self.pages = getMenu('user_profile_menu', self.context, self.request)
 
         self.requestBase = self.request.URL.split('/')[-1]
         self.userId = self.context.getId()
-        self.userName = XWFUtils.get_user_realnames(self.context)
 
     def render(self):
         if not self.__updated:
@@ -48,57 +50,9 @@ class GSProfileContextMenuContentProvider(object):
     #########################################
     # Non standard methods below this point #
     #########################################
-    def get_pages(self):
-        assert self.view
-        config = self.__get_global_config()
-        showEmail = config.getProperty('showEmailAddressTo','nobody')
-        showEmail = showEmail.lower()
-        
-        if (self.viewingUser.has_role('Authenticated')
-            and (self.context.getId() == self.viewingUser.getId())):
-            return self.get_edit_pages()
-        elif (self.viewingUser.has_role('Authenticated')
-            and (showEmail == 'request')):
-            return self.get_request_pages()
-        else:
-            return ODict()
-
-    def __get_global_config(self):
-        site_root = self.context.site_root()
-        assert hasattr(site_root, 'GlobalConfiguration')
-        config = site_root.GlobalConfiguration
-        assert config
-        return config        
-
-    def get_edit_pages(self):
-        pages = ODict()
-        pages['edit.html']     = 'Edit Profile'
-        pages['image.html']    = 'Edit Image'
-        pages['email.html']     = 'Edit Email Settings'
-        pages['password.html'] = 'Set Password'
-        return pages        
-
-    def get_request_pages(self):
-        pages = ODict()
-        pages['user-request-contact'] = 'Request Contact'
-        return pages
-        
-    @property
-    def viewingUser(self):
-        assert hasattr(self, 'request')
-        assert hasattr(self.request, 'AUTHENTICATED_USER')
-        retval = self.request.AUTHENTICATED_USER
-        return retval
     
-    @property
-    def pages(self):
-        return self.__pages__
-        
-    def page_is_current(self, pageId):
-        return self.requestBase == pageId
-
-    def pageClass(self, pageId):
-        if self.page_is_current(pageId):
+    def page_class(self, page):
+        if page['selected']:
             retval = 'current'
         else:
             retval = 'not-current'

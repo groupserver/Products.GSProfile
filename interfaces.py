@@ -37,6 +37,11 @@ class IGSSetPassword(Interface):
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
 
+class IGSSetPasswordRegister(IGSSetPassword):
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+
 class IGSSetPasswordAdminJoin(IGSSetPassword):
     invitationId = ASCIILine(title=u'Invitation Identifier',
       description=u'The identifier sent to you when you were invited to '\
@@ -63,6 +68,10 @@ class IGSVerifyWait(IGSEmailAddressEntry):
     """Schema use to define the user-interface presented while the user
     waits for verification of his or her email address."""
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 # Registration
 class GroupIDNotFound(ValidationError):
     """Group identifier not found"""
@@ -91,6 +100,10 @@ class IGSRequestRegistration(IGSEmailAddressEntry):
         u'wish to join.',
       required=False)
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+        
 # Email Address Verification
 
 class VIDNotFound(ValidationError):

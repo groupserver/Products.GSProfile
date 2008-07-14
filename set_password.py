@@ -7,26 +7,21 @@ from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.XWFCore import XWFUtils
 from Products.GSProfile.interfaces import *
+from Products.CustomUserFolder.userinfo import GSUserInfo
 
 import logging
 log = logging.getLogger('GSSetPassword')
 
 class SetPasswordForm(PageForm):
     form_fields = form.Fields(IGSSetPassword)
-    label = u'Set Password'
+    label = u'Change Password'
     pageTemplateFileName = 'browser/templates/set_password.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
-
-    @property
-    def userName(self):
-        retval = u''
-        retval = XWFUtils.get_user_realnames(self.context)
-        return retval
-
+        self.userInfo = GSUserInfo(context)
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_set" set to the success handler,
@@ -34,7 +29,7 @@ class SetPasswordForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Set', failure='handle_set_action_failure')
+    @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
         assert self.form_fields
@@ -45,7 +40,7 @@ class SetPasswordForm(PageForm):
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
         
-        self.status = u'Your password has been set.'
+        self.status = u'Your password has been changed.'
         assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):
@@ -55,11 +50,11 @@ class SetPasswordForm(PageForm):
             self.status = u'<p>There were errors:</p>'
 
 class SetPasswordRegisterForm(SetPasswordForm):
-    form_fields = form.Fields(IGSSetPassword)
+    form_fields = form.Fields(IGSSetPasswordRegister)
     label = u'Set Password'
     pageTemplateFileName = 'browser/templates/set_password_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-
+        
     @form.action(label=u'Set', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
@@ -73,8 +68,11 @@ class SetPasswordRegisterForm(SetPasswordForm):
 
         # Clean up
         user.clear_userPasswordResetVerificationIds()
-        
-        return self.request.RESPONSE.redirect('/?welcome=1')
+        uri = str(data.get('came_from'))
+        if uri == 'None':
+          uri = '/'
+        uri = '%s?welcome=1' % uri
+        return self.request.RESPONSE.redirect(uri)
 
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)

@@ -40,6 +40,10 @@ class IGSCoreProfileRegister(IGSCoreProfile):
       value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
       unique=True,
       default=[])
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
     email = EmailAddress(title=u'Email Address',
@@ -98,7 +102,7 @@ class GSImage(Bytes):
 
         tmpImageName = '%s.jpg_temp' % self.context.getId()
         if hasattr(images, tmpImageName):
-            self.context.contactsimages.manage_delObjects([tmpImageName])
+            context.contactsimages.manage_delObjects([tmpImageName])
         userName = XWFUtils.get_user_realnames(self.context)
         images.manage_addImage(tmpImageName, image, userName)
         
@@ -195,4 +199,7 @@ class IGSCreateUserCSV(Interface):
         u'membership information you wish to load.',
       required=True,
       default=None)
+
+class IGSRequestContact(Interface):
+    pass
 

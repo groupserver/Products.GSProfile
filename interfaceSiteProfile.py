@@ -55,6 +55,11 @@ class IOGNProfileRegister(IOGNProfile):
       unique=True,
       default=[])
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
+
 class IOGNProfileAdminJoin(IOGNProfile):
     email = EmailAddress(title=u'Email Address',
       description=u'The email address of the new group member. '\
@@ -155,6 +160,10 @@ class IABELProfileRegister(IABELProfile):
       unique=True,
       default=[])
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 class IABELProfileAdminJoin(IABELProfile):
     email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
@@ -330,6 +339,11 @@ class IDoWireProfileRegister(IDoWireProfile):
       unique=True,
       default=[])
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
+
 class IDoWireProfileAdminJoin(IDoWireProfile):
     email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',
@@ -433,6 +447,10 @@ class IEDemProfileRegister(IEDemProfile):
       unique=True,
       default=[])
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 class IEDemProfileAdminJoin(IEDemProfile):
     email = EmailAddress(title=u'Email Address',
       description=u'Your email address.',

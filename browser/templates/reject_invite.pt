@@ -12,6 +12,7 @@
     </title>
     
   </head>
+  
   <body metal:fill-slot="body">
     <h1>Invitation Rejected</h1>
       <p>

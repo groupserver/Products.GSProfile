@@ -31,10 +31,10 @@
     <tal:block metal:fill-slot="contextnavigation">
     </tal:block>
     <tal:block metal:fill-slot="sitenavigation">
-      <div id="sitenavigation" />
+      <div id="sitenavigation">&#160;</div>
     </tal:block>
     <tal:block metal:fill-slot="utilitylinks">
-      <div id="utilitylinks" />
+      <div id="utilitylinks">&#160;</div>
     </tal:block>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
@@ -64,7 +64,9 @@
             tal:content="action">Big R</samp> 
           button will become avaliable, and you should click it.
         </p>
-
+        <tal:block repeat="widget python:[[w for w in view.widgets][-1]]">
+          <span tal:replace="structure widget/hidden"/>
+        </tal:block>
         <div class="buttons" tal:condition="view/availableActions">
           <span id="checking">
             Checking verification status

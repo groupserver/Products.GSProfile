@@ -43,7 +43,11 @@ class VerifyWaitForm(PageForm):
 
     @form.action(label=u'Next', failure='handle_set_action_failure')
     def handle_set(self, action, data):
-        return self.request.RESPONSE.redirect('register_password.html')
+        cf = str(data.get('came_from'))
+        if cf == 'None':
+          cf = ''
+        uri = 'register_password.html?form.came_from=%s' % cf
+        return self.request.RESPONSE.redirect(uri)
         
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:

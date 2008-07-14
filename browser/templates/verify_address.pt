@@ -20,8 +20,9 @@
     -->
   </head>
   <body>
-    <div metal:fill-slot="messages" class="message-result"
+    <div metal:fill-slot="body"
       tal:define="email request/email">
+      <h1>Address Verified</h1>
       <p>The address 
         <code class="email" tal:content="email"/>
         has been verified.
@@ -34,7 +35,19 @@
           tal:content="view/siteInfo/get_name">this site</span>.
       </p>
     </div>
-    <tal:block metal:fill-slot="body">
+    <tal:block metal:fill-slot="contextnavigation">
+    </tal:block>
+    <tal:block metal:fill-slot="sitenavigation">
+      <div id="sitenavigation">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="utilitylinks">
+      <div id="utilitylinks">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="footer">
+      <div id="footer">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="search">
+      <div id="searcharea">&#160;</div>
     </tal:block>
   </body>
 </html>

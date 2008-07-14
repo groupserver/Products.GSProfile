@@ -27,7 +27,7 @@
       tal:content="structure result/message"/>
     <tal:block metal:fill-slot="body"
       tal:define="addresses view/userAddresses; 
-        mAddr python:len(addresses)>1">
+        mAddr view/modifyAddresses">
       <h1>Change Email Settings</h1>
       <p>
         Below 
@@ -45,11 +45,55 @@
         address<span tal:condition="mAddr">es</span> 
         you  have set as <samp class="option">Default</samp>.
       </p>
+      
+      <div id="single-bouncing" class="message-error"
+        tal:condition="view/singleAddressBouncing"
+        tal:define="addr python:addresses[0].address">
+        <p>
+          Your only email address,
+          <code tal:content="addr" class="email">foo@bar.wibble</code>,
+          is not verified &#8213; probably because it was
+          bouncing.
+          You will need to either
+        </p>
+        <ul>
+          <li>Verify 
+            <code tal:content="addr" class="email">foo@bar.wibble</code>,
+            or</li>
+          <li>Add another address and make it your default address.</li>
+        </ul>
+      </div><!--single-bouncing-->
+      <div id="verified-no-default" class="message-error" 
+        tal:condition="view/verifiedAddressesNoDefault">
+        <p tal:define="nV python:len(view.verifiedAddresses)">
+          You have no default email address, but you do have
+          <span tal:condition="python:nV==1">a verified address.</span>
+          <span tal:condition="python:nV&gt;1">verified addresses.</span>
+          You will need to either
+        </p>
+        <ul>
+          <li>Make an existing address your default address, or</li>
+          <li>Add another address and make it your default address.</li>
+        </ul>
+      </div><!--verified-no-default-->
+      <div id="multiple-addresses-all-unverified" class="message-error"
+        tal:condition="view/multipleAddressesAllUnverified">
+        <p>
+          You have no verified email addresses.
+          You will need to either
+        </p>
+        <ul>
+          <li>Verify an existing address, or</li>
+          <li>Add another address and verify it.</li>
+        </ul>
+      </div><!--multiple-addresses-all-unverified-->
       <form id="changeUserEmailSettings"
         enctype="multipart/form-data" method="post" action="." 
         tal:attributes="action request/URL" >
         <input type="hidden" class="hidden" name="submitted" value=""/>
-        <table tal:define="mDef view/multipleDefault" id="emailAddresses"
+        <table tal:define="mDef view/multipleDefault; 
+            mulAddr view/multipleAddresses" 
+          id="emailAddresses"
           class="profile">
           <thead>
             <tr>
@@ -77,7 +121,7 @@
                   <span 
                     tal:condition="python:ver and not(defl)">Verified</span>
                   <span
-                    tal:condition="not:ver">Unverified</span>
+                    tal:condition="not:ver">Not verified</span>
                 </td>
                 <td class="change" tal:condition="mAddr">
                   <div tal:condition="python:not(defl) or (defl and mDef) and not(weird)">
@@ -95,7 +139,7 @@
                         tal:condition="python:defl and mDef"
                         value="remove_default">Remove from default</option>
                       <option
-                        tal:condition="python: not(defl) or (defl and mDef)"
+                        tal:condition="python:mulAddr and (not(defl) or (defl and mDef))"
                         value="remove">Remove address</option>
                     </select>
                     <input class="button" type="submit" value="Change"

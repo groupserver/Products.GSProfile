@@ -2,16 +2,17 @@
   <div id="contextnav" class="xhtml2-nl">
     <p class="label">
       <a href="#" title="Profile of A. User" class="fn"
-        tal:define="fn python:view.userInfo.name; 
-          url python:view.userInfo.url"
-        tal:attributes="href url; title string:Profile of ${fn};">Profile</a>
+        tal:attributes="href view/userInfo/url; 
+          title string:Profile of ${view/userInfo/name};">Profile</a>
     </p>
     <ul>
-      <tal:block repeat="page python:view.pages.keys()">
+      <!--tal:block repeat="page view/pages"-->
+      <tal:block repeat="page view/pages">
         <li>
-          <a href="#" tal:attributes="href page; 
-              class python:view.pageClass(page);"
-            tal:content="python:view.pages[page]">Page Name</a>
+          <a href="#" tal:attributes="href page/action; 
+              class python:view.page_class(page);
+              title page/description"
+            tal:content="page/title">Page Name</a>
         </li>
       </tal:block>
     </ul>

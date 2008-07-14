@@ -17,7 +17,7 @@ log = logging.getLogger('GSProfile')
 
 class RequestRegistrationForm(PageForm):
     form_fields = form.Fields(IGSRequestRegistration)
-    label = u'Register'
+    label = u'Sign Up'
     pageTemplateFileName = 'browser/templates/request_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -53,7 +53,7 @@ class RequestRegistrationForm(PageForm):
     #   action to the "actions" instance variable (creating it if 
     #   necessary). I did not need to explicitly state that "Reset" is the 
     #   label, but it helps with readability.
-    @form.action(label=u'Register', 
+    @form.action(label=u'Sign up', 
       failure='handle_register_action_failure', 
       validator='validate')
     def handle_register(self, action, data):
@@ -75,7 +75,7 @@ class RequestRegistrationForm(PageForm):
               <code class="email">%s</code> already exists on 
               <span class="site">%s</span>. Either
               <ul>
-                <li><strong>Register</strong> another email address,</li>
+                <li><strong>Sign up</strong> with another email address,</li>
                 <li><a href="%s"><strong>Reset</strong> your password,</a> 
                   or</li>
                 <li><a href="/login.html"><strong>Login.</strong></a>
@@ -92,8 +92,14 @@ class RequestRegistrationForm(PageForm):
             
             # Go to the edit-profile page
             uri = '%s/registration_profile.html' % userInfo.url
-            if 'groupId' in data.keys():
-                uri = '%s?form.joinable_groups:list=%s' % (uri, data['groupId'])
+            cf = str(data.get('came_from'))
+            if cf == 'None':
+              cf = ''
+            gid = str(data.get('groupId'))
+            if gid == 'None':
+              gid = ''
+            uri = '%s?form.joinable_groups:list=%s&form.came_from=%s' %\
+              (uri, gid, cf)
             return self.request.RESPONSE.redirect(uri)
 
     def handle_register_action_failure(self, action, data, errors):

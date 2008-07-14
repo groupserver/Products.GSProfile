@@ -38,8 +38,9 @@ class RequestPasswordResetForm(PageForm):
         assert data
         
         if self.address_exists(data['email']):
-            m = 'Password Reset: sending a reset message out to the user '\
-              'with the address <%s>' % data['email']
+            m = u'Password Reset: sending a reset message out to the user '\
+              u'with the address <%s> on the site %s (%s)' %\
+              (data['email'], self.siteInfo.name, self.siteInfo.id)
             log.info(m)
             self.reset_password(data['email'])
             self.status = u'''Check your email inbox at
@@ -49,9 +50,10 @@ class RequestPasswordResetForm(PageForm):
             assert type(self.status) == unicode
         else:
             url = 'request_registration.html?form.email=%s' % data['email']
-            m = 'Password Reset: Redirecting from the request password'\
-              'reset page to the request registration page (%s) '\
-              'for the address <%s>' % (url, data['email'])
+            m = u'Password Reset: Redirecting from the request password'\
+              u'reset page to the request registration page (%s) '\
+              u'for the address <%s> on the site %s (%s)' %\
+              (url, data['email'], self.siteInfo.name, self.siteInfo.id)
             log.info(m)
             
             return self.request.RESPONSE.redirect(url)
