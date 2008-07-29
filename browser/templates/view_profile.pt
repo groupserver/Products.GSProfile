@@ -38,7 +38,7 @@
       <div class="vcard">
         <h1>Profile of 
           <span class="fn" 
-            tal:content="python:view.userInfo.name">A. Person</span>
+            tal:content="view/userInfo/name">A. Person</span>
         </h1>
         <div tal:define="user view/context"
           tal:replace="structure provider:groupserver.UserImage" />
@@ -91,12 +91,11 @@
         <ul>
           <tal:block repeat="group groups">
             <li><a href="#" class="group"
-              tal:content="group/get_name" 
-              tal:attributes="href group/get_url">Group!</a></li>
+              tal:content="group/name" 
+              tal:attributes="href group/url">Group!</a></li>
           </tal:block>
         </ul>
       </div><!--groups-->
-            
       <div class="cols"
         tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
         <div id="files" class="rightColumn">
