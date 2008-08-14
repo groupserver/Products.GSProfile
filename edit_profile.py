@@ -126,6 +126,10 @@ class EditProfileForm(PageForm):
         return retval
 
 class RegisterEditProfileForm(EditProfileForm):
+    """The Change Profile page used during registration is slightly 
+    different from the standard Change Profile page, as the user is able
+    to join groups.
+    """
     label = u'Change Profile'
     pageTemplateFileName = 'browser/templates/edit_profile_register.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
@@ -230,8 +234,6 @@ class RegisterEditProfileForm(EditProfileForm):
         ui = IGSUserInfo(self.context)
         joinableGroups = \
             self.groupsInfo.get_joinable_group_ids_for_user(self.context)
-        print self.siteInfo.siteObj
-        print self.groupsInfo.groupsObj
 
         for groupId in groupsToJoin:
             assert groupId in joinableGroups, \
