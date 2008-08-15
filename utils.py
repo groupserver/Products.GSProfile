@@ -7,7 +7,7 @@ from zope.interface import implements, providedBy, implementedBy,\
 
 from string import ascii_lowercase, digits
 
-from Products.XWFCore import XWFUtils
+from Products.XWFCore.XWFUtils import convert_int2b62, assign_ownership
 from Products.CustomUserFolder.CustomUser import CustomUser
 from Products.GSGroupMember.groupmembership import userInfo_to_user
 
@@ -40,7 +40,7 @@ def login(context, user):
 def verificationId_from_email(email):
       # Let us hope that the verification ID *is* unique
       vNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-      verificationId = str(XWFUtils.convert_int2b62(vNum))
+      verificationId = str(convert_int2b62(vNum))
       assert type(verificationId) == str
       return verificationId
 
@@ -100,18 +100,28 @@ def create_user_from_email(context, email):
     log.info(m)
     
     userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-    userId = str(XWFUtils.convert_int2b62(userNum))
+    userId = str(convert_int2b62(userNum))
 
     # Ensure that the user ID is unique. There is also has a race 
     #   condition, and the loop is non-deterministic.
     acl_users = __get_acl_users_for_context(context)
     while (acl_users.getUserById(userId)):
         userNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-        userId = str(XWFUtils.convert_int2b62(userNum))
+        userId = str(convert_int2b62(userNum))
         
     displayName = email.split('@')[0]
-    
+
     user = acl_users.simple_register_user(email, userId, displayName)
+    
+    # --=mpj17=-- Ensure that the user's profile is owned by the user, and
+    #   *only* the user.
+    assign_ownership(user, user.getId(), recursive=0, 
+      acl_user_path='/'.join(acl_users.getPhysicalPath()))
+    user.manage_delLocalRoles([uid for uid in 
+                               user.users_with_local_role('Owner')
+                               if uid != userId])
+            
+
     m = 'utils.create_user_from_email: Created a new user %s (%s)' % \
       (user.getProperty('fn', ''), user.getId())
     log.info(m)

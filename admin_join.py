@@ -95,8 +95,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         acl_users = self.context.acl_users
         email = data['email']
 
-        admin = self.get_admin()
-        adminInfo = IGSUserInfo(admin)
+        adminInfo = createObject('groupserver.LoggedInUser', self.context)
         m = u'AdminJoinEditProfileForm: Admin %s (%s) joining user with '\
           u'address <%s>' % (adminInfo.name, adminInfo.id, email)
         log.info(m)
@@ -178,14 +177,9 @@ class AdminJoinEditProfileForm(EditProfileForm):
         log.info(m)
         
         # Send notification
-        utils.send_add_user_notification(user, self.get_admin(), 
+        adminInfo = createObject('groupserver.LoggedInUser', self.context)
+        utils.send_add_user_notification(user, adminInfo.user, 
           self.groupInfo, data.get('message', ''))
         
         return user
-
-    def get_admin(self):
-        loggedInUser = self.request.AUTHENTICATED_USER
-        assert loggedInUser
-        assert user_admin_of_group(loggedInUser, self.groupInfo.groupObj)
-        return loggedInUser
 
