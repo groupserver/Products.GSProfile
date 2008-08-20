@@ -90,7 +90,23 @@
           </tal:block>
         </div><!--columns-->
 
-        <h2>Step 4: Create the Users</h2>
+        <h2>Step 4: Set the Message Delivery Settings</h2>
+        <div class="value">
+          <input id="delivery.0" class="radioType" type="radio" 
+            value="email" name="delivery" checked="checked"/>
+          <label class="radioLabel" for="delivery.0">One email per 
+            post.</label>
+          <br/>
+          <input id="delivery.1" class="radioType" type="radio" 
+            value="digest" name="delivery"/>
+          <label class="radioLabel" for="delivery.1">Daily digest of 
+            topics.</label>
+          <br/>
+          <input id="delivery.2" class="radioType" type="radio" 
+            value="web" name="delivery"/>
+          <label class="radioLabel" for="delivery.2">Web only</label>
+        </div>
+        <h2>Step 5: Create the Users</h2>
         <p>
           Click the <samp class="button">Create</samp> button to
           create the users specified in your CSV file.
