@@ -93,7 +93,7 @@ def send_verification_message(context, user, email):
 
 def create_user_from_email(context, email):
     assert email
-    assert type(email) == str
+    assert type(email) == str, 'Email is a %s, not a str' % type(email)
     assert '@' in email
     m = 'utils.create_user_from_email: Creating a new user for the '\
       'address <%s>' % email

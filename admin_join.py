@@ -16,6 +16,8 @@ import utils
 from edit_profile import *
 from emailaddress import NewEmailAddress, EmailAddressExists
 
+from Products.GSGroup.changebasicprivacy import radio_widget
+
 import logging
 log = logging.getLogger('GSProfile')
 
@@ -53,6 +55,8 @@ class AdminJoinEditProfileForm(EditProfileForm):
         tz.custom_widget = select_widget
         
         self.form_fields['biography'].custom_widget = wym_editor_widget
+        
+        self.form_fields['delivery'].custom_widget = radio_widget
          
         stdIfaceName = config.getProperty('profileInterface',
           'IGSCoreProfile')
@@ -175,6 +179,14 @@ class AdminJoinEditProfileForm(EditProfileForm):
         m = 'AdminJoinEditProfileForm: Changed the attributes ' \
           'for the user %s (%s)' % (userInfo.name, userInfo.id)
         log.info(m)
+
+        if data['delivery'] == 'email':
+            # --=mpj17=-- The default is one email per post
+            pass
+        elif data['delivery'] == 'digest':
+            user.set_enableDigestByKey(self.groupInfo.id)
+        elif data['delivery'] == 'web':
+            user.set_disableDeliveryByKey(self.groupInfo.id)
         
         # Send notification
         adminInfo = createObject('groupserver.LoggedInUser', self.context)

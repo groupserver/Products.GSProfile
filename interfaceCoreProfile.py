@@ -3,7 +3,7 @@ import re, pytz
 from string import ascii_letters, digits
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
-from zope.schema.vocabulary import SimpleVocabulary
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from Products.XWFCore import XWFUtils
 from emailaddress import EmailAddress
 
@@ -11,6 +11,11 @@ def display_name_not_nul(text):
     retval = text.strip() != u''
     assert type(retval) == bool
     return retval
+
+emailTerm    = SimpleTerm('email', 'email',  u'One email per post.')
+digestTerm   = SimpleTerm('digest','digest', u'Daily digest of topics.')
+webOnlyTerm  = SimpleTerm('web',   'web',    u'Web only')
+deliveryVocab = SimpleVocabulary([emailTerm, digestTerm, webOnlyTerm])
 
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
@@ -47,7 +52,7 @@ class IGSCoreProfileRegister(IGSCoreProfile):
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
     email = EmailAddress(title=u'Email Address',
-      description=u'Your email address.',
+      description=u"The email address of the new user.",
       required=True)
     # --=mpj17=-- A normal email address field is used, rather than a
     #   *new* email address field, because we want to add users who 
@@ -57,6 +62,10 @@ class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
     message = Text(title=u'Message',
       description=u'The message to send to the new group member',
       required=False)
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
 
 class IGSCoreProfileAdminJoinCSV(IGSCoreProfileAdminJoin):
     pass
