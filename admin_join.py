@@ -88,6 +88,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
                 n = w.name.split(w._prefix)[1]
                 if n not in self.standardFieldIds:
                     self.__adminFields.append(w)
+            self.__adminFields.sort()
         assert type(self.__adminFields) == list
         return self.__adminFields
             

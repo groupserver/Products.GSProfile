@@ -12,10 +12,27 @@ def display_name_not_nul(text):
     assert type(retval) == bool
     return retval
 
-emailTerm    = SimpleTerm('email', 'email',  u'One email per post.')
-digestTerm   = SimpleTerm('digest','digest', u'Daily digest of topics.')
-webOnlyTerm  = SimpleTerm('web',   'web',    u'Web only')
-deliveryVocab = SimpleVocabulary([emailTerm, digestTerm, webOnlyTerm])
+deliveryVocab = SimpleVocabulary([
+  SimpleTerm('email', 'email',  u'One email per post.'),
+  SimpleTerm('digest','digest', u'Daily digest of topics.'), 
+  SimpleTerm('web',   'web',    u'Web only.')])
+deliveryChoice = Choice(title=u'Group Message Delivery Settings',
+    description=u'The message delivery settings for the new user',
+    vocabulary=deliveryVocab,
+    default='email')
+
+invitationMessageText = Text(title=u'Invitation Message',
+  description=u'The message that appears at the top of the email '\
+    u'invitation to the new group member. The message will appear before '\
+    u'the two links that allow the user to accept or reject the '\
+    u'inviation.',
+  required=False)
+
+adminNewUserEmail = EmailAddress(title=u'Email Address',
+      description=u'The email address of the new group member.'\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the new group member.',
+      required=True)
 
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
@@ -51,21 +68,14 @@ class IGSCoreProfileRegister(IGSCoreProfile):
     
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
-    email = EmailAddress(title=u'Email Address',
-      description=u"The email address of the new user.",
-      required=True)
+    email = adminNewUserEmail
     # --=mpj17=-- A normal email address field is used, rather than a
     #   *new* email address field, because we want to add users who 
     #   exist on the system :)
     
 class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
-    message = Text(title=u'Message',
-      description=u'The message to send to the new group member',
-      required=False)
-    delivery = Choice(title=u'Group Message Delivery Settings',
-      description=u'The message delivery settings for the new user',
-      vocabulary=deliveryVocab,
-      default='email')
+    message = invitationMessageText
+    delivery = deliveryChoice
 
 class IGSCoreProfileAdminJoinCSV(IGSCoreProfileAdminJoin):
     pass

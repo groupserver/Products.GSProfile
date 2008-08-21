@@ -4,7 +4,9 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
-from emailaddress import EmailAddress
+from interfaceCoreProfile import deliveryChoice, invitationMessageText,\
+  adminNewUserEmail
+
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -61,18 +63,11 @@ class IOGNProfileRegister(IOGNProfile):
     
 
 class IOGNProfileAdminJoin(IOGNProfile):
-    email = EmailAddress(title=u'Email Address',
-      description=u'The email address of the new group member. '\
-        u'The invitation will be sent to this address, and the address '\
-        u'will become the default address for the user.',
-      required=True)
+    email = adminNewUserEmail
 
 class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
-    message = Text(title=u'Message',
-      description=u'The message to send to the new group member. The '\
-        u'message will appear before the two links that allow the user '\
-        u'to accept or reject the inviation.',
-      required=False)
+    message = invitationMessageText      
+    delivery = deliveryChoice
 
 class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
     pass
@@ -165,15 +160,12 @@ class IABELProfileRegister(IABELProfile):
       required=False)
     
 class IABELProfileAdminJoin(IABELProfile):
-    email = EmailAddress(title=u'Email Address',
-      description=u'Your email address.',
-      required=True)
+    email = adminNewUserEmail
 
 class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
-    message = Text(title=u'Message',
-      description=u'The message to send to the new group member',
-      required=False)
-
+    message = invitationMessageText
+    delivery = deliveryChoice
+    
 class IABELProfileAdminJoinCSV(IABELProfileAdminJoin):
     pass
 
@@ -345,15 +337,12 @@ class IDoWireProfileRegister(IDoWireProfile):
     
 
 class IDoWireProfileAdminJoin(IDoWireProfile):
-    email = EmailAddress(title=u'Email Address',
-      description=u'Your email address.',
-      required=True)
+    email = adminNewUserEmail
 
 class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
-    message = Text(title=u'Message',
-      description=u'The message to send to the new group member',
-      required=False)
-
+    message = invitationMessageText
+    delivery = deliveryChoice
+    
 class IDoWireProfileAdminJoinCSV(IDoWireProfileAdminJoin):
     pass
 
@@ -452,14 +441,11 @@ class IEDemProfileRegister(IEDemProfile):
       required=False)
     
 class IEDemProfileAdminJoin(IEDemProfile):
-    email = EmailAddress(title=u'Email Address',
-      description=u'Your email address.',
-      required=True)
+    email = adminNewUserEmail
 
 class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
-    message = Text(title=u'Message',
-      description=u'The message to send to the new group member',
-      required=False)
+    delivery = deliveryChoice
+    message = invitationMessageText
 
 class IEDemProfileAdminJoinCSV(IEDemProfileAdminJoin):
     pass
