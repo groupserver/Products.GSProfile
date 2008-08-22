@@ -38,7 +38,20 @@ class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
                              value=value)
         label = '<label class="checkboxLabel" for="%s">%s</label>' % \
           (widgetId, text)
-        return self._joinButtonToMessageTemplate %(elem, label)
+        return self._joinButtonToMessageTemplate % (elem, label)
+    
+    def renderSelectedItem(self, index, text, value, name, cssClass):
+        widgetId = '%s.%s' % (name, index)
+        elem = renderElement('input',
+                             type="checkbox",
+                             cssClass=cssClass,
+                             name=name,
+                             id=widgetId,
+                             value=value,
+                             checked="checked")
+        label = '<label class="checkboxLabel" for="%s">%s</label>' % \
+          (widgetId, text)
+        return self._joinButtonToMessageTemplate % (elem, label)
 
 
 def multi_check_box_widget(field, request):
