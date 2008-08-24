@@ -176,6 +176,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
         # Add profile attributes 
         schema = getattr(interfaces, self.interfaceName)
         utils.enforce_schema(user, schema)
+
         changed = form.applyChanges(user, self.form_fields, data)
         m = 'AdminJoinEditProfileForm: Changed the attributes ' \
           'for the user %s (%s)' % (userInfo.name, userInfo.id)

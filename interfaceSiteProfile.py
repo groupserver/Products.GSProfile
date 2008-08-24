@@ -5,8 +5,7 @@ from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
 from interfaceCoreProfile import deliveryChoice, invitationMessageText,\
-  adminNewUserEmail
-
+  adminNewUserEmail, joinableGroupsList, cameFromURI
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -50,18 +49,9 @@ class IOGNProfile(IGSCoreProfile):
       default=u'')
 
 class IOGNProfileRegister(IOGNProfile):
-    joinable_groups = List(title=u'Joinable Groups',
-      description=u'Groups on this site you can join.',
-      required=False,
-      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True,
-      default=[])
-
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
+    joinable_groups = joinableGroupsList
+    came_from = cameFromURI
     
-
 class IOGNProfileAdminJoin(IOGNProfile):
     email = adminNewUserEmail
 
@@ -148,16 +138,8 @@ class IABELProfile(IGSCoreProfile):
       readonly=True)
 
 class IABELProfileRegister(IABELProfile):
-    joinable_groups = List(title=u'Joinable Groups',
-      description=u'Groups on this site you can join.',
-      required=False,
-      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True,
-      default=[])
-
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
+    joinable_groups = joinableGroupsList
+    came_from = cameFromURI
     
 class IABELProfileAdminJoin(IABELProfile):
     email = adminNewUserEmail
@@ -324,17 +306,8 @@ class IDoWireProfile(IGSCoreProfile):
       default=u'')
 
 class IDoWireProfileRegister(IDoWireProfile):
-    joinable_groups = List(title=u'Joinable Groups',
-      description=u'Groups on this site you can join.',
-      required=False,
-      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True,
-      default=[])
-
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
-    
+    joinable_groups = joinableGroupsList
+    came_from = cameFromURI
 
 class IDoWireProfileAdminJoin(IDoWireProfile):
     email = adminNewUserEmail
@@ -429,23 +402,15 @@ class IEDemProfile(IGSCoreProfile):
       default=u'')
 
 class IEDemProfileRegister(IEDemProfile):
-    joinable_groups = List(title=u'Joinable Groups',
-      description=u'Groups on this site you can join.',
-      required=False,
-      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True,
-      default=[])
+    joinable_groups = joinableGroupsList
+    came_from = cameFromURI
 
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
-    
 class IEDemProfileAdminJoin(IEDemProfile):
     email = adminNewUserEmail
 
 class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
+    message = invitationMessageText      
     delivery = deliveryChoice
-    message = invitationMessageText
 
 class IEDemProfileAdminJoinCSV(IEDemProfileAdminJoin):
     pass

@@ -34,6 +34,18 @@ adminNewUserEmail = EmailAddress(title=u'Email Address',
         u'will become the default address for the new group member.',
       required=True)
 
+
+joinableGroupsList = List(title=u'Joinable Groups',
+  description=u'Groups on this site you can join.',
+  required=False,
+  value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+  unique=True,
+  default=[])
+
+cameFromURI = URI(title=u'Came From',
+  description=u'The page to return to after retistration has finished',
+  required=False)
+
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
     
@@ -56,16 +68,8 @@ class IGSCoreProfile(Interface):
       default=u'')
 
 class IGSCoreProfileRegister(IGSCoreProfile):
-    joinable_groups = List(title=u'Joinable Groups',
-      description=u'Groups on this site you can join.',
-      required=False,
-      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-      unique=True,
-      default=[])
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
-    
+    joinable_groups = joinableGroupsList
+    came_from = cameFromURI
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
     email = adminNewUserEmail
