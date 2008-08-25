@@ -3,9 +3,9 @@ import pytz
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
-from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul
-from interfaceCoreProfile import deliveryChoice, invitationMessageText,\
-  adminNewUserEmail, joinableGroupsList, cameFromURI
+from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
+  deliveryVocab
+from emailaddress import EmailAddress
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -49,15 +49,37 @@ class IOGNProfile(IGSCoreProfile):
       default=u'')
 
 class IOGNProfileRegister(IOGNProfile):
-    joinable_groups = joinableGroupsList
-    came_from = cameFromURI
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
     
+
 class IOGNProfileAdminJoin(IOGNProfile):
-    email = adminNewUserEmail
+    email = EmailAddress(title=u'Email Address',
+      description=u'The email address of the new group member.'\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the new group member.',
+      required=True)
 
 class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
-    message = invitationMessageText      
-    delivery = deliveryChoice
+    message = Text(title=u'Invitation Message',
+      description=u'The message that appears at the top of the email '\
+        u'invitation to the new group member. The message will appear before '\
+        u'the two links that allow the user to accept or reject the '\
+        u'inviation.',
+        required=False)
+
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
 
 class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
     pass
@@ -138,16 +160,37 @@ class IABELProfile(IGSCoreProfile):
       readonly=True)
 
 class IABELProfileRegister(IABELProfile):
-    joinable_groups = joinableGroupsList
-    came_from = cameFromURI
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
     
 class IABELProfileAdminJoin(IABELProfile):
-    email = adminNewUserEmail
+    email = EmailAddress(title=u'Email Address',
+      description=u'The email address of the new group member.'\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the new group member.',
+      required=True)
 
 class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
-    message = invitationMessageText
-    delivery = deliveryChoice
-    
+    message = Text(title=u'Invitation Message',
+      description=u'The message that appears at the top of the email '\
+        u'invitation to the new group member. The message will appear before '\
+        u'the two links that allow the user to accept or reject the '\
+        u'inviation.',
+        required=False)
+
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
+
 class IABELProfileAdminJoinCSV(IABELProfileAdminJoin):
     pass
 
@@ -306,16 +349,38 @@ class IDoWireProfile(IGSCoreProfile):
       default=u'')
 
 class IDoWireProfileRegister(IDoWireProfile):
-    joinable_groups = joinableGroupsList
-    came_from = cameFromURI
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 
 class IDoWireProfileAdminJoin(IDoWireProfile):
-    email = adminNewUserEmail
+    email = EmailAddress(title=u'Email Address',
+      description=u'The email address of the new group member.'\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the new group member.',
+      required=True)
 
 class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
-    message = invitationMessageText
-    delivery = deliveryChoice
-    
+    message = Text(title=u'Invitation Message',
+      description=u'The message that appears at the top of the email '\
+        u'invitation to the new group member. The message will appear before '\
+        u'the two links that allow the user to accept or reject the '\
+        u'inviation.',
+        required=False)
+
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
+
 class IDoWireProfileAdminJoinCSV(IDoWireProfileAdminJoin):
     pass
 
@@ -402,15 +467,36 @@ class IEDemProfile(IGSCoreProfile):
       default=u'')
 
 class IEDemProfileRegister(IEDemProfile):
-    joinable_groups = joinableGroupsList
-    came_from = cameFromURI
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
 
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 class IEDemProfileAdminJoin(IEDemProfile):
-    email = adminNewUserEmail
+    email = EmailAddress(title=u'Email Address',
+      description=u'The email address of the new group member.'\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the new group member.',
+      required=True)
 
 class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
-    message = invitationMessageText      
-    delivery = deliveryChoice
+    message = Text(title=u'Invitation Message',
+      description=u'The message that appears at the top of the email '\
+        u'invitation to the new group member. The message will appear before '\
+        u'the two links that allow the user to accept or reject the '\
+        u'inviation.',
+        required=False)
+
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
 
 class IEDemProfileAdminJoinCSV(IEDemProfileAdminJoin):
     pass

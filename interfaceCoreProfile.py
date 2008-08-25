@@ -16,35 +16,6 @@ deliveryVocab = SimpleVocabulary([
   SimpleTerm('email', 'email',  u'One email per post.'),
   SimpleTerm('digest','digest', u'Daily digest of topics.'), 
   SimpleTerm('web',   'web',    u'Web only.')])
-deliveryChoice = Choice(title=u'Group Message Delivery Settings',
-    description=u'The message delivery settings for the new user',
-    vocabulary=deliveryVocab,
-    default='email')
-
-invitationMessageText = Text(title=u'Invitation Message',
-  description=u'The message that appears at the top of the email '\
-    u'invitation to the new group member. The message will appear before '\
-    u'the two links that allow the user to accept or reject the '\
-    u'inviation.',
-  required=False)
-
-adminNewUserEmail = EmailAddress(title=u'Email Address',
-      description=u'The email address of the new group member.'\
-        u'The invitation will be sent to this address, and the address '\
-        u'will become the default address for the new group member.',
-      required=True)
-
-
-joinableGroupsList = List(title=u'Joinable Groups',
-  description=u'Groups on this site you can join.',
-  required=False,
-  value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
-  unique=True,
-  default=[])
-
-cameFromURI = URI(title=u'Came From',
-  description=u'The page to return to after retistration has finished',
-  required=False)
 
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
@@ -68,18 +39,39 @@ class IGSCoreProfile(Interface):
       default=u'')
 
 class IGSCoreProfileRegister(IGSCoreProfile):
-    joinable_groups = joinableGroupsList
-    came_from = cameFromURI
+    joinable_groups = List(title=u'Joinable Groups',
+      description=u'Groups on this site you can join.',
+      required=False,
+      value_type=Choice(title=u'Group', vocabulary='JoinableGroups'),
+      unique=True,
+      default=[])
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
 
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
-    email = adminNewUserEmail
+    email = EmailAddress(title=u'Email Address',
+      description=u'The email address of the new group member.'\
+        u'The invitation will be sent to this address, and the address '\
+        u'will become the default address for the new group member.',
+      required=True)
     # --=mpj17=-- A normal email address field is used, rather than a
     #   *new* email address field, because we want to add users who 
     #   exist on the system :)
     
 class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
-    message = invitationMessageText
-    delivery = deliveryChoice
+    message = Text(title=u'Invitation Message',
+      description=u'The message that appears at the top of the email '\
+        u'invitation to the new group member. The message will appear before '\
+        u'the two links that allow the user to accept or reject the '\
+        u'inviation.',
+        required=False)
+
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
 
 class IGSCoreProfileAdminJoinCSV(IGSCoreProfileAdminJoin):
     pass
