@@ -15,6 +15,8 @@ from Products.XWFCore import XWFUtils
 from interfaceCoreProfile import *
 from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
 
+import os
+
 class GSEditImageForm(PageForm):
     label = u'Change Image'
     pageTemplateFileName = 'browser/templates/edit_image.pt'
@@ -25,7 +27,7 @@ class GSEditImageForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         context.image = None
-
+        
         if not(hasattr(context, 'showImage')):
             context.manage_addProperty('showImage', True, 'boolean')
         alsoProvides(context, IGSProfileImage)
@@ -84,14 +86,16 @@ class GSEditImageForm(PageForm):
             self.status = u'<p>There are errors:</p>'
 
     def set_image(self, image):
-        assert self.context.contactsimages
-        images = self.context.contactsimages
-        
+        siteId = self.context.site_root().getId()
+        contactImageDir = XWFUtils.locateDataDirectory("groupserver.user.image",
+                                                       (siteId,))
+
         userImageName = '%s.jpg' % self.context.getId()
-        origimage = getattr(images, userImageName, None)
-        if origimage:
-            images.manage_delObjects([origimage.getId()])
 
         userName = XWFUtils.get_user_realnames(self.context)
-        images.manage_addImage(userImageName, image, userName)
 
+        userImagePath = os.path.join(contactImageDir, userImageName)
+        
+        f = file(userImagePath, 'wb')
+        f.write(str(image))
+        f.close()

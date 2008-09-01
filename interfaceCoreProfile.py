@@ -6,6 +6,7 @@ from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from Products.XWFCore import XWFUtils
 from emailaddress import EmailAddress
+from OFS.Image import Image
 
 def display_name_not_nul(text):
     retval = text.strip() != u''
@@ -113,19 +114,13 @@ class VGSImageWrongHeight(ValidationError):
 
 class GSImage(Bytes):
     def constraint(self, image):
-        images = self.context.contactsimages
-
         tmpImageName = '%s.jpg_temp' % self.context.getId()
-        if hasattr(images, tmpImageName):
-            context.contactsimages.manage_delObjects([tmpImageName])
-        userName = XWFUtils.get_user_realnames(self.context)
-        images.manage_addImage(tmpImageName, image, userName)
         
-        tmpImage = getattr(images, tmpImageName)
+        tmpImage = Image(tmpImageName, tmpImageName, image)        
+        
         imageContentType = tmpImage.content_type
         imageWidth = tmpImage.width
         imageHeight = tmpImage.height
-        images.manage_delObjects([tmpImageName])
         
         if (imageContentType != 'image/jpeg'):
             raise VGSImageWrongType(imageContentType)
