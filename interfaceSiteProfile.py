@@ -126,17 +126,17 @@ class IABELProfile(IGSCoreProfile):
 
     region = TextLine(title=u'Preferred Workshop Location',
       description=u'Where you would prefer to attend workshops.',
-      required=True,
+      required=False,
       readonly=True)
 
     org = TextLine(title=u'Employer',
       description=u'The organisation that employs you.',
-      required=True,
+      required=False,
       readonly=True)
 
     employment_category = TextLine(title=u'Employment Category',
       description=u'The area of accountancy that you work in',
-      required=True,
+      required=False,
       readonly=True)
 
     membershipID = TextLine(title=u'NZICA Membership Number',
