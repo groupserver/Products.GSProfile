@@ -107,6 +107,22 @@ class GSProfileView(BrowserView):
             authUser = self.context.site_root().acl_users.getUser(au.getId())
         groups = self.groupsInfo.get_member_groups_for_user(u, authUser)
         retval = [createObject('groupserver.GroupInfo', g) for g in groups]
+        retval.sort(groupInfoSorter)
         assert type(retval) == list
         return retval
+
+def groupInfoSorter(a, b):
+    # TODO: Move to Group Membership
+    assert hasattr(a, 'name')
+    assert hasattr(b, 'name')
+
+    if (a.name < b.name):
+        retval = -1
+    elif (a.name == b.name):
+        retval = 0
+    else: # a.name > b.name
+        retval = 1
+    
+    assert retval in (-1, 0, 1)
+    return retval
 
