@@ -116,11 +116,13 @@ def groupInfoSorter(a, b):
     assert hasattr(a, 'name')
     assert hasattr(b, 'name')
 
-    if (a.name < b.name):
+    aname = a.name.lower()
+    bname = b.name.lower()
+    if (aname < bname):
         retval = -1
-    elif (a.name == b.name):
+    elif (aname == bname):
         retval = 0
-    else: # a.name > b.name
+    else: # aname > bname
         retval = 1
     
     assert retval in (-1, 0, 1)
