@@ -1,9 +1,9 @@
 #coding: utf-8
-from zope.component import createObject
-import zope.app.pagetemplate.viewpagetemplatefile
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-import zope.interface, zope.component, zope.publisher.interfaces
-import zope.viewlet.interfaces, zope.contentprovider.interfaces 
+from zope.component import adapts, provideAdapter
+import zope.interface
+import zope.publisher.interfaces
+import zope.contentprovider.interfaces 
 from Products.XWFCore import XWFUtils, ODict
 from interfaces import *
 
@@ -12,10 +12,10 @@ class GSFormWidgets(object):
     """
 
     zope.interface.implements( IGSFormWidgets )
-    zope.component.adapts(zope.interface.Interface,
+    adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)
-
+    
     def __init__(self, context, request, view):
         self.__parent__ = self.view = view
         self.__updated = False
@@ -36,7 +36,7 @@ class GSFormWidgets(object):
     # Non standard methods below this point #
     #########################################
 
-zope.component.provideAdapter(GSFormWidgets,
+provideAdapter(GSFormWidgets,
     provides=zope.contentprovider.interfaces.IContentProvider,
     name="groupserver.FormWidgets")
 

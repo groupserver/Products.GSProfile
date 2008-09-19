@@ -1,11 +1,8 @@
 # coding=utf-8
 '''The form that allows an administrator to join someone to a group.
 '''
-from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
-from zope.formlib import form
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.schema import *
+from zope.schema import * #@UnusedWildImport
 
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
@@ -13,7 +10,7 @@ from Products.GSGroupMember.groupmembership import \
   join_group, user_member_of_group, invite_to_groups, user_admin_of_group
 import interfaces
 import utils
-from edit_profile import *
+from edit_profile import * #@UnusedWildImport
 from emailaddress import NewEmailAddress, EmailAddressExists
 
 from Products.GSGroup.changebasicprivacy import radio_widget

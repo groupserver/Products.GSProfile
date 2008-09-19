@@ -1,19 +1,16 @@
-from zope.component import createObject
-import zope.app.pagetemplate.viewpagetemplatefile
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-import zope.interface, zope.component, zope.publisher.interfaces
-import zope.viewlet.interfaces, zope.contentprovider.interfaces 
-from Products.XWFCore import XWFUtils, ODict
-from interfaces import *
+from zope.interface import implements, Interface
+from zope.component import adapts, createObject, provideAdapter
+from zope.contentprovider.interfaces import UpdateNotCalled, IContentProvider
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from Products.XWFCore import XWFUtils
+from Products.GSProfile.interfaces import IGSUserImage
 
 class GSUserImageContentProvider(object):
     """GroupServer view of the user image
     """
-
-    zope.interface.implements( IGSUserImage )
-    zope.component.adapts(zope.interface.Interface,
-        zope.publisher.interfaces.browser.IDefaultBrowserLayer,
-        zope.interface.Interface)
+    implements( IGSUserImage )
+    adapts(Interface, IDefaultBrowserLayer, Interface)
 
     def __init__(self, context, request, view):
         self.__parent__ = self.view = view
@@ -32,7 +29,7 @@ class GSUserImageContentProvider(object):
 
     def render(self):
         if not self.__updated:
-            raise interfaces.UpdateNotCalled
+            raise UpdateNotCalled
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
         return pageTemplate(view=self)
         
@@ -42,7 +39,6 @@ class GSUserImageContentProvider(object):
 
     @property
     def userName(self):
-        retval = u''
         retval = XWFUtils.get_user_realnames(self.user)
         return retval
         
@@ -54,12 +50,13 @@ class GSUserImageContentProvider(object):
         
     @property
     def userImageShow(self):
-        retval = self.showImageRegardlessOfUserSetting or \
-          getattr(self.user, 'showImage', False)
+        retval = self.userImageUrl and (
+                      self.showImageRegardlessOfUserSetting or
+                      getattr(self.user, 'showImage', False))
         assert type(retval) == bool
         return retval
 
-zope.component.provideAdapter(GSUserImageContentProvider,
-    provides=zope.contentprovider.interfaces.IContentProvider,
+provideAdapter(GSUserImageContentProvider,
+    provides=IContentProvider,
     name="groupserver.UserImage")
 

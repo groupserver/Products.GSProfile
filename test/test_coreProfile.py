@@ -113,5 +113,5 @@ def test_suite():
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':
-    framework()
+    framework() #@UndefinedVariable
 

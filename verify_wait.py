@@ -3,18 +3,10 @@
 '''
 from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject, adapts
-from zope.interface import implements, providedBy, implementedBy,\
-  directlyProvidedBy, alsoProvides
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
-  TextAreaWidget
-from zope.security.interfaces import Forbidden
-from zope.app.apidoc.interface import getFieldsInOrder
-from zope.schema import *
 from Products.XWFCore import XWFUtils
 from interfaces import IGSVerifyWait
-from Products.CustomUserFolder.interfaces import ICustomUser
 import utils
 
 import logging
@@ -30,9 +22,6 @@ class VerifyWaitForm(PageForm):
         PageForm.__init__(self, context, request)
 
         self.siteInfo = createObject('groupserver.SiteInfo', context)
-        site_root = context.site_root()
-        assert hasattr(site_root, 'GlobalConfiguration')
-        config = site_root.GlobalConfiguration
 
     @property
     def verificationEmailAddress(self):
@@ -45,7 +34,7 @@ class VerifyWaitForm(PageForm):
     def handle_set(self, action, data):
         cf = str(data.get('came_from'))
         if cf == 'None':
-          cf = ''
+            cf = ''
         uri = 'register_password.html?form.came_from=%s' % cf
         return self.request.RESPONSE.redirect(uri)
         
@@ -54,7 +43,7 @@ class VerifyWaitForm(PageForm):
             self.status = u'<p>There is an error:</p>'
         else:
             self.status = u'<p>There are errors:</p>'
-
+            
     @form.action(label=u'Send', failure='handle_set_action_failure')
     def handle_send(self, action, data):
         assert data
@@ -110,12 +99,6 @@ class VerifyWaitForm(PageForm):
         
         assert email in self.context.get_emailAddresses()
         return email
-        
-    def handle_set_action_failure(self, action, data, errors):
-        if len(errors) == 1:
-            self.status = u'<p>There is an error:</p>'
-        else:
-            self.status = u'<p>There are errors:</p>'
 
     @property
     def userEmail(self):
@@ -125,7 +108,6 @@ class VerifyWaitForm(PageForm):
 
     @property
     def userName(self):
-        retval = u''
         retval = XWFUtils.get_user_realnames(self.context)
         return retval
 
