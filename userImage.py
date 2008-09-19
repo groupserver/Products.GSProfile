@@ -50,7 +50,7 @@ class GSUserImageContentProvider(object):
         
     @property
     def userImageShow(self):
-        retval = self.userImageUrl and (
+        retval = (self.userImageUrl and True or False) and (
                       self.showImageRegardlessOfUserSetting or
                       getattr(self.user, 'showImage', False))
         assert type(retval) == bool
