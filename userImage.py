@@ -39,17 +39,22 @@ class GSUserImageContentProvider(object):
 
     @property
     def userName(self):
-        retval = XWFUtils.get_user_realnames(self.user)
+	# check that we aren't dealing with an Anonymous user
+        if self.user.getId():
+	    retval = XWFUtils.get_user_realnames(self.user)
+        else:
+            retval = ''
+        
         return retval
         
     @property
     def userImageUrl(self):
-        if self.user:
+	# check that we aren't dealing with an Anonymous user
+        if self.user.getId():
             retval = self.user.get_image() or ''
         else:
             retval = ''
 
-        assert type(retval) == str
         return retval
         
     @property
