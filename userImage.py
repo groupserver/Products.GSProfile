@@ -44,7 +44,11 @@ class GSUserImageContentProvider(object):
         
     @property
     def userImageUrl(self):
-        retval = self.user.get_image() or ''
+        if self.user:
+            retval = self.user.get_image() or ''
+        else:
+            retval = ''
+
         assert type(retval) == str
         return retval
         
