@@ -205,7 +205,7 @@ def enforce_schema(inputData, schema):
       ASCII:     'lines',
       ASCIILine: 'string',
       URI:       'string',
-      Bool:      'bool',
+      Bool:      'boolean',
       Float:     'float',
       Int:       'int',
       Datetime:  'date',

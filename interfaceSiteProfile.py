@@ -89,37 +89,38 @@ class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
 ########
 
 collegeVocab = SimpleVocabulary([
-  SimpleTerm('at', 'at',  u'College of Accounting Technicians'),
+  SimpleTerm('ca', 'ca',  u'College of Charted Accountants'),
   SimpleTerm('aca','aca', u'College of Associated Charted Accountants'), 
-  SimpleTerm('ca', 'ca',  u'College of Charted Accountants')])
+  SimpleTerm('at', 'at',  u'College of Accounting Technicians')])
 
 locationVocab = SimpleVocabulary([
   SimpleTerm('n','n', u'Auckland, North of Harbour Bridge'),
   SimpleTerm('a','a', u'Auckland, South of Harbour Bridge'), 
   SimpleTerm('h','h', u'Hamilton'), 
-  SimpleTerm('t','t', u'Tauranga'), 
+  SimpleTerm('t','t', u'Tauranga'),
   SimpleTerm('p','p', u'Palmerston North'), 
   SimpleTerm('w','w', u'Wellington'), 
   SimpleTerm('c','c', u'Christchurch'), 
-  SimpleTerm('d','d', u'Dunedin')])
+  SimpleTerm('d','d', u'Dunedin'),])
 
 addressTypeVocab = SimpleVocabulary([
   SimpleTerm('work', 'work',  u'Work'),
   SimpleTerm('home', 'home',  u'Home')])
   
 employerClassificationVocab = SimpleVocabulary([
+  SimpleTerm('publicPractice_business', 'publicPractice_business',  
+             u'Public Practice Business Services'),
   SimpleTerm('publicPractice_audit',    'publicPractice_audit',  
              u'Public Practice Audit'),
   SimpleTerm('publicPractice_tax',      'publicPractice_tax',  
              u'Public Practice Tax'),
-  SimpleTerm('publicPractice_business', 'publicPractice_business',  
-             u'Public Practice Business Services'),
   SimpleTerm('publicPractice_other',    'publicPractice_other',  
              u'Public Practice Other'),
-  SimpleTerm('publicSector',  'publicSector',   u'Public Sector'),
   SimpleTerm('corporate',     'corporate',      u'Corporate Sector'),
+  SimpleTerm('publicSector',  'publicSector',   u'Public Sector'),
   SimpleTerm('academic',      'academic',       u'Academic'),
-  SimpleTerm('other',         'other',          u'Other')])
+  SimpleTerm('notforprofit',  'notforprofit',   u'Not for Profit'),
+  SimpleTerm('other',         'other',          u'Other'),])
 
 class IABELProfile(IGSCoreProfile):
     membershipID = TextLine(title=u'NZICA Membership Number',
@@ -131,13 +132,6 @@ class IABELProfile(IGSCoreProfile):
       description=u'ABEL Candidate Number.',
       required=False)
       
-    fn = TextLine(title=u'Display Name',
-      description=u'The name seen on the profile and used in '\
-        u'correspondence and posts to the eCampus.',
-      required=True,
-      min_length=1,
-      constraint=display_name_not_nul)
-
     familyName = TextLine(title=u'Family Name',
       description=u'The name inherited by birth, or acquired by marriage.',
       required=True,
@@ -150,33 +144,49 @@ class IABELProfile(IGSCoreProfile):
       min_length=1,
       constraint=display_name_not_nul)
     
-    additionalNames = List(title=u'Additional Names',
-      description=u'Additional identifying names',
-      value_type=(Text(title=u'Name', description=u'Additional Name', readonly=False)),
-      unique=True,
+    additionalName = TextLine(title=u'Preferred Name',
+      description=u'The name that is commonly used in greetings, '\
+        u'salutations and felicitations.', 
+      readonly=False,
       required=False)
       
+    fn = TextLine(title=u'eCampus Display Name',
+      description=u'The name seen on the eCampus: on the profile, in '\
+        u'correspondence and in posts.',
+      required=True,
+      min_length=1,
+      constraint=display_name_not_nul)
+
+    aliases = Text(title=u'Aliases',
+      description=u'Other names.',
+      readonly=True,
+      required=False)
+
     gender = Choice(title=u'Gender',
       description=u'The identified gender.',
       default=u'Female',
       vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
       required=True)
       
-    tel_home = TextLine(title=u'Home Phone',
-      description=u'The telephone number for the place of residence',
-      required=False)
-      
     tel_work = TextLine(title=u'Work Phone',
       description=u'The telephone number for the place of work',
+      required=False)
+      
+    tel_home = TextLine(title=u'Home Phone',
+      description=u'The telephone number for the place of residence',
       required=False)
       
     tel_cell = TextLine(title=u'Cell Phone',
       description=u'The telephone number for the cell phone',
       required=False)
 
+    org = TextLine(title=u'Employer',
+      description=u'Company, firm or institution name.',
+      required=False)
+
     adr_type = Choice(title=u'Address Type',
       description=u'Type of address',
-      default=u'home',
+      default=u'work',
       vocabulary=addressTypeVocab)
       
     adr_extended_address = TextLine(title=u'Extended Address',
@@ -205,14 +215,10 @@ class IABELProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    org = TextLine(title=u'Employer',
-      description=u'Company, firm or institution name.',
-      required=False)
-
     employer_classification = Choice(title=u'Employer Calssification',
       description=u'Employer Calssification',
       vocabulary=employerClassificationVocab,
-      default='corporate',
+      default='publicPractice_business',
       required=False)
 
     employer_classification_other = TextLine(
@@ -236,12 +242,6 @@ class IABELProfile(IGSCoreProfile):
       default='a',
       required=False)
 
-    preferredExamLocation = Choice(title=u'Preferred Exam Location',
-      description=u'Where you would like to sit your exam',
-      vocabulary=locationVocab,
-      default='a',
-      required=False)
-      
     eligible = Bool(title=u'Eligible',
       description=u'Eligibility information provided',
       default=True,
