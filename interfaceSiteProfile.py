@@ -197,12 +197,16 @@ class IABELProfile(IGSCoreProfile):
       description=u'The street address of the building',
       required=False)
 
+    adr_post_office_box = TextLine(title=u'PO Box',
+      description=u'Post Office Box number, or private bag number',
+      required=False)
+
     adr_region = TextLine(title=u'Suburb',
       description=u'The suburb the building is located',
       required=False)
    
-    adr_locality = TextLine(title=u'City',
-      description=u'The city (or town) the suburb is located',
+    adr_locality = TextLine(title=u'Town or City',
+      description=u'The town or city that the suburb is located',
       required=False)
 
     adr_country = TextLine(title=u'Country',
