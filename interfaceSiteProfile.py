@@ -134,13 +134,13 @@ class IABELProfile(IGSCoreProfile):
       
     familyName = TextLine(title=u'Family Name',
       description=u'The name inherited by birth, or acquired by marriage.',
-      required=True,
+      required=False,
       min_length=1,
       constraint=display_name_not_nul)
       
     givenName = TextLine(title=u'Given Names',
       description=u'The name that is given by the parents.',
-      required=True,
+      required=False,
       min_length=1,
       constraint=display_name_not_nul)
     
@@ -166,7 +166,7 @@ class IABELProfile(IGSCoreProfile):
       description=u'The identified gender.',
       default=u'Female',
       vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
-      required=True)
+      required=False)
       
     tel_work = TextLine(title=u'Work Phone',
       description=u'The telephone number for the place of work',
@@ -187,7 +187,8 @@ class IABELProfile(IGSCoreProfile):
     adr_type = Choice(title=u'Address Type',
       description=u'Type of address',
       default=u'work',
-      vocabulary=addressTypeVocab)
+      vocabulary=addressTypeVocab, 
+      required=False)
       
     adr_extended_address = TextLine(title=u'Extended Address',
       description=u'The flat or apartment or office number',
@@ -255,19 +256,22 @@ class IABELProfile(IGSCoreProfile):
       # TODO: PCE 1, PAS/PCE 2 and the PAS/PCE 2 Special have different
       #   default requirements.
       default=False, 
-      required=True)
+      required=False)
       
     disability = Bool(title=u'Disability',
       description=u'Special support required to participate in the programme.',
-      default=False)
+      default=False, 
+      required=False)
       
     specialDiet = Bool(title=u'Special Dietary Requirements',
       description=u'Special dietary requirements.',
-      default=False)
+      default=False, 
+      required=False)
       
     biography = Text(title=u'Biography',
       description=u'A description detailing life and interests.',
-      default=u'')
+      default=u'', 
+      required=False)
       
     tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
