@@ -82,7 +82,13 @@ class GSProfileView(BrowserView):
         return self.props            
         
     def get_property(self, propertyId, default=''):
-        return self.props[propertyId].query(self.__user, default)
+        p = self.props[propertyId]
+        r = p.query(self.context, default)
+        if hasattr(p, 'vocabulary'):
+            retval =  p.vocabulary.getTerm(r).title
+        else:
+            retval = r
+        return retval
         
     def emailVisibility(self):
         config = self.context.GlobalConfiguration

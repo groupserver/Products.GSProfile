@@ -245,10 +245,16 @@ class IABELProfile(IGSCoreProfile):
       vocabulary=locationVocab,
       default='a',
       required=False)
+      
+    preferredExamLocation = TextLine(title=u'Preferred Exam Location',
+      description=u'Where you wish to sit your examination.',
+      required=False)
 
     eligible = Bool(title=u'Eligible',
       description=u'Eligibility information provided',
-      default=True,
+      # TODO: PCE 1, PAS/PCE 2 and the PAS/PCE 2 Special have different
+      #   default requirements.
+      default=False, 
       required=True)
       
     disability = Bool(title=u'Disability',
