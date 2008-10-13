@@ -85,7 +85,11 @@ class GSProfileView(BrowserView):
         p = self.props[propertyId]
         r = p.query(self.context, default)
         if hasattr(p, 'vocabulary'):
-            retval =  p.vocabulary.getTerm(r).title
+            try:
+                retval =  p.vocabulary.getTerm(r).title
+            except:
+                LookupError, e:
+                    retval = r
         else:
             retval = r
         return retval
