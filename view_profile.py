@@ -87,8 +87,7 @@ class GSProfileView(BrowserView):
         if hasattr(p, 'vocabulary'):
             try:
                 retval =  p.vocabulary.getTerm(r).title
-            except:
-                LookupError, e:
+            except LookupError, e:
                     retval = r
         else:
             retval = r
