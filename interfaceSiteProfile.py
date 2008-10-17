@@ -220,8 +220,8 @@ class IABELProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    employer_classification = Choice(title=u'Employer Calssification',
-      description=u'Employer Calssification',
+    employer_classification = Choice(title=u'Employer Classification',
+      description=u'Employer Classification',
       vocabulary=employerClassificationVocab,
       default='publicPractice_business',
       required=False)
