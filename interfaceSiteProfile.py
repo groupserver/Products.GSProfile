@@ -251,13 +251,6 @@ class IABELProfile(IGSCoreProfile):
       description=u'Where you wish to sit your examination.',
       required=False)
 
-    eligible = Bool(title=u'Eligible',
-      description=u'Eligibility information provided',
-      # TODO: PCE 1, PAS/PCE 2 and the PAS/PCE 2 Special have different
-      #   default requirements.
-      default=False, 
-      required=False)
-      
     disability = Bool(title=u'Disability',
       description=u'Special support required to participate in the programme.',
       default=False, 
