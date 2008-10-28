@@ -10,6 +10,8 @@ from Products.GSProfile.interfaces import *
 from Products.CustomUserFolder.userinfo import GSUserInfo
 from Products.GSGroupMember.utils import inform_ptn_coach_of_join
 
+from profileaudit import *
+
 import logging
 log = logging.getLogger('GSSetPassword')
 
@@ -23,6 +25,9 @@ class SetPasswordForm(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.userInfo = GSUserInfo(context)
+        
+        self.auditer = ProfileAuditer(context)
+        
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_set" set to the success handler,
@@ -40,6 +45,8 @@ class SetPasswordForm(PageForm):
         loggedInUser = self.request.AUTHENTICATED_USER
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
+        
+        self.auditer.info(SET_PASSWORD)
         
         self.status = u'Your password has been changed.'
         assert type(self.status) == unicode
