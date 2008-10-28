@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="string: Change Email Settings: ${view/userName}: ${view/siteInfo/get_name}">
+        Change Email Settings
+      </span>
+    </title>
+  </head>
+  <body>
+    <tal:block metal:fill-slot="contextnavigation">
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
+    </tal:block>
+    <div metal:fill-slot="messages"
+      tal:define="result view/process_form;
+      isError python:result.get('error', False);"
+      tal:condition="python:result and result.has_key('message')"
+      tal:attributes="class python:(isError and 'message-error') or 'message-result'"
+      tal:content="structure result/message"/>
+    <tal:block metal:fill-slot="body"
+      tal:define="addresses view/userAddresses; 
+        mAddr view/modifyAddresses">
+      <h1>Change Email Settings</h1>
+      <p>
+        Below 
+        <span tal:condition="mAddr">are</span> 
+        <span tal:condition="not:mAddr">is</span>
+        the email address<span tal:condition="mAddr">es</span> 
+        that you have added to
+        <span class="site"
+          tal:content="view/siteInfo/get_name">this site</span>.
+        You can post to your groups from 
+        <span tal:condition="mAddr">any of</span> your 
+        <span tal:condition="mAddr">verified</span>
+        address<span tal:condition="mAddr">es</span>.
+        By default, you receive messages from your groups at the
+        address<span tal:condition="mAddr">es</span> 
+        you  have set as <samp class="option">Default</samp>.
+      </p>
+      
+      <div id="single-bouncing" class="message-error"
+        tal:condition="view/singleAddressBouncing"
+        tal:define="addr python:addresses[0].address">
+        <p>
+          Your only email address,
+          <code tal:content="addr" class="email">foo@bar.wibble</code>,
+          is not verified &#8213; probably because it was
+          bouncing.
+          You will need to either
+        </p>
+        <ul>
+          <li>Verify 
+            <code tal:content="addr" class="email">foo@bar.wibble</code>,
+            or</li>
+          <li>Add another address and make it your default address.</li>
+        </ul>
+      </div><!--single-bouncing-->
+      <div id="verified-no-default" class="message-error" 
+        tal:condition="view/verifiedAddressesNoDefault">
+        <p tal:define="nV python:len(view.verifiedAddresses)">
+          You have no default email address, but you do have
+          <span tal:condition="python:nV==1">a verified address.</span>
+          <span tal:condition="python:nV&gt;1">verified addresses.</span>
+          You will need to either
+        </p>
+        <ul>
+          <li>Make an existing address your default address, or</li>
+          <li>Add another address and make it your default address.</li>
+        </ul>
+      </div><!--verified-no-default-->
+      <div id="multiple-addresses-all-unverified" class="message-error"
+        tal:condition="view/multipleAddressesAllUnverified">
+        <p>
+          You have no verified email addresses.
+          You will need to either
+        </p>
+        <ul>
+          <li>Verify an existing address, or</li>
+          <li>Add another address and verify it.</li>
+        </ul>
+      </div><!--multiple-addresses-all-unverified-->
+      <form id="changeUserEmailSettings"
+        enctype="multipart/form-data" method="post" action="." 
+        tal:attributes="action request/URL" >
+        <input type="hidden" class="hidden" name="submitted" value=""/>
+        <table tal:define="mDef view/multipleDefault; 
+            mulAddr view/multipleAddresses" 
+          id="emailAddresses"
+          class="profile">
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Status</th>
+              <th tal:condition="mAddr">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tal:block repeat="address addresses">
+              <tr
+               tal:define="pos repeat/address/number;
+                  class python:((((pos) % 2) == 0) and 'even') or 'odd';
+                  defl address/default; 
+                  ver address/verified;
+                  weird python:not(ver) and defl"
+                tal:attributes="id address/addressId; class class">
+                <td class="address"><code class="email"
+                  tal:content="address/address">foo@bar.wibble</code></td>
+                <td class="status">
+                  <strong
+                    tal:condition="python:not(ver) and defl">Weird:</strong>                  
+                  <span tal:condition="defl">Verified and 
+                    default</span>
+                  <span 
+                    tal:condition="python:ver and not(defl)">Verified</span>
+                  <span
+                    tal:condition="not:ver">Not verified</span>
+                </td>
+                <td class="change" tal:condition="mAddr">
+                  <div tal:condition="python:not(defl) or (defl and mDef) and not(weird)">
+                    <select name="addressAction" id="addressAction"
+                      tal:define="actionId string:${address/addressId}-action"
+                      tal:attributes="name actionId; id actionId">
+                      <option 
+                        tal:condition="not:ver"
+                        value="resend_verification">Send verification</option>
+                      <option 
+                        tal:condition="python:ver and not(defl)"
+                        value="make_default">Make
+                        default</option>
+                      <option 
+                        tal:condition="python:defl and mDef"
+                        value="remove_default">Remove from default</option>
+                      <option
+                        tal:condition="python:mulAddr and (not(defl) or (defl and mDef))"
+                        value="remove">Remove address</option>
+                    </select>
+                    <input class="button" type="submit" value="Change"
+                      name="changeButton" id="changeButton"
+                      tal:define="buttonId string:${address/addressId}-button"
+                      tal:attributes="name buttonId; id buttonId"/>
+                  </div>
+                  <div tal:condition="python: defl and not mDef and not weird"
+                    id="default-help" class="disclosureWidget">
+                    <a href="#" class="disclosureButton">You cannot change
+                      <span
+                        tal:replace="address/address">this address</span></a>
+                    <div class="disclosureShowHide" style="display:none;">
+                      This address is your only default email address.
+                      To change this address
+                      <span tal:condition="mAddr">either make another
+                        address the default, or</span>
+                      add an address and make the new address the default.
+                    </div>
+                  </div><!--default-help-->
+                  <span tal:condition="weird">
+                    <a class="email"
+                      tal:attributes="href string:mailto:${view/siteInfo/get_support_email}?Subject=Weird Address ${address/address}"
+                      href="#"><strong>Please contact support</strong></a>
+                      because your email setting is weird.</span>
+                </td>
+              </tr>
+            </tal:block>
+          </tbody>
+        </table>
+      </form><!--changeSettings-->
+
+      <form id="newAddressForm" 
+        enctype="multipart/form-data" method="post" action="." 
+        tal:attributes="action request/URL" >
+        <input type="hidden" class="hidden" name="submitted" value=""/>
+        <h2>Add Address</h2>
+        <p>To add an address, 
+          <strong>add the contact
+            <span class="vcard" tal:define="sn view/siteInfo/get_name">
+              <abbr tal:attributes="title string:${sn} Verification" 
+                title="Verification" class="fn hide">&#160;</abbr>
+              <code><a href="#"
+                tal:content="view/verificationEmailAddress"
+                tal:attributes="href string:mailto:${view/verificationEmailAddress}"
+                class="email">validation@valid.valid</a></code>
+            </span><!--vcard-->
+          </strong>
+          to your email address book, to ensure that you receive the
+          verification message.
+          <strong id="addressBookHelp" style="display:none;">
+            Help with
+            <a id="gmail"
+              title="How do I add people to my Contacts list? GMail Help Center"
+              href="http://mail.google.com/support/bin/answer.py?answer=8933&amp;topic=1530"
+              class="weblink">GMail</a>
+            <a id="yahoo"
+              title="How do I add a contact? Yahoo! Address Book" 
+              href="http://help.yahoo.com/l/us/yahoo/addressbook/updating/updating-02.html"
+              class="weblink">Yahoo! Mail</a>
+            <a id="hotmail"
+              title="Add a contact: MSN Hotmail Help"
+              href="http://help.msn.com/(ZmlsdGVyPURIX0ZSRUUmcHJvamVjdD1ob3RtYWlscGltdjEwJm1hcmtldD1lbi1VUyZjdT0mdG10PUhvdG1haWxQSU12MTAma2M9JmZvcm1hdD0=)/Help.aspx?market=en-US&amp;project=HotmailPIMv10&amp;querytype=topic&amp;query=PIM_PROC_AddContact.htm"
+              class="weblink">MSN Hotmail</a>
+          </strong><!--addressbook-->
+          Then enter it in the
+          <samp class="entry">Address</samp> 
+          entry, and click the
+          <samp class="button">Add</samp> button.
+          You will receive a message verifying that you control the 
+          address.
+          Once you have verified this address you will be able to use it
+          with your online groups.
+        </p>
+        <label for="newAddress">Address</label>
+        <input class="text" type="text" name="newAddress" id="newAddress"
+          title="Address to add"/>
+        <div id="emailHelp">
+          <p class="message-error" style="display: none;">
+            The email address is not valid.
+            Please enter a valid email address.
+          </p>
+        </div><!--Password Help-->
+        <input class="button" type="submit" value="Add" 
+          id="newAddress-button" name="newAddress-button"/>
+      </form><!--changeSettings-->
+      
+      <div id="userGroupEmailSettings">
+        <h2>Group Notifications</h2>
+        <p>
+          You have a message notification settings for all your groups.
+          By default, you receive an email at your default 
+          address<span tal:condition="mAddr">es</span>
+          whenever someone posts to the group.
+          However, you can
+        </p>
+        <ul>
+          <li>Receive a daily email-digest of topics, 
+             <span tal:condition="not:mAddr">or</span></li>
+          <li tal:condition="mAddr">Receive email notifications at 
+            specific addresses, or</li>
+          <li>Use only the Web to follow messages and receive no email
+            notifications from the group at all.</li>
+        </ul>
+        <p>
+          The following table lists the message notification settings for
+          all your groups.
+          Click <samp class="link">Change</samp> to change the notification
+          setting for each group.
+        </p>
+        <table class="profile" id="profileGroupEmailSettings">
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Address</th>
+              <th>Notification</th>
+              <th>&#160;</th><!--change-->
+            </tr>
+          </thead>
+          <tbody>
+            <tal:block repeat="setting view/groupEmailSettings">
+              <tr tal:define="pos repeat/setting/number;
+                  class python:((((pos) % 2) == 0) and 'even') or 'odd';"
+                tal:attributes="id setting/group/get_id; class class">
+                <td>
+                  <a class="group"
+                    tal:content="setting/group/get_name"
+                    tal:attributes="href setting/group/get_url">Group</a>
+                </td>
+                <td tal:condition="not:setting/setting"
+                  class="setting na">&#8212;</td>
+                <td tal:condition="setting/setting" class="setting">
+                  <span tal:condition="setting/setting">
+                    <span tal:condition="setting/default">Default: </span>
+                    <strong 
+                      tal:condition="not:setting/default">Specific: </strong>
+                    <tal:block repeat="email setting/addresses">
+                      <code class="email"
+                        tal:content="email">foo@bar.wibble</code>
+                    </tal:block>
+                  </span>
+                </td>
+                <td class="setting">
+                  <span tal:condition="python:setting.setting == 0">
+                    Web only.
+                  </span>
+                  <span tal:condition="python:setting.setting == 3">
+                    Daily digest of posts.
+                  </span>
+                  <span tal:condition="python:setting.setting in (1, 2)">
+                    One email per post.
+                  </span>
+                </td>
+                <td>
+                  <a title="Change the email settings for this group"
+                    tal:attributes="href string:${setting/group/get_url}/email_settings"
+                    href="#">Change</a>
+                </td>
+              </tr>
+            </tal:block>
+          </tbody>
+        </table>
+      </div><!--group-email-settings-->
+    </tal:block>
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript"
+        src="++resource++check_email-20080214.js">&#160;</script>
+      <script type="text/javascript">
+        jQuery.noConflict()
+        jQuery(document).ready( function () {
+            var webmail = new Array('gmail', 'hotmail', 'yahoo');
+            GSCheckEmailAddress.init(
+                '#newAddress',
+                '#newAddress-button',
+                '#addressBookHelp',
+                webmail,
+                '#emailHelp');
+        });
+      </script>
+    </tal:block>
+  </body>
+</html>
+

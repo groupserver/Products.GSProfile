@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      Address Verified:
+      <span tal:replace="view/siteInfo/get_name">this site</span>
+    </title>
+    <!--=mpj17=-->
+    <!--
+      All forms submit to themselves, as the view handles the data, as it
+      does with the XForms in GroupServer 0.9. We always post, as the form
+      may have a side-effect.
+      
+      2007-08-10
+    -->
+  </head>
+  <body>
+    <div metal:fill-slot="body"
+      tal:define="email request/email">
+      <h1>Address Verified</h1>
+      <p>The address 
+        <code class="email" tal:content="email"/>
+        has been verified.
+        You can use this address to
+        send messages to your groups,
+        receive messages from groups,
+        and
+        log in to 
+        <span class="site" 
+          tal:content="view/siteInfo/get_name">this site</span>.
+      </p>
+    </div>
+    <tal:block metal:fill-slot="contextnavigation">
+    </tal:block>
+    <tal:block metal:fill-slot="sitenavigation">
+      <div id="sitenavigation">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="utilitylinks">
+      <div id="utilitylinks">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="footer">
+      <div id="footer">&#160;</div>
+    </tal:block>
+    <tal:block metal:fill-slot="search">
+      <div id="searcharea">&#160;</div>
+    </tal:block>
+  </body>
+</html>
+
