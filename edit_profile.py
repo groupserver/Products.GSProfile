@@ -131,7 +131,9 @@ class EditProfileForm(PageForm):
         alteredFields = []
         for field in fields:
             new = data.get(field[0], '')
+            new = new and new.encode('utf-8') or ''
             old = getattr(self.context, field[0], '')
+            old = old and old.encode('utf-8') or ''
             if ((field[0] not in skip) and old != new):
                 alteredFields.append(field[0])
                 oldNew = '%s,%s' % (b64encode(old), b64encode(new))

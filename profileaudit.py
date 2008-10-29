@@ -99,7 +99,7 @@ class ChangeProfileEvent(BasicAuditEvent):
         return retval
         
     def get_old_new(self):
-        retval = [b64decode(d) 
+        retval = [b64decode(d).decode('utf-8')
                   for d in self.supplementaryDatum.split(',')]
         assert len(retval) == 2
         return retval
