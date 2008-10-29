@@ -293,5 +293,16 @@
     interface=".interfaces.IGSFormWidgets"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
 
+  <utility factory=".profileaudit.ProfileAuditEventFactory"
+    name="groupserver.ProfileAudit"
+    permission="zope.Public" />
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="log.html"
+    class=".viewaudittrail.GSAuditTrailView"
+    template="browser/templates/viewaudittrail.pt"
+    permission="zope2.ManageProperties" />
+
 </configure>
 

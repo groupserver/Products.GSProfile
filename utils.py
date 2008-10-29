@@ -10,6 +10,7 @@ from string import ascii_lowercase, digits
 from Products.XWFCore.XWFUtils import convert_int2b62, assign_ownership
 from Products.CustomUserFolder.CustomUser import CustomUser
 from Products.GSGroupMember.groupmembership import userInfo_to_user
+import interfaces
 
 import logging
 log = logging.getLogger('GSProfile Utilities')
@@ -248,4 +249,18 @@ def escape_c(c):
     assert retval
     assert type(retval) == str
     return retval
+
+
+def profile_interface(context):
+    site_root = context.site_root()
+    assert hasattr(site_root, 'GlobalConfiguration')
+    config = site_root.GlobalConfiguration
+    
+    interfaceName = config.getProperty('profileInterface',
+                                        'IGSCoreProfile')
+        
+    assert hasattr(interfaces, interfaceName), \
+        'Interface "%s" not found.' % interfaceName
+    interface = getattr(interfaces, interfaceName)
+    return interface
 

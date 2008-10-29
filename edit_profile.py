@@ -1,6 +1,7 @@
 # coding=utf-8
 '''Implementation of the Reset Password Request form.
 '''
+from base64 import b64encode
 from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject, adapts
 from zope.interface import implements, providedBy, implementedBy,\
@@ -11,16 +12,16 @@ from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
   TextAreaWidget
 from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
-from Products.XWFCore import XWFUtils
+from Products.XWFCore.XWFUtils import comma_comma_and
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.GSGroupMember.groupmembership import join_group
 from Products.GSGroupMember.utils import inform_ptn_coach_of_join
-import interfaces
-import utils
+from utils import profile_interface, enforce_schema
 from zope.app.form.browser.widget import renderElement
 
 import logging
 log = logging.getLogger('GSEditProfile')
+from profileaudit import *
 
 def select_widget(field, request):
     retval = SelectWidget(field, field.vocabulary, request)
@@ -76,22 +77,13 @@ class EditProfileForm(PageForm):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         self.userInfo = IGSUserInfo(context)
-        site_root = context.site_root()
         
-        assert hasattr(site_root, 'GlobalConfiguration')
-        config = site_root.GlobalConfiguration
-        
-        interfaceName = config.getProperty('profileInterface',
-                                           'IGSCoreProfile')
-        
-        assert hasattr(interfaces, interfaceName), \
-            'Interface "%s" not found.' % interfaceName
-        self.interface = interface = getattr(interfaces, interfaceName)
-        utils.enforce_schema(context, interface)
+        self.interface = interface = profile_interface(context)
+        enforce_schema(context, interface)
         self.form_fields = form.Fields(interface, render_context=True)
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
-
+        
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_reset" set to the success handler,
@@ -101,6 +93,7 @@ class EditProfileForm(PageForm):
     #   label, but it helps with readability.
     @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
+        self.auditer = ProfileAuditer(self.context)
         self.status = self.set_data(data)
         
     def handle_set_action_failure(self, action, data, errors):
@@ -115,28 +108,35 @@ class EditProfileForm(PageForm):
 
         fields = [field for field in getFieldsInOrder(self.interface)
                   if not field[1].readonly]
-        # --=mpj17=-- There *must* be a better way to skip the joinable
-        #  groups data, and still get a list of altered fields in a sane
-        #  order, but I am far too tired to figure it out
-        alteredFields = [datum[0] for datum in fields
-                         if ((datum[0] != 'joinable_groups') and
-                           (data[datum[0]] != getattr(self.context, datum[0])))]
+        alteredFields = self.audit_and_get_changed(data, 
+                                                   skip=['joinable_groups'])
         changed = form.applyChanges(self.context, self.form_fields, data)
         if changed:
             fields = [self.interface.get(name).title
                       for name in alteredFields]
-            f = ' and '.join([i for i in (', '.join(fields[:-1]), fields[-1])
-                              if i])
-            retval = u'Changed %s' % f
+            retval = u'Changed %s' % comma_comma_and(fields)
         else:
             retval = u"No fields changed."
-            
-        m = 'set_data: %s (%s)' % (retval, self.context.getId())
-        log.info(m)
-        
+
         assert retval
         assert type(retval) == unicode
         return retval
+
+    def audit_and_get_changed(self, data, skip = []):
+        fields = [field for field in getFieldsInOrder(self.interface)
+                  if not field[1].readonly]
+        # --=mpj17=-- There *must* be a better way to skip the joinable
+        #  groups data, and still get a list of altered fields in a sane
+         #  order, but I am far too tired to figure it out
+        alteredFields = []
+        for field in fields:
+            new = data.get(field[0], '')
+            old = getattr(self.context, field[0], '')
+            if ((field[0] not in skip) and old != new):
+                alteredFields.append(field[0])
+                oldNew = '%s,%s' % (b64encode(old), b64encode(new))
+                self.auditer.info(CHANGE_PROFILE, field[0], oldNew)
+        return alteredFields
 
 class RegisterEditProfileForm(EditProfileForm):
     """The Change Profile page used during registration is slightly 
@@ -154,18 +154,8 @@ class RegisterEditProfileForm(EditProfileForm):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         self.userInfo = IGSUserInfo(self.context)
-        site_root = context.site_root()
-        assert hasattr(site_root, 'GlobalConfiguration')
-        config = site_root.GlobalConfiguration
-
-        interfaceName = config.getProperty('profileInterface',
-                                           'IGSCoreProfile')
-        interfaceName = '%sRegister' % interfaceName 
-
-        assert hasattr(interfaces, interfaceName), \
-            'Interface "%s" not found.' % interfaceName
-        self.interface = interface = getattr(interfaces, interfaceName)
-        utils.enforce_schema(context, interface)
+        self.interface = interface = profile_interface(context)
+        enforce_schema(context, interface)
 
         request.form['form.tz'] = self.get_timezone() # Look, a hack!
         self.form_fields = form.Fields(interface, render_context=True)
@@ -215,6 +205,7 @@ class RegisterEditProfileForm(EditProfileForm):
 
     @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
+        self.auditer = ProfileAuditer(self.context)
         self.actual_handle_set(action, data)
 
     def actual_handle_set(self, action, data):

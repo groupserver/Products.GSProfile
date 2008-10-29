@@ -1,5 +1,8 @@
 # coding=utf-8
-from datetime import date
+from pytz import UTC
+from datetime import datetime
+from xml.sax.saxutils import escape as xml_escape
+from base64 import b64decode
 from zope.component import createObject
 from zope.component.interfaces import IFactory
 from zope.interface import implements, implementedBy
@@ -7,14 +10,16 @@ from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.CustomUserFolder.userinfo import userInfo_to_anchor
 from Products.GSAuditTrail import IAuditEvent, BasicAuditEvent, \
   AuditQuery, event_id_from_data
+from Products.XWFCore.XWFUtils import munge_date
+from utils import profile_interface
 
 SUBSYSTEM = 'groupserver.ProfileAudit'
 import logging
 log = logging.getLogger(SUBSYSTEM) #@UndefinedVariable
 
-UNKNOWN        = 0
-SET_PASSWORD   = 1
-CHANGE_PROFILE = 2
+UNKNOWN        = '0'
+SET_PASSWORD   = '1'
+CHANGE_PROFILE = '2'
 
 class ProfileAuditEventFactory(object):
     implements(IFactory)
@@ -22,19 +27,23 @@ class ProfileAuditEventFactory(object):
     title=u'User Profile Audit-Event Factory'
     description=u'Creates a GroupServer audit event for profiles'
 
-    def __call__(self, context, eventId,  code, d,
-        userInfo, instanceUserInfo,  siteInfo,  
-        instanceDatum, supplementaryDatum):
+    def __call__(self, context, event_id,  code, date,
+        userInfo, instanceUserInfo,  siteInfo,  groupInfo = None,
+        instanceDatum='', supplementaryDatum='', subsystem=''):
 
-        if code == SET_PASSWORD:
-            event = SetPasswordEvent(context, eventId, d, 
+        if (code == SET_PASSWORD):
+            event = SetPasswordEvent(context, event_id, date, 
+              userInfo, instanceUserInfo, siteInfo,
+              instanceDatum, supplementaryDatum)
+        elif (code == CHANGE_PROFILE):
+            event = ChangeProfileEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo,
               instanceDatum, supplementaryDatum)
         else:
-            event = BasicAuditEvent(context, eventId, UNKNOWN, d, 
+            event = BasicAuditEvent(context, event_id, UNKNOWN, date, 
               userInfo, instanceUserInfo, siteInfo, None, 
               instanceDatum, supplementaryDatum, SUBSYSTEM)
-        print event
+        assert event
         return event
     
     def getInterfaces(self):
@@ -59,11 +68,68 @@ class SetPasswordEvent(BasicAuditEvent):
 
     @property
     def xhtml(self):
-        cssClass = u'audit-event profile-event-%s' % self.eventCode
-        retval = u'<span class="%s">%s set password</span>' % \
+        cssClass = u'audit-event profile-event-%s' % self.code
+        retval = u'<span class="%s">Set password</span>' % \
           (cssClass, 
            userInfo_to_anchor(self.instanceUserInfo),
            self.instanceDatum)
+        if self.instanceUserInfo.id != self.userInfo.id:
+            retval = u'%s &#8212; %s' %\
+              (retval, userInfo_to_anchor(self.userInfo))
+        retval = u'%s (%s)' % \
+          (retval, munge_date(self.context, self.date))
+        return retval
+
+class ChangeProfileEvent(BasicAuditEvent):
+    implements(IAuditEvent)
+
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
+        BasicAuditEvent.__init__(self, context, id, 
+          CHANGE_PROFILE, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
+          SUBSYSTEM)
+    
+    def __str__(self):
+        old, new = self.get_old_new()
+        fieldName = self.get_fieldname()
+        retval = u'%s (%s) changed profile attribute %s (%s) of '\
+          u'%s (%s) from %s to %s on %s (%s)' %\
+          (self.userInfo.name, self.userInfo.id, 
+           fieldName, self.instanceDatum,
+           self.instanceUserInfo.name, self.instanceUserInfo.id,
+           new, old, self.siteInfo.name, self.siteInfo.id)
+        return retval
+        
+    def get_old_new(self):
+        retval = [b64decode(d) 
+                  for d in self.supplementaryDatum.split(',')]
+        assert len(retval) == 2
+        return retval
+
+    def get_fieldname(self):
+        field = self.instanceDatum
+        interface = profile_interface(self.context)
+        fieldName = interface.get(field, '')
+        fieldName = fieldName and fieldName.title
+        return fieldName
+        
+    @property
+    def xhtml(self):
+        cssClass = u'audit-event profile-event-%s' % self.code
+        old, new = self.get_old_new()
+        retval = u'<span class="%s">Profile-field '\
+          u'<span class="field-%s">%s</span> '\
+          u'changed to '\
+          u'<code class="new">%s</code> (was '\
+          u'<code class="old">%s</code>)</span>' % \
+          (cssClass, self.instanceDatum, self.get_fieldname(),
+            xml_escape(old), xml_escape(new))
+        if self.instanceUserInfo.id != self.userInfo.id:
+            retval = u'%s &#8212; %s' %\
+              (retval, userInfo_to_anchor(self.userInfo))
+        retval = u'%s (%s)' % \
+          (retval, munge_date(self.context, self.date))
         return retval
 
 class ProfileAuditer(object):
@@ -79,13 +145,15 @@ class ProfileAuditer(object):
         self.factory = ProfileAuditEventFactory()
         
     def info(self, code, instanceDatum = '', supplementaryDatum = ''):
-        d = date.today()
+        d = datetime.now(UTC)
         eventId = event_id_from_data(self.userInfo, 
           self.instanceUserInfo, self.siteInfo, code, instanceDatum,
           supplementaryDatum)
-        e = self.factory(self.user, eventId,  code, d,
-          self.userInfo, self.instanceUserInfo, self.siteInfo,
-          instanceDatum, supplementaryDatum)
+          
+        e =  self.factory(self.user, eventId,  code, d,
+          self.userInfo, self.instanceUserInfo, self.siteInfo, None,
+          instanceDatum, supplementaryDatum, SUBSYSTEM)
+          
         self.queries.store(e)
         log.info(e)
 
