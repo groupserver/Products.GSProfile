@@ -48,11 +48,7 @@ class GSAuditTrailView(BrowserView):
             f = factories.get(ssys,
                   getUtility(IFactory, ssys, self.context))
             factories[ssys] = f
-            for k in i:
-                print '%s: %s' % (k, i[k])
-            print f
             event = f(self.context, **i)
-            print event
             events.append(event)
         return events
 
