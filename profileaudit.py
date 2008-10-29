@@ -1,14 +1,12 @@
 # coding=utf-8
 from datetime import date
-import md5
 from zope.component import createObject
 from zope.component.interfaces import IFactory
 from zope.interface import implements, implementedBy
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.CustomUserFolder.userinfo import userInfo_to_anchor
-from Products.XWFCore.XWFUtils import convert_int2b62
 from Products.GSAuditTrail import IAuditEvent, BasicAuditEvent, \
-  AuditQuery
+  AuditQuery, event_id_from_data
 
 SUBSYSTEM = 'groupserver.ProfileAudit'
 import logging
@@ -82,15 +80,9 @@ class ProfileAuditer(object):
         
     def info(self, code, instanceDatum = '', supplementaryDatum = ''):
         d = date.today()
-        
-        e = '%s-%s %s-%s %s-%s %s %s %s %s' % \
-          (self.userInfo.name, self.userInfo.id,
-           self.instanceUserInfo.name, self.instanceUserInfo.id,
-           self.siteInfo.name, self.siteInfo.id,
-           d, code, instanceDatum, supplementaryDatum)
-        eNum = long(md5.new(e).hexdigest(), 16)
-        eventId = str(convert_int2b62(eNum))
-        
+        eventId = event_id_from_data(self.userInfo, 
+          self.instanceUserInfo, self.siteInfo, code, instanceDatum,
+          supplementaryDatum)
         e = self.factory(self.user, eventId,  code, d,
           self.userInfo, self.instanceUserInfo, self.siteInfo,
           instanceDatum, supplementaryDatum)
