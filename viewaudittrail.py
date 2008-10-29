@@ -18,6 +18,7 @@ class GSAuditTrailView(BrowserView):
 
         da = context.zsqlalchemy
         self.queries = AuditQuery(da)
+        self.users = {}
     
     @property
     def auditItems(self):
@@ -26,29 +27,38 @@ class GSAuditTrailView(BrowserView):
           self.userInfo.id, self.siteInfo.id)
         
         events = []
-        factories = {}
-        users = {}
         for i in rawItems:
-            i.pop('instance_user_id')
-            i['instanceUserInfo'] = self.userInfo
-
-            i.pop('site_id')
-            i['siteInfo'] = self.siteInfo
-
-            uid = i.pop('user_id')
-            i['userInfo'] = users.get(uid,\
-              createObject('groupserver.UserFromId', self.context, uid))
-
-            gid = i.pop('group_id')
-            i['groupInfo'] = gid and \
-              createObject('groupserver.GroupInfo', self.context, gid)\
-              or None
-            
-            ssys = i['subsystem']
-            f = factories.get(ssys,
-                  getUtility(IFactory, ssys, self.context))
-            factories[ssys] = f
-            event = f(self.context, **i)
+            i = self.marshal_data(i)
+            event = createObject(i['subsystem'], self.context, **i)
             events.append(event)
         return events
+
+    def marshal_data(self, data):
+        assert type(data) == dict
+        retval = data
+        retval.pop('instance_user_id')
+        retval['instanceUserInfo'] = self.userInfo
+
+        retval.pop('site_id')
+        retval['siteInfo'] = self.siteInfo
+
+        uid = retval.pop('user_id')
+        retval['userInfo'] = self.get_userInfo(uid)
+
+        gid = retval.pop('group_id')
+        retval['groupInfo'] = self.get_groupInfo(gid)
+        
+        assert type(retval) == dict
+        return retval
+
+    def get_userInfo(self, uid):
+        # Cache, as we deal with so many user-infos.
+        return self.users.get(uid,\
+          createObject('groupserver.UserFromId', self.context, uid))
+
+    def get_groupInfo(self, gid):
+        # TODO: Cache
+        return gid and \
+          createObject('groupserver.GroupInfo', self.context, gid)\
+          or None
 

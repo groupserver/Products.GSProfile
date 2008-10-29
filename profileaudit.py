@@ -69,10 +69,7 @@ class SetPasswordEvent(BasicAuditEvent):
     @property
     def xhtml(self):
         cssClass = u'audit-event profile-event-%s' % self.code
-        retval = u'<span class="%s">Set password</span>' % \
-          (cssClass, 
-           userInfo_to_anchor(self.instanceUserInfo),
-           self.instanceDatum)
+        retval = u'<span class="%s">Set password</span>' % cssClass
         if self.instanceUserInfo.id != self.userInfo.id:
             retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))

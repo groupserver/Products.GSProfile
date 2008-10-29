@@ -26,8 +26,6 @@ class SetPasswordForm(PageForm):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.userInfo = GSUserInfo(context)
         
-        self.auditer = ProfileAuditer(context)
-        
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
     #   "handle_set" set to the success handler,
@@ -42,10 +40,12 @@ class SetPasswordForm(PageForm):
         assert action
         assert data
         
-        loggedInUser = self.request.AUTHENTICATED_USER
-        user = self.context.acl_users.getUserById(loggedInUser.getId())
-        user.set_password(data['password1'])
+        loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert not(loggedInUser.anonymous), 'Not logged in'
+        loggedInUser.user.set_password(data['password1'])
         
+        self.auditer = ProfileAuditer(self.context)
         self.auditer.info(SET_PASSWORD)
         
         self.status = u'Your password has been changed.'
@@ -69,7 +69,9 @@ class SetPasswordRegisterForm(SetPasswordForm):
         assert self.form_fields
         assert action
         assert data
-        
+
+        self.auditer = ProfileAuditer(context)
+                
         loggedInUser = self.request.AUTHENTICATED_USER
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
@@ -94,7 +96,9 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         assert self.form_fields
         assert action
         assert data
-        
+
+        self.auditer = ProfileAuditer(context)
+                
         loggedInUser = self.request.AUTHENTICATED_USER
         user = self.context.acl_users.getUserById(loggedInUser.getId())
         user.set_password(data['password1'])
