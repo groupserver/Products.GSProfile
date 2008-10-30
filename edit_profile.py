@@ -94,7 +94,7 @@ class EditProfileForm(PageForm):
     @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         self.auditer = ProfileAuditer(self.context)
-        self.status = self.set_data(data)
+        self.status = self.set_data(data, skip=['joinable_groups'])
         
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:
@@ -102,14 +102,12 @@ class EditProfileForm(PageForm):
         else:
             self.status = u'<p>There are errors:</p>'
 
-    def set_data(self, data):
+    def set_data(self, data, skip=[]):
         assert self.context
         assert self.form_fields
 
-        fields = [field for field in getFieldsInOrder(self.interface)
-                  if not field[1].readonly]
-        alteredFields = self.audit_and_get_changed(data, 
-                                                   skip=['joinable_groups'])
+        alteredFields = self.audit_and_get_changed(data, skip)
+        
         changed = form.applyChanges(self.context, self.form_fields, data)
         if changed:
             fields = [self.interface.get(name).title
@@ -129,15 +127,18 @@ class EditProfileForm(PageForm):
         #  groups data, and still get a list of altered fields in a sane
          #  order, but I am far too tired to figure it out
         alteredFields = []
+        print 'Skip %s' % str(skip)
         for field in fields:
-            new = data.get(field[0], '')
-            new = new and new.encode('utf-8') or ''
-            old = getattr(self.context, field[0], '')
-            old = old and old.encode('utf-8') or ''
-            if ((field[0] not in skip) and old != new):
-                alteredFields.append(field[0])
-                oldNew = '%s,%s' % (b64encode(old), b64encode(new))
-                self.auditer.info(CHANGE_PROFILE, field[0], oldNew)
+            fieldId = field[0]
+            if fieldId not in skip:
+                new = data.get(fieldId, '')
+                old = getattr(self.context, fieldId, '')
+                if (old != new):
+                    new = unicode(new).encode('utf-8')
+                    old = unicode(old).encode('utf-8')
+                    alteredFields.append(fieldId)
+                    oldNew = '%s,%s' % (b64encode(old), b64encode(new))
+                    self.auditer.info(CHANGE_PROFILE, fieldId, oldNew)
         return alteredFields
 
 class RegisterEditProfileForm(EditProfileForm):
