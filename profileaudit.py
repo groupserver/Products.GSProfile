@@ -20,6 +20,7 @@ log = logging.getLogger(SUBSYSTEM) #@UndefinedVariable
 UNKNOWN        = '0'
 SET_PASSWORD   = '1'
 CHANGE_PROFILE = '2'
+REGISTER       = '3'
 
 class ProfileAuditEventFactory(object):
     implements(IFactory)
@@ -37,6 +38,10 @@ class ProfileAuditEventFactory(object):
               instanceDatum, supplementaryDatum)
         elif (code == CHANGE_PROFILE):
             event = ChangeProfileEvent(context, event_id, date, 
+              userInfo, instanceUserInfo, siteInfo,
+              instanceDatum, supplementaryDatum)
+        elif (code == REGISTER):
+            event = RegisterEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo,
               instanceDatum, supplementaryDatum)
         else:
@@ -82,6 +87,7 @@ class ChangeProfileEvent(BasicAuditEvent):
 
     def __init__(self, context, id, d, userInfo, instanceUserInfo, 
         siteInfo, instanceDatum,  supplementaryDatum):
+        
         BasicAuditEvent.__init__(self, context, id, 
           CHANGE_PROFILE, d, userInfo, instanceUserInfo, 
           siteInfo, None,  instanceDatum, supplementaryDatum, 
@@ -123,6 +129,39 @@ class ChangeProfileEvent(BasicAuditEvent):
           (cssClass, self.instanceDatum, self.get_fieldname(),
             xml_escape(old), xml_escape(new))
         if self.instanceUserInfo.id != self.userInfo.id:
+            retval = u'%s &#8212; %s' %\
+              (retval, userInfo_to_anchor(self.userInfo))
+        retval = u'%s (%s)' % \
+          (retval, munge_date(self.context, self.date))
+        return retval
+
+class RegisterEvent(BasicAuditEvent):
+    """Registration Event. The "instanceDatum" is the address used
+    to create the new user.
+    """
+    implements(IAuditEvent)
+
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
+        
+        BasicAuditEvent.__init__(self, context, id, 
+          REGISTER, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
+          SUBSYSTEM)
+    
+    def __str__(self):
+        retval = u'Registering a new user with address <%s>' %\
+          self.instanceDatum
+        return retval
+
+    @property
+    def xhtml(self):
+        cssClass = u'audit-event profile-event-%s' % self.code
+        retval = u'<span class="%s">Signed up, with address '\
+          u'<code class="email">%s</code></span>' %\
+            (cssClass, self.instanceDatum)
+        if ((self.instanceUserInfo.id != self.userInfo.id)
+            and not(self.userInfo.anonymous)):
             retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))
         retval = u'%s (%s)' % \

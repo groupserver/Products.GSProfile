@@ -7,7 +7,8 @@ from zope.component import createObject, adapts
 from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
 from zope.formlib import form
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile \
+  import ZopeTwoPageTemplateFile
 from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
   TextAreaWidget
 from zope.app.apidoc.interface import getFieldsInOrder
@@ -16,8 +17,10 @@ from Products.XWFCore.XWFUtils import comma_comma_and
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.GSGroupMember.groupmembership import join_group
 from Products.GSGroupMember.utils import inform_ptn_coach_of_join
-from utils import profile_interface, enforce_schema
+from utils import profile_interface_name, profile_interface, \
+  enforce_schema
 from zope.app.form.browser.widget import renderElement
+import interfaces
 
 import logging
 log = logging.getLogger('GSEditProfile')
@@ -127,7 +130,6 @@ class EditProfileForm(PageForm):
         #  groups data, and still get a list of altered fields in a sane
          #  order, but I am far too tired to figure it out
         alteredFields = []
-        print 'Skip %s' % str(skip)
         for field in fields:
             fieldId = field[0]
             if fieldId not in skip:
@@ -151,13 +153,12 @@ class RegisterEditProfileForm(EditProfileForm):
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
-
         PageForm.__init__(self, context, request)
-
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
-        self.userInfo = IGSUserInfo(self.context)
-        self.interface = interface = profile_interface(context)
+        self.userInfo = IGSUserInfo(context)
+        interfaceName = '%sRegister' % profile_interface_name(context)
+        self.interface = interface = getattr(interfaces,interfaceName)
         enforce_schema(context, interface)
 
         request.form['form.tz'] = self.get_timezone() # Look, a hack!
@@ -165,6 +166,8 @@ class RegisterEditProfileForm(EditProfileForm):
 
         self.form_fields['tz'].custom_widget = select_widget
         self.form_fields['biography'].custom_widget = wym_editor_widget
+        # --=mpj17=-- If the profile-schema does not have a
+        #   joinable_groups field, then you get all kinds of crazy.
         self.form_fields['joinable_groups'].custom_widget = \
           multi_check_box_widget
 
@@ -196,7 +199,6 @@ class RegisterEditProfileForm(EditProfileForm):
                 gTz = tzs.keys()[0]
             else:
                 gTz = siteTz
-
         assert gTz
         return gTz
         
@@ -219,7 +221,7 @@ class RegisterEditProfileForm(EditProfileForm):
         self.form_fields = self.form_fields.omit('joinable_groups')
         self.set_data(data)
 
-        cf = str(data.get('came_from'))
+        cf = str(data.pop('came_from'))
         if cf == 'None':
           cf = ''
         

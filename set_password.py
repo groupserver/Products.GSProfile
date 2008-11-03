@@ -70,11 +70,14 @@ class SetPasswordRegisterForm(SetPasswordForm):
         assert action
         assert data
 
-        self.auditer = ProfileAuditer(context)
-                
-        loggedInUser = self.request.AUTHENTICATED_USER
-        user = self.context.acl_users.getUserById(loggedInUser.getId())
+        loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert not(loggedInUser.anonymous), 'Not logged in'
+        user = loggedInUser.user
         user.set_password(data['password1'])
+        
+        self.auditer = ProfileAuditer(self.context)
+        self.auditer.info(SET_PASSWORD)
 
         # Clean up
         user.clear_userPasswordResetVerificationIds()
@@ -97,11 +100,14 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         assert action
         assert data
 
-        self.auditer = ProfileAuditer(context)
-                
-        loggedInUser = self.request.AUTHENTICATED_USER
-        user = self.context.acl_users.getUserById(loggedInUser.getId())
+        loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert not(loggedInUser.anonymous), 'Not logged in'
+        user = loggedInUser.user
         user.set_password(data['password1'])
+
+        self.auditer = ProfileAuditer(self.context)
+        self.auditer.info(SET_PASSWORD)
 
         site_root = self.context.site_root()
         invitation = user.get_invitation(data['invitationId'])

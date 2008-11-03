@@ -252,15 +252,19 @@ def escape_c(c):
 
 
 def profile_interface(context):
+    interfaceName = profile_interface_name(context)
+        
+    assert hasattr(interfaces, interfaceName), \
+        'Interface "%s" not found.' % interfaceName
+    interface = getattr(interfaces, interfaceName)
+    return interface
+
+def profile_interface_name(context):
     site_root = context.site_root()
     assert hasattr(site_root, 'GlobalConfiguration')
     config = site_root.GlobalConfiguration
     
     interfaceName = config.getProperty('profileInterface',
                                         'IGSCoreProfile')
-        
-    assert hasattr(interfaces, interfaceName), \
-        'Interface "%s" not found.' % interfaceName
-    interface = getattr(interfaces, interfaceName)
-    return interface
+    return interfaceName
 
