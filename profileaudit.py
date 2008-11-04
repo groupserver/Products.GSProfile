@@ -21,6 +21,7 @@ UNKNOWN        = '0'
 SET_PASSWORD   = '1'
 CHANGE_PROFILE = '2'
 REGISTER       = '3'
+CREATE_USER    = '4'
 
 class ProfileAuditEventFactory(object):
     implements(IFactory)
@@ -158,6 +159,41 @@ class RegisterEvent(BasicAuditEvent):
     def xhtml(self):
         cssClass = u'audit-event profile-event-%s' % self.code
         retval = u'<span class="%s">Signed up, with address '\
+          u'<code class="email">%s</code></span>' %\
+            (cssClass, self.instanceDatum)
+        if ((self.instanceUserInfo.id != self.userInfo.id)
+            and not(self.userInfo.anonymous)):
+            retval = u'%s &#8212; %s' %\
+              (retval, userInfo_to_anchor(self.userInfo))
+        retval = u'%s (%s)' % \
+          (retval, munge_date(self.context, self.date))
+        return retval
+
+class CreateUserEvent(BasicAuditEvent):
+    """Administrator Creating a User Event. 
+    
+    The "instanceDatum" is the address used to create the new user.
+    """
+    implements(IAuditEvent)
+
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
+        
+        BasicAuditEvent.__init__(self, context, id, 
+          REGISTER, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
+          SUBSYSTEM)
+    
+    def __str__(self):
+        retval = u'Administrator %s (%s) creating a new user with '\
+          u'address <%s>' %\
+          (self.userInfo.name, self.userInfo.id, self.instanceDatum)
+        return retval
+
+    @property
+    def xhtml(self):
+        cssClass = u'audit-event profile-event-%s' % self.code
+        retval = u'<span class="%s">Created a user, with address '\
           u'<code class="email">%s</code></span>' %\
             (cssClass, self.instanceDatum)
         if ((self.instanceUserInfo.id != self.userInfo.id)
