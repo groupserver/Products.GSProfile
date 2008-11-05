@@ -23,8 +23,8 @@ class GSAuditTrailView(BrowserView):
     @property
     def auditItems(self):
         user = self.context
-        rawItems = self.queries.get_user_events_on_site(\
-          self.userInfo.id, self.siteInfo.id)
+        rawItems = self.queries.get_instance_user_events(
+          self.userInfo.id)
         
         events = []
         for i in rawItems:
