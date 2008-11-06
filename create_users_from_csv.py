@@ -155,7 +155,6 @@ class CreateUsersForm(BrowserView):
         providedColumns = columns.values()
         for requiredColumn in requiredColumns:
             if requiredColumn.token not in providedColumns:
-                print requiredColumn.token 
                 notSpecified.append(requiredColumn)
         if notSpecified:
             error = True

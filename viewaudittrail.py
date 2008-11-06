@@ -30,6 +30,7 @@ class GSAuditTrailView(BrowserView):
         for i in rawItems:
             i = self.marshal_data(i)
             event = createObject(i['subsystem'], self.context, **i)
+            # print event # --=mpj17=-- Useful for debugging __str__ methods
             events.append(event)
         return events
 
@@ -53,8 +54,10 @@ class GSAuditTrailView(BrowserView):
 
     def get_userInfo(self, uid):
         # Cache, as we deal with so many user-infos.
-        return self.users.get(uid,\
+        retval = self.users.get(uid,\
           createObject('groupserver.UserFromId', self.context, uid))
+        self.users[uid] = retval
+        return retval
 
     def get_groupInfo(self, gid):
         # TODO: Cache

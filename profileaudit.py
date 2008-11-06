@@ -102,7 +102,7 @@ class ChangeProfileEvent(BasicAuditEvent):
           (self.userInfo.name, self.userInfo.id, 
            fieldName, self.instanceDatum,
            self.instanceUserInfo.name, self.instanceUserInfo.id,
-           new, old, self.siteInfo.name, self.siteInfo.id)
+           old, new, self.siteInfo.name, self.siteInfo.id)
         return retval
         
     def get_old_new(self):
@@ -128,7 +128,7 @@ class ChangeProfileEvent(BasicAuditEvent):
           u'<code class="new">%s</code> (was '\
           u'<code class="old">%s</code>)</span>' % \
           (cssClass, self.instanceDatum, self.get_fieldname(),
-            xml_escape(old), xml_escape(new))
+            xml_escape(new), xml_escape(old))
         if self.instanceUserInfo.id != self.userInfo.id:
             retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))
