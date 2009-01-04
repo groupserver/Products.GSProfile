@@ -80,7 +80,7 @@
             var gsRequiredWidgets = new Array(<span tal:replace="arr" />);
             GSCheckRequired.init(
               gsRequiredWidgets, 
-              '#form\\.actions\\.edit');
+              '#form\\.actions\\.change');
               
             GSPopupFormHelp.init('#edit-profile');
 
