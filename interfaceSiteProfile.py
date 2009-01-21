@@ -89,8 +89,8 @@ class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
 ########
 
 collegeVocab = SimpleVocabulary([
-  SimpleTerm('ca', 'ca',  u'College of Charted Accountants'),
-  SimpleTerm('aca','aca', u'College of Associated Charted Accountants'), 
+  SimpleTerm('ca', 'ca',  u'College of Chartered Accountants'),
+  SimpleTerm('aca','aca', u'College of Associated Chartered Accountants'), 
   SimpleTerm('at', 'at',  u'College of Accounting Technicians')])
 
 locationVocab = SimpleVocabulary([
