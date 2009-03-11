@@ -32,6 +32,8 @@ def select_widget(field, request):
     return retval
 
 class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
+    _joinButtonToMessageTemplate = \
+      u'<span class="checkboxGroup" id="checkboxgroup-%s">%s&nbsp;%s</span>'
     def renderItem(self, index, text, value, name, cssClass):
         widgetId = '%s.%s' % (name, index)
         elem = renderElement('input',
@@ -42,7 +44,8 @@ class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
                              value=value)
         label = '<label class="checkboxLabel" for="%s">%s</label>' % \
           (widgetId, text)
-        return self._joinButtonToMessageTemplate % (elem, label)
+        gId = widgetId.replace('.','-')
+        return self._joinButtonToMessageTemplate % (gId, elem, label)
     
     def renderSelectedItem(self, index, text, value, name, cssClass):
         widgetId = '%s.%s' % (name, index)
@@ -55,7 +58,8 @@ class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
                              checked="checked")
         label = '<label class="checkboxLabel" for="%s">%s</label>' % \
           (widgetId, text)
-        return self._joinButtonToMessageTemplate % (elem, label)
+        gId = widgetId.replace('.','-')
+        return self._joinButtonToMessageTemplate % (gId, elem, label)
 
 
 def multi_check_box_widget(field, request):
