@@ -45,7 +45,6 @@ class GSUserProfiles(BrowserView):
             cnn = user.get_canonicalNickname()
             if cnn == ec(name):
                 retval = user            
-                log.info("Found user with nickname %s" % cnn)
             else:       
                 url = '/p/%s/' % cnn
                 retval = self.request.response.redirect(url)
