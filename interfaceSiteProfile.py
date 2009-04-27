@@ -101,7 +101,8 @@ locationVocab = SimpleVocabulary([
   SimpleTerm('p','p', u'Palmerston North'), 
   SimpleTerm('w','w', u'Wellington'), 
   SimpleTerm('c','c', u'Christchurch'), 
-  SimpleTerm('d','d', u'Dunedin'),])
+  SimpleTerm('d','d', u'Dunedin'),
+  SimpleTerm('lon','lon', u'London')])
 
 addressTypeVocab = SimpleVocabulary([
   SimpleTerm('work', 'work',  u'Work'),
