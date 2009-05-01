@@ -5,14 +5,7 @@
           replace="options/requiredWidgetsArray" />);
       GSCheckRequired.init(
         gsRequiredWidgets, 
-        '#form\\.actions\\.edit');
-        
-      GSPopupFormHelp.init('#edit-profile');
-
-      jQuery("#privacy-button").click( function () {
-          var gsUri = "/policies/privacy/ #privacy";
-          jQuery("#privacy-content").load(gsUri);
-      });
+        "<tal:block replace="options/button" />");
   });
 </tal:block>
 

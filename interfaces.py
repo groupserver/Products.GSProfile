@@ -232,3 +232,8 @@ class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
       required=True,
       unique=True)
 
+    button = ASCIILine(title=u'Button',
+        description=u'The ID of the button to lock if the required '\
+          u'widgets are not filled out.',
+        required=True)
+

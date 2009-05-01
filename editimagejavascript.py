@@ -2,11 +2,14 @@ from zope.component import createObject
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 import zope.interface, zope.component, zope.publisher.interfaces
 import zope.viewlet.interfaces, zope.contentprovider.interfaces 
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 from interfaces import *
 
-class GSRequiredWidgetsJavaScriptContentProvider(object):
-    """Content provider for the required widgets JavaScript."""
-    zope.interface.implements( IGSRequiredWidgetsJavaScriptContentProvider )
+class GSEditImageJavaScriptContentProvider(object):
+    """Content provider for the JavaScript on the edit image pages.
+    """
+
+    zope.interface.implements( IGSViewProfileJavaScriptContentProvider )
     zope.component.adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)
@@ -23,6 +26,7 @@ class GSRequiredWidgetsJavaScriptContentProvider(object):
           self.context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', 
           self.context)
+        self.userInfo = IGSUserInfo(self.context)
 
         rws = [w for w in self.widgets if w.required]
         rwIds = ['\'#%s\''%w.name.replace('.','\\\\.') for w in rws]
@@ -34,10 +38,9 @@ class GSRequiredWidgetsJavaScriptContentProvider(object):
 
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
         return pageTemplate(view=self, 
-          requiredWidgetsArray=self.requiredWidgetsArray,
-          button=self.button)
+          requiredWidgetsArray=self.requiredWidgetsArray)
 
-zope.component.provideAdapter(GSRequiredWidgetsJavaScriptContentProvider,
+zope.component.provideAdapter(GSViewProfileJavaScriptContentProvider,
     provides=zope.contentprovider.interfaces.IContentProvider,
-    name="groupserver.RequiredWidgetsJavaScript")
+    name="groupserver.EditImageJavaScript")
 
