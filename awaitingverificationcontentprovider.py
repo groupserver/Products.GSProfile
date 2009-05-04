@@ -5,9 +5,9 @@ import zope.interface, zope.component, zope.publisher.interfaces
 import zope.viewlet.interfaces, zope.contentprovider.interfaces 
 from interfaces import *
 
-class GSRequiredWidgetsJavaScriptContentProvider(object):
-    """Content provider for the required widgets JavaScript."""
-    zope.interface.implements( IGSRequiredWidgetsJavaScriptContentProvider )
+class GSAwaitingVerificationJavaScriptContentProvider(object):
+    """Content provider for the awaiting verification JavaScript."""
+    zope.interface.implements( IGSAwaitingVerificationJavaScriptContentProvider )
     zope.component.adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)
@@ -22,23 +22,15 @@ class GSRequiredWidgetsJavaScriptContentProvider(object):
         self.__updated = True
         self.siteInfo = createObject('groupserver.SiteInfo', 
           self.context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', 
-          self.context)
-
-        rws = [w for w in self.widgets if w.required]
-        rwIds = ['\'#%s\''%w.name.replace('.','\\\\.') for w in rws]
-        self.requiredWidgetsArray = '%s' % ', '.join(rwIds);
 
     def render(self):
         if not self.__updated:
             raise interfaces.UpdateNotCalled
 
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
-        return pageTemplate(view=self, 
-          requiredWidgetsArray=self.requiredWidgetsArray,
-          button=self.button)
+        return pageTemplate(view=self)
 
-zope.component.provideAdapter(GSRequiredWidgetsJavaScriptContentProvider,
+zope.component.provideAdapter(GSAwaitingVerificationJavaScriptContentProvider,
     provides=zope.contentprovider.interfaces.IContentProvider,
-    name="groupserver.RequiredWidgetsJavaScript")
+    name="groupserver.AwaitingVerificationJavaScript")
 

@@ -160,14 +160,10 @@
         src="/++resource++check_email_verified-20080408.js">&#160;</script>
       <script type="text/javascript"
         src="/++resource++check_email-20080214.js">&#160;</script>
-      <script type="text/javascript">
-        jQuery.noConflict()
-        jQuery(document).ready( function () {
-            GSCheckEmailVerified.init('<span tal:replace="email"/>',  
-              '#form\\.actions\\.next', '#checking', '#thingsToCheck');
-            GSCheckEmailAddress.init('#form\\.email', 
-              '#form\\.actions\\.send', null, null, '#emailHelp');
-        });
+      <script type="text/javascript" 
+        tal:define="email python:view.userEmail[0]"
+        tal:content="provider:groupserver.AwaitingVerificationJavaScript">
+        alert("I have not been replaced either.");
       </script>
     </tal:block>
   </body>

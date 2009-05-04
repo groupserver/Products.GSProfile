@@ -237,3 +237,14 @@ class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
           u'widgets are not filled out.',
         required=True)
 
+class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'javascript.',
+      required=False,
+      default=u"browser/templates/verify_wait_javascript.pt")
+
+    email = EmailAddress(title=u'Email Address',
+        description=u'Your email address.',
+        required=True)
+

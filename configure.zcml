@@ -59,6 +59,10 @@
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
     
   <interface 
+    interface=".interfaces.IGSAwaitingVerificationJavaScriptContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+  <interface 
     interface=".interfaces.IGSUserImage"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
 
