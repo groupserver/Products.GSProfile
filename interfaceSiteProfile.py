@@ -248,8 +248,9 @@ class IABELProfile(IGSCoreProfile):
       default='a',
       required=False)
       
-    preferredExamLocation = TextLine(title=u'Preferred Exam Location',
+    preferredExamLocation = Choice(title=u'Preferred Exam Location',
       description=u'Where you wish to sit your examination.',
+      vocabulary='abel.ExamLocations',
       required=False)
 
     disability = Bool(title=u'Disability',
