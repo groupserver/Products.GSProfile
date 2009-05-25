@@ -87,21 +87,13 @@ class GSProfileView(BrowserView):
         if (hasattr(p, 'vocabulary') and (p.vocabulary == None)):
                 p.vocabulary = getUtility(IVocabularyFactory,\
                     p.vocabularyName, self.context)
-        print p
         r = p.query(self.context, default)
         if  hasattr(p, 'vocabulary'):
             try:
                 retval =  p.vocabulary.getTerm(r).title
             except LookupError, e:
-                print 'Lookup error %s\n%s' % (propertyId, e)
                 retval = r
             except AttributeError, e:
-                print 'Attribute error %s\n%s' % (propertyId, e)
-                print p
-                print dir(p)
-                print p.vocabulary
-                print p.vocabularyName
-                print 
                 retval = r
         else:
             retval = r
