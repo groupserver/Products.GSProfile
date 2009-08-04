@@ -271,7 +271,7 @@ class IABELProfile(IGSCoreProfile):
       
     tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
-      required=False,
+      required=True,
       default=u'Pacific/Auckland',
       vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
 
