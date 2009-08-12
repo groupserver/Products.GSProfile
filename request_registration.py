@@ -12,8 +12,10 @@ from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 import utils
 from emailaddress import NewEmailAddress, EmailAddressExists
+
 import logging
 log = logging.getLogger('GSProfile')
+from profileaudit import *
 
 class RequestRegistrationForm(PageForm):
     form_fields = form.Fields(IGSRequestRegistration)
@@ -87,6 +89,10 @@ class RequestRegistrationForm(PageForm):
             user = utils.create_user_from_email(self.context, email)
             userInfo = IGSUserInfo(user)
             utils.login(self.context, user)
+
+            auditer = ProfileAuditer(user)
+            auditer.info(REGISTER, email)
+
             site = self.siteInfo.siteObj
             utils.send_verification_message(site, user, email)
             

@@ -211,3 +211,40 @@ class IGSReigstration(Interface):
 class IGSUserProfiles(Interface):
     """Marker interface for the user profiles."""
 
+class IGSViewProfileJavaScriptContentProvider(IContentProvider):
+    """The content provider for the javascript"""
+    
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'javascript.',
+      required=False,
+      default=u"browser/templates/viewprofilejavascript.pt")
+
+class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'javascript.',
+      required=False,
+      default=u"browser/templates/requiredwidgetsjavascript.pt")
+
+    widgets = List(title=u'Widgets',
+      description=u'Widgets that are required',
+      required=True,
+      unique=True)
+
+    button = ASCIILine(title=u'Button',
+        description=u'The ID of the button to lock if the required '\
+          u'widgets are not filled out.',
+        required=True)
+
+class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'javascript.',
+      required=False,
+      default=u"browser/templates/verify_wait_javascript.pt")
+
+    email = EmailAddress(title=u'Email Address',
+        description=u'Your email address.',
+        required=True)
+

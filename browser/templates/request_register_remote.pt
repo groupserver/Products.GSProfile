@@ -1,6 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
@@ -44,7 +41,7 @@
     size="20" type="text" value="" /&gt;
   &lt;input id="form.groupId" name="form.groupId" 
     type="hidden" value="<span tal:replace="view/groupInfo/get_id"/>" /&gt;
-  &lt;input id="form.groupId" name="form.came_from" 
+  &lt;input id="form.came_from" name="form.came_from" 
     type="hidden" value="<span tal:replace="view/groupInfo/get_url"/>" /&gt;
   &lt;input type="submit" id="form.actions.register" 
     name="form.actions.register" value="Register" /&gt;

@@ -2,10 +2,11 @@
 import Globals
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.component import createObject
+from zope.component import createObject, getUtility
 from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
+from zope.schema.interfaces import IVocabularyFactory
 import Products.GSContent.interfaces
 from Products.XWFCore import XWFUtils
 from Products.XWFCore.odict import ODict
@@ -82,7 +83,21 @@ class GSProfileView(BrowserView):
         return self.props            
         
     def get_property(self, propertyId, default=''):
-        return self.props[propertyId].query(self.__user, default)
+        p = self.props[propertyId].bind(self.context)
+        if (hasattr(p, 'vocabulary') and (p.vocabulary == None)):
+                p.vocabulary = getUtility(IVocabularyFactory,\
+                    p.vocabularyName, self.context)
+        r = p.query(self.context, default)
+        if  hasattr(p, 'vocabulary'):
+            try:
+                retval =  p.vocabulary.getTerm(r).title
+            except LookupError, e:
+                retval = r
+            except AttributeError, e:
+                retval = r
+        else:
+            retval = r
+        return retval
         
     def emailVisibility(self):
         config = self.context.GlobalConfiguration

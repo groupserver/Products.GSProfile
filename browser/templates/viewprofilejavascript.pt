@@ -1,0 +1,12 @@
+<tal:block 
+  define="userInfo options/view/userInfo;
+    uri string:/s/search.ajax?a=${userInfo/id};
+    postsUri string:&quot;${uri}&amp;t=0&amp;p=1&amp;f=0&amp;r=0&quot;;
+    filesUri string:&quot;${uri}&amp;t=0&amp;p=0&amp;f=1&amp;r=0&quot;">
+    jQuery.noConflict()
+    jQuery(document).ready( function () {
+        jQuery('#latestPosts').load(<tal:block replace="structure postsUri"/>);
+        jQuery('#latestFiles').load(<tal:block replace="structure filesUri"/>);
+    });
+</tal:block>
+

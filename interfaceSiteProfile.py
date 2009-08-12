@@ -2,7 +2,7 @@
 import pytz
 from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
-from zope.schema.vocabulary import SimpleVocabulary
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
   deliveryVocab
 from emailaddress import EmailAddress
@@ -88,76 +88,192 @@ class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
 # ABEL #
 ########
 
-class IABELProfile(IGSCoreProfile):
-    fn = TextLine(title=u'Display Name',
-      description=u'The name that everyone will see on your profile '
-        u'and posts.',
-      required=True,
-      min_length=1,
-      constraint=display_name_not_nul,
-      readonly=True)
+collegeVocab = SimpleVocabulary([
+  SimpleTerm('ca', 'ca',  u'College of Chartered Accountants'),
+  SimpleTerm('aca','aca', u'College of Associated Chartered Accountants'), 
+  SimpleTerm('at', 'at',  u'College of Accounting Technicians')])
 
-    givenName = TextLine(title=u'First Name',
-      description=u'The name that you are commonly called, that is given '
-        u'to you by your parents.',
-      required=True,
-      min_length=1,
-      constraint=display_name_not_nul,
-      readonly=True)
-    
-    familyName = TextLine(title=u'Last Name',
-      description=u'The name that you inherit by birth, or aquire by '
-        u'marrage.',
-      required=True,
-      min_length=1,
-      constraint=display_name_not_nul,
-      readonly=True)
+locationVocab = SimpleVocabulary([
+  SimpleTerm('n','n', u'Auckland, North of Harbour Bridge'),
+  SimpleTerm('a','a', u'Auckland, South of Harbour Bridge'), 
+  SimpleTerm('h','h', u'Hamilton'), 
+  SimpleTerm('t','t', u'Tauranga'),
+  SimpleTerm('p','p', u'Palmerston North'), 
+  SimpleTerm('w','w', u'Wellington'), 
+  SimpleTerm('c','c', u'Christchurch'), 
+  SimpleTerm('d','d', u'Dunedin'),
+  SimpleTerm('lon','lon', u'London')])
+
+addressTypeVocab = SimpleVocabulary([
+  SimpleTerm('work', 'work',  u'Work'),
+  SimpleTerm('home', 'home',  u'Home')])
+  
+employerClassificationVocab = SimpleVocabulary([
+  SimpleTerm('publicPractice_business', 'publicPractice_business',  
+             u'Public Practice Business Services'),
+  SimpleTerm('publicPractice_audit',    'publicPractice_audit',  
+             u'Public Practice Audit'),
+  SimpleTerm('publicPractice_tax',      'publicPractice_tax',  
+             u'Public Practice Tax'),
+  SimpleTerm('publicPractice_other',    'publicPractice_other',  
+             u'Public Practice Other'),
+  SimpleTerm('corporate',     'corporate',      u'Corporate Sector'),
+  SimpleTerm('publicSector',  'publicSector',   u'Public Sector'),
+  SimpleTerm('academic',      'academic',       u'Academic'),
+  SimpleTerm('notforprofit',  'notforprofit',   u'Not for Profit'),
+  SimpleTerm('other',         'other',          u'Other'),])
+
+class IABELProfile(IGSCoreProfile):
+    membershipID = TextLine(title=u'NZICA Membership Number',
+      description=u'New Zealand Institute of Chartered Accountants '\
+        u'Membership Number.',
+      required=False)
+
+    candidateID = TextLine(title=u'Candidate Number',
+      description=u'ABEL Candidate Number.',
+      required=False)
       
-    biography = Text(title=u'Biography',
-      description=u'A desciption of you.',
+    familyName = TextLine(title=u'Family Name',
+      description=u'The name inherited by birth, or acquired by marriage.',
+      required=False,
+      min_length=1,
+      constraint=display_name_not_nul)
+      
+    givenName = TextLine(title=u'Given Names',
+      description=u'The name that is given by the parents.',
+      required=False,
+      min_length=1,
+      constraint=display_name_not_nul)
+    
+    additionalName = TextLine(title=u'Preferred Name',
+      description=u'The name that is commonly used in greetings, '\
+        u'salutations and felicitations.', 
+      readonly=False,
+      required=False)
+      
+    fn = TextLine(title=u'eCampus Display Name',
+      description=u'The name seen on the eCampus: on the profile, in '\
+        u'correspondence and in posts.',
+      required=True,
+      min_length=1,
+      constraint=display_name_not_nul)
+
+    aliases = Text(title=u'Aliases',
+      description=u'Other names.',
+      readonly=True,
+      required=False)
+
+    gender = Choice(title=u'Gender',
+      description=u'The identified gender.',
+      default=u'Female',
+      vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
+      required=False)
+      
+    tel_work = TextLine(title=u'Work Phone',
+      description=u'The telephone number for the place of work',
+      required=False)
+      
+    tel_home = TextLine(title=u'Home Phone',
+      description=u'The telephone number for the place of residence',
+      required=False)
+      
+    tel_cell = TextLine(title=u'Cell Phone',
+      description=u'The telephone number for the cell phone',
+      required=False)
+
+    org = TextLine(title=u'Employer',
+      description=u'Company, firm or institution name.',
+      required=False)
+
+    adr_type = Choice(title=u'Address Type',
+      description=u'Type of address',
+      default=u'work',
+      vocabulary=addressTypeVocab, 
+      required=False)
+      
+    adr_extended_address = TextLine(title=u'Extended Address',
+      description=u'The flat or apartment or office number',
+      required=False)
+
+    adr_street_address = TextLine(title=u'Street Address',
+      description=u'The street address of the building',
+      required=False)
+
+    adr_post_office_box = TextLine(title=u'PO Box',
+      description=u'Post Office Box number, or private bag number',
+      required=False)
+
+    adr_region = TextLine(title=u'Suburb',
+      description=u'The suburb the building is located',
+      required=False)
+   
+    adr_locality = TextLine(title=u'Town or City',
+      description=u'The town or city that the suburb is located',
+      required=False)
+
+    adr_country = TextLine(title=u'Country',
+      description=u'The country the city of town is located',
+      required=False,
+      default=u'New Zealand')
+      
+    adr_postal_code = TextLine(title=u'Post Code',
+      description=u'The postal code for the address',
       required=False,
       default=u'')
+
+    employer_classification = Choice(title=u'Employer Classification',
+      description=u'Employer Classification',
+      vocabulary=employerClassificationVocab,
+      default='publicPractice_business',
+      required=False)
+
+    employer_classification_other = TextLine(
+      title=u'Employer Classification (Other)',
+      description=u'Employer classification (if Other selected)',
+      required=False)
+
+    tertiaryInstitution = TextLine(title=u'Tertiary Institution',
+      description=u'Where you completed your academic requirements',
+      required=False)
+
+    college = Choice(title=u'College',
+      description=u'Intended NZICA College',
+      vocabulary=collegeVocab,
+      default='ca',
+      required=False)
+      
+    preferredWorkshopLocation = Choice(title=u'Preferred Workshop Location',
+      description=u'Where you would like to participate in your workshop',
+      vocabulary=locationVocab,
+      default='a',
+      required=False)
+      
+    preferredExamLocation = Choice(title=u'Preferred Exam Location',
+      description=u'Where you wish to sit your examination.',
+      vocabulary='abel.ExamLocations',
+      default='a',
+      required=False)
+
+    disability = Bool(title=u'Disability',
+      description=u'Special support required to participate in the programme.',
+      default=False, 
+      required=False)
+      
+    specialDiet = Bool(title=u'Special Dietary Requirements',
+      description=u'Special dietary requirements.',
+      default=False, 
+      required=False)
+      
+    biography = Text(title=u'Biography',
+      description=u'A description detailing life and interests.',
+      default=u'', 
+      required=False)
       
     tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
-      required=False,
-      default=u'UTC',
+      required=True,
+      default=u'Pacific/Auckland',
       vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
-
-    region = TextLine(title=u'Preferred Workshop Location',
-      description=u'Where you would prefer to attend workshops.',
-      required=False,
-      readonly=True)
-
-    org = TextLine(title=u'Employer',
-      description=u'The organisation that employs you.',
-      required=False,
-      readonly=True)
-
-    employment_category = TextLine(title=u'Employment Category',
-      description=u'The area of accountancy that you work in',
-      required=False,
-      readonly=True)
-
-    membershipID = TextLine(title=u'NZICA Membership Number',
-      description=u'Your New Zealand Institute of Chartered Accountants Membership Number',
-      required=False,
-      readonly=True)
-
-    candidateID = TextLine(title=u'Candidate Number',
-      description=u'Your ABEL Candidate Number',
-      required=False,
-      readonly=True)
-      
-    eminervaID = TextLine(title=u'eMinerva ID',
-      description=u'The identifier for your record in the eMinerva Student Control System',
-      required=False,
-      readonly=True)
-
-    preferredExamLocation = TextLine(title=u'Preferred Examination Location',
-      description=u'Where you wish to sit your exam.',
-      required=False,
-      readonly=True)
 
 class IABELProfileRegister(IABELProfile):
     joinable_groups = List(title=u'Joinable Groups',

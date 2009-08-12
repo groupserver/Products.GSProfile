@@ -1,19 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
   metal:use-macro="context/@@groupserver_layout/page">
   <head>
-    <title metal:fill-slot="title">
-      Profile of 
-      <span tal:replace="python:view.userInfo.name">
-        A. Person
-      </span>:
+    <title metal:fill-slot="title">Profile of 
+      <span tal:replace="view/userInfo/name">A. Person</span>:
       <span tal:replace="view/siteInfo/get_name">A Site</span>
     </title>
-    
     <tal:block metal:fill-slot="metadata"
       tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
       <link rel="alternate" type="application/atom+xml"
@@ -63,7 +56,6 @@
             </tal:block>
           </tbody>
         </table>
-      
         <div id="emailContact" 
           tal:condition="authenticated"
           tal:define="vis view/emailVisibility">
@@ -127,18 +119,9 @@
       </div><!--cols-->
     </div><!--profile-->
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript"
-        tal:define="uid python:view.userInfo.id">
-        jQuery.noConflict();
-        jQuery(document).ready( function () {
-            var ajaxUri = "/s/search.ajax?a=<span tal:replace="uid"/>";
-
-            var postsUri = ajaxUri + "&amp;t=0&amp;p=1&amp;f=0&amp;r=0";
-            jQuery("#latestPosts").load(postsUri);
-            
-            var filesUri = ajaxUri + "&amp;t=0&amp;p=0&amp;f=1&amp;r=0";
-            jQuery("#latestFiles").load(filesUri);
-        });
+      <script type="text/javascript" 
+        tal:content="provider:groupserver.ViewProfileJavaScript">
+          alert("I have not been replaced!");
       </script>
     </tal:block>
   </body>

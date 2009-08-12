@@ -37,15 +37,15 @@ class GSUserProfiles(BrowserView):
     
     def publishTraverse(self, request, name):
         retval = None
+        u1 = self.context.acl_users.getUser(name)
+        ec_name = ec(name)
+        u2 = self.context.acl_users.get_userByNickname(ec_name)
+        user = (u1 or u2)
         
-        user = (self.context.acl_users.getUser(name) or
-                self.context.acl_users.get_userByNickname(ec(name)))
-
         if user:
             cnn = user.get_canonicalNickname()
             if cnn == ec(name):
                 retval = user            
-                log.info("Found user with nickname %s" % cnn)
             else:       
                 url = '/p/%s/' % cnn
                 retval = self.request.response.redirect(url)

@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      Activity log for 
+      <span tal:replace="python:view.userInfo.name">
+        A. Person
+      </span>:
+      <span tal:replace="view/siteInfo/get_name">A Site</span>
+    </title>
+  </head>
+  <body>
+    <tal:block metal:fill-slot="contextnavigation">
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
+    </tal:block>
+    <div metal:fill-slot="body"
+      tal:define="authenticated python:user.has_role('Authenticated')">
+      <ul>
+        <tal:block repeat="event view/auditItems">
+          <li tal:content="structure event/xhtml">Stuff</li>
+        </tal:block>
+      </ul>
+    </div>
+  </body>
+</html>
+

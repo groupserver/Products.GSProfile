@@ -1,4 +1,6 @@
-import profileContextMenu, userImage, utils, formwidgets
+import profileContextMenu, userImage, utils, formwidgets, \
+  viewprofilejavascript, requiredwidgetsjavascript, \
+    awaitingverificationcontentprovider
 from admin_join import AdminJoinEditProfileForm
 from edit_profile import RegisterEditProfileForm
 from create_users_from_csv import CreateUsersForm

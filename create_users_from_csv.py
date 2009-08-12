@@ -155,7 +155,6 @@ class CreateUsersForm(BrowserView):
         providedColumns = columns.values()
         for requiredColumn in requiredColumns:
             if requiredColumn.token not in providedColumns:
-                print requiredColumn.token 
                 notSpecified.append(requiredColumn)
         if notSpecified:
             error = True
@@ -276,34 +275,40 @@ class CreateUsersForm(BrowserView):
         
         # Map the data into the correctly named columns.
         for row in csvResults.mainData:
-            fieldmap = {}
-            for column in columns:
-                fieldmap[columns[column]] = row[column]
-            r = self.process_row(fieldmap, delivery)
-            error = error or r['error']
+            try:
+                fieldmap = {}
+                for column in columns:
+                    fieldmap[columns[column]] = row[column]
+                r = self.process_row(fieldmap, delivery)
+                error = error or r['error']
             
-            if r['error']:
+                if r['error']:
+                    errorCount = errorCount + 1
+                    errorMessage  = u'%s\n<li>%s</li>' %\
+                      (errorMessage, r['message'])
+                elif r['new'] == 1:
+                    existingUserCount = existingUserCount + 1
+                    existingUserMessage  = u'%s\n<li>%s</li>' %\
+                      (existingUserMessage, r['message'])
+                elif r['new'] == 2:
+                    newUserCount = newUserCount + 1
+                    newUserMessage  = u'%s\n<li>%s</li>' %\
+                      (newUserMessage, r['message'])
+                elif r['new'] == 3:
+                    skippedUserCount = skippedUserCount + 1
+                    skippedUserMessage  = u'%s\n<li>%s</li>' %\
+                      (skippedUserMessage, r['message'])
+                else:
+                    assert False, 'Unexpected return value from process_row: %d'%\
+                      r['new']
+            except Exception, e:
+                error = True
                 errorCount = errorCount + 1
-                errorMessage  = u'%s\n<li>%s</li>' %\
-                  (errorMessage, r['message'])
-            elif r['new'] == 1:
-                existingUserCount = existingUserCount + 1
-                existingUserMessage  = u'%s\n<li>%s</li>' %\
-                  (existingUserMessage, r['message'])
-            elif r['new'] == 2:
-                newUserCount = newUserCount + 1
-                newUserMessage  = u'%s\n<li>%s</li>' %\
-                  (newUserMessage, r['message'])
-            elif r['new'] == 3:
-                skippedUserCount = skippedUserCount + 1
-                skippedUserMessage  = u'%s\n<li>%s</li>' %\
-                  (skippedUserMessage, r['message'])
-            else:
-                assert False, 'Unexpected return value from process_row: %d'%\
-                  r['new']
+                errorMessage  = u'%s\n<li>'\
+                  u'<strong>Unexpected Error:</strong> %s</li>' %\
+                  (errorMessage, unicode(e))
             rowCount = rowCount + 1
-            
-        errorMessage = u'%s</ul>\n' % errorMessage
+        
         assert (existingUserCount + newUserCount + errorCount + \
           skippedUserCount) == rowCount,\
           'Discrepancy between counts: %d + %d + %d + %d != %d' %\
@@ -318,6 +323,7 @@ class CreateUsersForm(BrowserView):
         message = u'%s<li>The first row was treated as a header, and '\
           u'ignored.</li>\n' % message
 
+        newUserMessage = u'%s</ul>\n' % newUserMessage
         if newUserCount > 0:
             wasWere = newUserCount == 1 and 'was' or 'were'
             userUsers = newUserCount == 1 and 'user' or 'users'
@@ -327,6 +333,8 @@ class CreateUsersForm(BrowserView):
               u'<div class="disclosureShowHide" style="display:none;">'\
               u'%s</div></li>' % (message, newUserCount,  userUsers, 
                 wasWere, self.groupInfo.get_name(), newUserMessage)
+        
+        existingUserMessage = u'%s</ul>\n' % existingUserMessage
         if existingUserCount > 0:
             userUsers = existingUserCount == 1 and 'user' or 'users'
             wasWere = existingUserCount == 1 and 'was' or 'were'
@@ -337,20 +345,24 @@ class CreateUsersForm(BrowserView):
               u'<div class="disclosureShowHide" style="display:none;">'\
               u'%s</div></li>' % (message, existingUserCount,  userUsers, 
                 wasWere, self.groupInfo.get_name(), existingUserMessage)
+        
+        skippedUserMessage = u'%s</ul>\n' % skippedUserMessage
         if skippedUserCount > 0:
             userUsers = skippedUserCount == 1 and 'member' or 'members'
             wasWere = skippedUserCount == 1 and 'was' or 'were'
-            message = u'%s<li id="skippedserInfo"'\
+            message = u'%s<li id="skippedUserInfo"'\
               u'class="disclosureWidget">'\
               u'<a href="#" class="disclosureButton"><strong>%d existing '\
               u'%s of %s %s skipped.</strong></a>\n'\
               u'<div class="disclosureShowHide" style="display:none;">'\
               u'%s</div></li>' % (message, skippedUserCount,  userUsers, 
                 self.groupInfo.get_name(), wasWere, skippedUserMessage)
+        
+        errorMessage = u'%s</ul>\n' % errorMessage
         if error:
             wasWere = errorCount == 1 and 'was' or 'were'
             errorErrors = errorCount == 1 and 'error' or 'errors'
-            message = u'%s<p>There %s %d %s:</p>\n' % \
+            message = u'%s</ul><p>There %s %d %s:</p>\n' % \
               (message, wasWere, errorCount, errorErrors)
             message = u'%s%s\n' % (message, errorMessage)
             

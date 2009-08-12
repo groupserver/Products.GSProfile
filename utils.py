@@ -10,6 +10,7 @@ from string import ascii_lowercase, digits
 from Products.XWFCore.XWFUtils import convert_int2b62, assign_ownership
 from Products.CustomUserFolder.CustomUser import CustomUser
 from Products.GSGroupMember.groupmembership import userInfo_to_user
+import interfaces
 
 import logging
 log = logging.getLogger('GSProfile Utilities')
@@ -205,7 +206,7 @@ def enforce_schema(inputData, schema):
       ASCII:     'lines',
       ASCIILine: 'string',
       URI:       'string',
-      Bool:      'bool',
+      Bool:      'boolean',
       Float:     'float',
       Int:       'int',
       Datetime:  'date',
@@ -248,4 +249,22 @@ def escape_c(c):
     assert retval
     assert type(retval) == str
     return retval
+
+
+def profile_interface(context):
+    interfaceName = profile_interface_name(context)
+        
+    assert hasattr(interfaces, interfaceName), \
+        'Interface "%s" not found.' % interfaceName
+    interface = getattr(interfaces, interfaceName)
+    return interface
+
+def profile_interface_name(context):
+    site_root = context.site_root()
+    assert hasattr(site_root, 'GlobalConfiguration')
+    config = site_root.GlobalConfiguration
+    
+    interfaceName = config.getProperty('profileInterface',
+                                        'IGSCoreProfile')
+    return interfaceName
 
