@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_site_home_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      Invitation Rejected:
+      <span tal:replace="view/siteInfo/get_name">A Site</span>
+    </title>
+    
+  </head>
+  
+  <body metal:fill-slot="body">
+    <h1>Invitation Rejected</h1>
+      <p>
+        You have rejected your invitation to join 
+        <span class="group">the group</span>
+        <!-- -=mpj17=- Check to see if we should delete the profile.
+        ,
+        and your personal information has been removed from
+        <span class="site"
+          tal:content="view/siteInfo/get_name">this site</span>.-->
+      </p>
+      <p>
+        Sorry for the intrusion &#8212;
+        <a class="email"
+          tal:attributes="title string:Support for ${view/siteInfo/get_name};
+            href string:mailto:${view/siteInfo/get_support_email}">
+          <span class="site"
+            tal:content="view/siteInfo/get_name">this site</span> Team.</a>
+      </p>
+  </body>
+</html>
+
