@@ -1,7 +1,7 @@
 from zope.schema.interfaces import IField
 from zope.interface import implements
 
-class GSField(object)
+class GSField(object):
 
     implements(IField)
     
