@@ -30,6 +30,14 @@
   <browser:resource name="check_email_verified-20080408.js"
     file="browser/javascript/check_email_verified.js"
     permission="zope2.View" />
+  <!--This resource is not used by standard GroupServer profiles,
+    - but those sites that have given name and family name fields
+    - for the users may find it useful. -->
+  <browser:resource
+    name="suggest_fn-20081021.js" 
+    file="browser/javascript/suggest_fn.js"
+    permission="zope2.Public" />
+
 
   <!-- Form schemas -->
   
