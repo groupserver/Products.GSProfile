@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configure xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:rdb="http://namespaces.zope.org/rdb"
-  xmlns:sqlos="http://namespaces.sqlobject.org/sqlos"
-  xmlns:five="http://namespaces.zope.org/five">
+  xmlns:five="http://namespaces.zope.org/five"
+  i18n_domain="groupserver">
 
   <!-- declare a marker interface on the Folder class to allow us 
     to add marker Interfaces, views and adaptation -->
@@ -214,7 +213,6 @@
   <browser:menu 
     id="user_profile_menu"
     title="Test of the profile menus" />
-
   <browser:menuItems
     menu="user_profile_menu"
     for="Products.CustomUserFolder.interfaces.ICustomUser">
