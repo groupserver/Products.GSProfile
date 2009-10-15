@@ -134,26 +134,30 @@ class IABELProfile(IGSCoreProfile):
       required=False)
       
     familyName = TextLine(title=u'Family Name',
-      description=u'The name inherited by birth, or acquired by marriage.',
-      required=False,
+      description=u'The name of your family, which you inherited '\
+        u'by birth, or acquired by marriage.',
+      required=True,
       min_length=1,
       constraint=display_name_not_nul)
       
     givenName = TextLine(title=u'Given Names',
-      description=u'The name that is given by the parents.',
-      required=False,
+      description=u'The names that are given to you by your parents. '\
+        u'This name may be used in more formal situations to your '\
+        u'preferred name.',
+      required=True,
       min_length=1,
       constraint=display_name_not_nul)
     
     additionalName = TextLine(title=u'Preferred Name',
-      description=u'The name that is commonly used in greetings, '\
-        u'salutations and felicitations.', 
-      readonly=False,
-      required=False)
+      description=u'The name that is commonly used to greet you. '\
+        u'This name may be a shorter version of one of your given '\
+        u'names or a different name entirely!', 
+      required=True)
       
     fn = TextLine(title=u'eCampus Display Name',
-      description=u'The name seen on the eCampus: on the profile, in '\
-        u'correspondence and in posts.',
+      description=u'The name seen on the eCampus: on your profile, '\
+        u'and in emails sent to you. The display name is usually '\
+        u'a combination of your family name and preferred name.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
@@ -164,60 +168,82 @@ class IABELProfile(IGSCoreProfile):
       required=False)
 
     gender = Choice(title=u'Gender',
-      description=u'The identified gender.',
+      description=u'Your identified gender.',
       default=u'Female',
       vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
-      required=False)
+      required=True)
       
     tel_work = TextLine(title=u'Work Phone',
-      description=u'The telephone number for the place of work',
+      description=u'The telephone number for your place of work. '\
+        u'This is written with spaces and digits only. If you live '\
+        u'outside New Zeland place a country-code at the start. '\
+        u'For example the telephone number for ABEL is '\
+        u'+64 3 961 2400.',
       required=False)
       
     tel_home = TextLine(title=u'Home Phone',
-      description=u'The telephone number for the place of residence',
+      description=u'The telephone number for your place of '\
+        u'residence. '\
+        u'This is written with spaces and digits only. If you live '\
+        u'outside New Zeland place a country-code at the start. '\
+        u'For example the telephone number for ABEL is '\
+        u'+64 3 961 2400.',
       required=False)
       
     tel_cell = TextLine(title=u'Cell Phone',
-      description=u'The telephone number for the cell phone',
+      description=u'The telephone number for your cell (mobile) '\
+        u'phone. '\
+        u'This is written with spaces and digits only. If you live '\
+        u'outside New Zeland place a country-code at the start. '\
+        u'For example the telephone number for ABEL is '\
+        u'+64 3 961 2400.',
       required=False)
 
     org = TextLine(title=u'Employer',
-      description=u'Company, firm or institution name.',
+      description=u'The name of the company, firm or institution '\
+        u'that you work for.',
       required=False)
 
     adr_type = Choice(title=u'Address Type',
       description=u'Type of address',
       default=u'work',
       vocabulary=addressTypeVocab, 
-      required=False)
+      required=True)
       
     adr_extended_address = TextLine(title=u'Extended Address',
-      description=u'The flat or apartment or office number',
+      description=u'The flat, apartment or office number. '\
+        u'If the address is a work address, then the name of your '\
+        u'employer should be written here.',
       required=False)
 
     adr_street_address = TextLine(title=u'Street Address',
-      description=u'The street address of the building',
+      description=u'The street address of the building. If you '\
+        u'deliverys to a PO Box or private pag then you should '\
+        u'fill out the PO Box field below.',
       required=False)
 
     adr_post_office_box = TextLine(title=u'PO Box',
-      description=u'Post Office Box number, or private bag number',
+      description=u'Post Office Box number, or private bag number.',
       required=False)
 
     adr_region = TextLine(title=u'Suburb',
-      description=u'The suburb the building is located',
-      required=False)
+      description=u'The suburb the building or Post Office Box is '\
+        u'located.',
+      required=True)
    
-    adr_locality = TextLine(title=u'Town or City',
-      description=u'The town or city that the suburb is located',
-      required=False)
+    adr_locality = TextLine(title=u'Town, City, or State',
+      description=u'The town, city or state that the suburb is '\
+        u'located.',
+      required=True)
 
     adr_country = TextLine(title=u'Country',
-      description=u'The country the city of town is located',
+      description=u'The country the city, town, or state is '\
+        u'located.',
       required=False,
       default=u'New Zealand')
       
     adr_postal_code = TextLine(title=u'Post Code',
-      description=u'The postal code for the address',
+      description=u'The postal code for the address.',
       required=False,
       default=u'')
 
