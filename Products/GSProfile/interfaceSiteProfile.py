@@ -290,12 +290,12 @@ class IABELProfile(IGSCoreProfile):
       vocabulary='abel.ExamLocations',
       default='a',
       required=False)
-      
-#    preferredExamLocation = Choice(title=u'Preferred Exam Location',
-#      description=u'Where you wish to sit your examination.',
-#      vocabulary='abel.ExamLocations',
-#      default='a',
-#      required=False)
+    
+    #--=mpj17=-- Depricated      
+    preferredExamLocation = Choice(title=u'Preferred Exam Location',
+      description=u'Where you wish to sit your examination.',
+      vocabulary='abel.ExamLocations',
+      required=False)
 
     disability = Bool(title=u'Disability',
       description=u'You require special support to participate in '\
