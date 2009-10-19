@@ -136,8 +136,8 @@ class IABELProfile(IGSCoreProfile):
     familyName = TextLine(title=u'Family Name',
       description=u'The name of your family, which you inherited '\
         u'by birth, or acquired by marriage.' \
-        u'For example "Keeling" for Philip Keeling, or "Kim" for '\
-        u'Kim Jong-il.',
+        u'For example "Keeling" for Philip Keeling, or "Ban" for '\
+        u'Ban Ki-moon.',
       required=False,
       min_length=1,
       constraint=display_name_not_nul)
@@ -146,8 +146,8 @@ class IABELProfile(IGSCoreProfile):
       description=u'The names that are given to you by your parents. '\
         u'This name may be used in more formal situations to your '\
         u'preferred name. '\
-        u'For example, "Philip" for Philip Keeling, or "Jong-il" '\
-        u'for Kim Jong-il.',
+        u'For example, "Philip" for Philip Keeling, or "Ki-moon" '\
+        u'for Ban Ki-moon.',
       required=False,
       min_length=1,
       constraint=display_name_not_nul)
@@ -163,7 +163,7 @@ class IABELProfile(IGSCoreProfile):
       description=u'The name seen on the eCampus: on your profile, '\
         u'and in emails sent to you. The display name is usually '\
         u'a combination of your family name and preferred name, '\
-        u'such as "Philip Keeling" or "Kim Jong-il".',
+        u'such as "Philip Keeling" or "Ban Ki-moon".',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
