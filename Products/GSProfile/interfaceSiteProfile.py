@@ -135,29 +135,35 @@ class IABELProfile(IGSCoreProfile):
       
     familyName = TextLine(title=u'Family Name',
       description=u'The name of your family, which you inherited '\
-        u'by birth, or acquired by marriage.',
-      required=True,
+        u'by birth, or acquired by marriage.' \
+        u'For example "Keeling" for Philip Keeling, or "Kim" for '\
+        u'Kim Jong-il.',
+      required=False,
       min_length=1,
       constraint=display_name_not_nul)
       
     givenName = TextLine(title=u'Given Names',
       description=u'The names that are given to you by your parents. '\
         u'This name may be used in more formal situations to your '\
-        u'preferred name.',
-      required=True,
+        u'preferred name. '\
+        u'For example, "Philip" for Philip Keeling, or "Jong-il" '\
+        u'for Kim Jong-il.',
+      required=False,
       min_length=1,
       constraint=display_name_not_nul)
     
     additionalName = TextLine(title=u'Preferred Name',
       description=u'The name that is commonly used to greet you. '\
         u'This name may be a shorter version of one of your given '\
-        u'names or a different name entirely!', 
-      required=True)
+        u'names — such as Liz, Phil, Mike, or Beth — or a '\
+        u'different name entirely!', 
+      required=False)
       
     fn = TextLine(title=u'eCampus Display Name',
       description=u'The name seen on the eCampus: on your profile, '\
         u'and in emails sent to you. The display name is usually '\
-        u'a combination of your family name and preferred name.',
+        u'a combination of your family name and preferred name, '\
+        u'such as "Philip Keeling" or "Kim Jong-il".',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
@@ -168,15 +174,18 @@ class IABELProfile(IGSCoreProfile):
       required=False)
 
     gender = Choice(title=u'Gender',
-      description=u'Your identified gender.',
+      description=u'The gender that people perceive you as having '\
+        u'(your identified gender).',
       default=u'Female',
       vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
-      required=True)
+      required=False)
       
     tel_work = TextLine(title=u'Work Phone',
       description=u'The telephone number for your place of work. '\
-        u'This is written with spaces and digits only. If you live '\
-        u'outside New Zeland place a country-code at the start. '\
+        u'This is written with digits, spaces, and an optional '\
+        u' plus sign. '\
+        u'If you live outside New Zeland put a plus and the '\
+        u'country-code at the start. '\
         u'For example the telephone number for ABEL is '\
         u'+64 3 961 2400.',
       required=False)
@@ -184,8 +193,10 @@ class IABELProfile(IGSCoreProfile):
     tel_home = TextLine(title=u'Home Phone',
       description=u'The telephone number for your place of '\
         u'residence. '\
-        u'This is written with spaces and digits only. If you live '\
-        u'outside New Zeland place a country-code at the start. '\
+        u'This is written with digits, spaces, and an optional '\
+        u' plus sign. '\
+        u'If you live outside New Zeland put a plus and the '\
+        u'country-code at the start. '\
         u'For example the telephone number for ABEL is '\
         u'+64 3 961 2400.',
       required=False)
@@ -193,8 +204,10 @@ class IABELProfile(IGSCoreProfile):
     tel_cell = TextLine(title=u'Cell Phone',
       description=u'The telephone number for your cell (mobile) '\
         u'phone. '\
-        u'This is written with spaces and digits only. If you live '\
-        u'outside New Zeland place a country-code at the start. '\
+        u'This is written with digits, spaces, and an optional '\
+        u' plus sign. '\
+        u'If you live outside New Zeland put a plus and the '\
+        u'country-code at the start. '\
         u'For example the telephone number for ABEL is '\
         u'+64 3 961 2400.',
       required=False)
@@ -208,7 +221,7 @@ class IABELProfile(IGSCoreProfile):
       description=u'Type of address',
       default=u'work',
       vocabulary=addressTypeVocab, 
-      required=True)
+      required=False)
       
     adr_extended_address = TextLine(title=u'Extended Address',
       description=u'The flat, apartment or office number. '\
@@ -218,8 +231,8 @@ class IABELProfile(IGSCoreProfile):
 
     adr_street_address = TextLine(title=u'Street Address',
       description=u'The street address of the building. If you '\
-        u'deliverys to a PO Box or private pag then you should '\
-        u'fill out the PO Box field below.',
+        u'want your deliveries to a PO Box or private bag then '\
+        u'you should fill out the PO Box field below.',
       required=False)
 
     adr_post_office_box = TextLine(title=u'PO Box',
@@ -229,12 +242,12 @@ class IABELProfile(IGSCoreProfile):
     adr_region = TextLine(title=u'Suburb',
       description=u'The suburb the building or Post Office Box is '\
         u'located.',
-      required=True)
+      required=False)
    
     adr_locality = TextLine(title=u'Town, City, or State',
       description=u'The town, city or state that the suburb is '\
         u'located.',
-      required=True)
+      required=False)
 
     adr_country = TextLine(title=u'Country',
       description=u'The country the city, town, or state is '\
@@ -259,7 +272,7 @@ class IABELProfile(IGSCoreProfile):
       required=False)
 
     tertiaryInstitution = TextLine(title=u'Tertiary Institution',
-      description=u'Where you completed your academic requirements',
+      description=u'Where you completed your academic requirements.',
       required=False)
 
     college = Choice(title=u'College',
@@ -268,30 +281,39 @@ class IABELProfile(IGSCoreProfile):
       default='ca',
       required=False)
       
-    preferredWorkshopLocation = Choice(title=u'Preferred Workshop Location',
-      description=u'Where you would like to participate in your workshop',
-      vocabulary=locationVocab,
-      default='a',
-      required=False)
-      
-    preferredExamLocation = Choice(title=u'Preferred Exam Location',
-      description=u'Where you wish to sit your examination.',
+    preferredWorkshopLocation = Choice(title=u'Preferred Workshop and Exam Location',
+      description=u' For Foundations, this is  the location you '\
+        u'would prefer to attend the workshop and examination. '\
+        u'For CAPAS (PAS) this is the location for your workshop. '\
+        u'For CAPEX (PCE 2) this is the location of the exam.',
+#      vocabulary=locationVocab,
       vocabulary='abel.ExamLocations',
       default='a',
       required=False)
+      
+#    preferredExamLocation = Choice(title=u'Preferred Exam Location',
+#      description=u'Where you wish to sit your examination.',
+#      vocabulary='abel.ExamLocations',
+#      default='a',
+#      required=False)
 
     disability = Bool(title=u'Disability',
-      description=u'Special support required to participate in the programme.',
+      description=u'You require special support to participate in '\
+        u'the programme. If you select this option, ABEL will '\
+        u'contact you to determine the support you require.',
       default=False, 
       required=False)
       
     specialDiet = Bool(title=u'Special Dietary Requirements',
-      description=u'Special dietary requirements.',
+      description=u'Your dietary requirements are different from '\
+        u'the general populous for medical, religious, ethical or '\
+        u'other reasons. If you selected this option ABEL will '\
+        u'contact you to determine your requirements.',
       default=False, 
       required=False)
       
     biography = Text(title=u'Biography',
-      description=u'A description detailing life and interests.',
+      description=u'A description of your life and interests.',
       default=u'', 
       required=False)
       
