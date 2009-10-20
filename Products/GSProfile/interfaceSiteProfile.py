@@ -181,34 +181,34 @@ class IABELProfile(IGSCoreProfile):
       required=False)
       
     tel_work = TextLine(title=u'Work Phone',
-      description=u'The telephone number for your place of work. '\
+      description=u'The phone number for your place of work. '\
         u'This is written with digits, spaces, and an optional '\
         u' plus sign. '\
         u'If you live outside New Zeland put a plus and the '\
         u'country-code at the start. '\
-        u'For example the telephone number for ABEL is '\
+        u'For example the phone number for ABEL is '\
         u'+64 3 961 2400.',
       required=False)
       
     tel_home = TextLine(title=u'Home Phone',
-      description=u'The telephone number for your place of '\
+      description=u'The phone number for your place of '\
         u'residence. '\
         u'This is written with digits, spaces, and an optional '\
         u' plus sign. '\
         u'If you live outside New Zeland put a plus and the '\
         u'country-code at the start. '\
-        u'For example the telephone number for ABEL is '\
+        u'For example the phone number for ABEL is '\
         u'+64 3 961 2400.',
       required=False)
       
     tel_cell = TextLine(title=u'Cell Phone',
-      description=u'The telephone number for your cell (mobile) '\
+      description=u'The phone number for your cell (mobile) '\
         u'phone. '\
         u'This is written with digits, spaces, and an optional '\
         u' plus sign. '\
         u'If you live outside New Zeland put a plus and the '\
         u'country-code at the start. '\
-        u'For example the telephone number for ABEL is '\
+        u'For example the phone number for ABEL is '\
         u'+64 3 961 2400.',
       required=False)
 
@@ -281,19 +281,23 @@ class IABELProfile(IGSCoreProfile):
       default='ca',
       required=False)
       
-    preferredWorkshopLocation = Choice(title=u'Preferred Workshop and Exam Location',
-      description=u' For Foundations, this is  the location you '\
-        u'would prefer to attend the workshop and examination. '\
-        u'For CAPAS (PAS) this is the location for your workshop. '\
-        u'For CAPEX (PCE 2) this is the location of the exam.',
-#      vocabulary=locationVocab,
-      vocabulary='abel.ExamLocations',
+    foundationsWorkshopLocation = Choice(title=u'Preferred Workshop and Exam Location',
+      description=u'Where you would prefer to attend the '
+        u'Foundations workshop and examination.',
+      vocabulary=locationVocab,
+#      vocabulary='abel.ExamLocations',
+      default='a',
+      required=False)
+
+    preferredWorkshopLocation = Choice(title=u'Preferred Workshop Location',
+      description=u'Where you would prefer to attend the '\
+        u'CAPAS (PAS) workshop.',
+      vocabulary=locationVocab,
       default='a',
       required=False)
     
-    #--=mpj17=-- Depricated      
     preferredExamLocation = Choice(title=u'Preferred Exam Location',
-      description=u'Where you wish to sit your examination.',
+      description=u'Where you would prefer to sit CAPEX (PCE 2).',
       vocabulary='abel.ExamLocations',
       required=False)
 
