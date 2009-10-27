@@ -48,7 +48,11 @@ class VerifyWaitForm(PageForm):
     def handle_send(self, action, data):
         assert data
         assert 'email' in data.keys()
-        
+        self.actual_handle_send(data)
+        assert self.status
+        assert type(self.status) == unicode        
+    
+    def actual_handle_send(self, data):        
         newEmail = data['email']
         if utils.address_exists(self.context, newEmail):
             if newEmail in self.userEmail:
@@ -76,8 +80,6 @@ class VerifyWaitForm(PageForm):
             self.status = u'''Changed your email address from
               <code class="email">%s</code> to
               <code class="email">%s</code>.''' % (newEmail, oldEmail)
-        assert self.status
-        assert type(self.status) == unicode        
 
     def remove_old_email(self):
         oldEmail = self.userEmail[0]
