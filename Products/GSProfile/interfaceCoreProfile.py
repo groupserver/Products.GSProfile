@@ -91,26 +91,6 @@ class VGSImageWrongType(ValidationError):
         return msg
     def doc(self):
         return self.__str__()
-class VGSImageWrongWidth(ValidationError):
-    """Verification identifier not found"""
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        msg = 'The image is too wide (%s pixels). ' % repr(self.value)
-        msg = '%s Images can only be 150 pixels wide.' % msg
-        return msg
-    def doc(self):
-        return self.__str__()
-class VGSImageWrongHeight(ValidationError):
-    """Verification identifier not found"""
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        msg = 'The image is too high (%s pixels). ' % repr(self.value)
-        msg = '%s Images can only be 200 pixels high.' % msg
-        return msg
-    def doc(self):
-        return self.__str__()
 
 class GSImage(Bytes):
     def constraint(self, image):
@@ -124,10 +104,6 @@ class GSImage(Bytes):
         
         if (imageContentType != 'image/jpeg'):
             raise VGSImageWrongType(imageContentType)
-        if (imageWidth > 150):
-            raise VGSImageWrongWidth(imageWidth)
-        if (imageHeight > 200):
-            raise VGSImageWrongHeight(imageHeight)
         return True
 
 class IGSProfileImage(Interface):
