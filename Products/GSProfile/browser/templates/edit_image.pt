@@ -37,13 +37,21 @@
           showImageRegardlessOfUserSetting python:True"
           tal:replace="structure provider:groupserver.UserImage" />
         <p>
-          Your image is typically a photograph that others use to quickly
-          identify posts that you make.
-          It must be in JPEG-image (<code>.jpg</code>) and can be no wider
-          than 150 pixels, and no higher than 200 pixels.
-          Your image normally appears on your profile all posts
-          that you make, but you can hide your image by unchecking the
-          <samp class="field">Show Image</samp> field.
+          Your image appears on your profile and on your posts.
+          It is visible to members of that groups that you are in,
+          people who are not logged in, and search engines.
+          It must be in JPEG-image (<code>.jpg</code>), and is 
+          normally a photo of you.
+          When shown on 
+          <span tal:content="view/siteInfo/name" 
+            class="site">this site</span>
+          it will be automatically reduced in size (scaled down) so
+          it is no wider than 81 pixels, and no taller than 102 
+          pixels.</p>
+        <p>
+          To hide your image, so others cannot see it, 
+          deselect the  
+          <samp class="field">Show Image</samp> option.
         </p>
         <div style="clear: both;"/>
         <tal:block define="widgets view/widgets">
