@@ -36,6 +36,9 @@
         <div tal:define="user view/context;
           showImageRegardlessOfUserSetting python:True"
           tal:replace="structure provider:groupserver.UserImage" />
+        <p>To change your image click 
+          <samp class="button">Browse</samp>, select an image, and
+          click <samp class="button">Change</samp>.</p>
         <p>
           Your image appears on your profile and on your posts.
           It is visible to members of that groups that you are in,
