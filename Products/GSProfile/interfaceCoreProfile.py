@@ -110,8 +110,9 @@ class IGSProfileImage(Interface):
 
     image = GSImage(title=u'Image',
       description=u'The image you want others to see on your profile '
-        u'and posts, usually a photograph. The image must be a JPEG, '
-        u'no wider than 150 pixels, and no higher than 200 pixels.',
+        u'and posts, usually a photograph. The image must be a JPEG; '
+        u'it will be automatically reduced in size so it is no '
+        'wider than 150 pixels and no higher than 200 pixels.',
       required=False,
       default=None)
       
