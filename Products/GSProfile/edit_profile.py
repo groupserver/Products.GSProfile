@@ -218,12 +218,16 @@ class RegisterEditProfileForm(EditProfileForm):
         self.actual_handle_set(action, data)
 
     def actual_handle_set(self, action, data):
+        groupsToJoin = None
         if 'joinable_groups' in data.keys():
             # --=mpj17=-- Site member?
             groupsToJoin = data.pop('joinable_groups')
-            self.join_groups(groupsToJoin)
+
         self.form_fields = self.form_fields.omit('joinable_groups')
         self.set_data(data)
+
+        if groupsToJoin:
+            self.join_groups(groupsToJoin)
 
         cf = str(data.pop('came_from'))
         if cf == 'None':
