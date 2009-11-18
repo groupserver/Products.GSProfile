@@ -85,8 +85,9 @@ class GSProfileView(BrowserView):
     def get_property(self, propertyId, default=''):
         p = self.props[propertyId].bind(self.context)
         if (hasattr(p, 'vocabulary') and (p.vocabulary == None)):
-                p.vocabulary = getUtility(IVocabularyFactory,\
-                    p.vocabularyName, self.context)
+            # Deal with named vocabularies
+            p.vocabulary = getUtility(IVocabularyFactory,\
+                p.vocabularyName, self.context)
         r = p.query(self.context, default)
         if  hasattr(p, 'vocabulary'):
             try:
@@ -95,8 +96,14 @@ class GSProfileView(BrowserView):
                 retval = r
             except AttributeError, e:
                 retval = r
+        elif hasattr(p, 'value_type') and type(r) == list:
+            # Named vocabularies will cause a mare, like above.
+            vocab = p.value_type.vocabulary
+            s = [vocab.getTerm(v).title for v in r]
+            retval = XWFUtils.comma_comma_and(s)
         else:
             retval = r
+            
         return retval
         
     def emailVisibility(self):
