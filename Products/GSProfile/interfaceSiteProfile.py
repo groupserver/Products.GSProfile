@@ -123,6 +123,17 @@ employerClassificationVocab = SimpleVocabulary([
   SimpleTerm('notforprofit',  'notforprofit',   u'Not for Profit'),
   SimpleTerm('other',         'other',          u'Other'),])
 
+subjectExpertiseVocab = SimpleVocabulary([
+  SimpleTerm('management_accounting', 'management_accounting',  
+             u'Management Accounting'),
+  SimpleTerm('financial_accounting', 'financial_accounting',  
+             u'Financial Accounting'),
+  SimpleTerm('finance',  'finance',  u'Finance'),
+  SimpleTerm('taxation', 'taxation', u'Taxation'),
+  SimpleTerm('auditing', 'auditing', u'Auditing'),
+  SimpleTerm('business_strategy', 'business_strategy',  
+             u'Business Strategy'),])
+
 class IABELProfile(IGSCoreProfile):
     membershipID = TextLine(title=u'NZICA Membership Number',
       description=u'New Zealand Institute of Chartered Accountants '\
@@ -280,6 +291,13 @@ class IABELProfile(IGSCoreProfile):
       vocabulary=collegeVocab,
       default='ca',
       required=False)
+      
+    subjectExpertise = List(title=u'Subject Expertise',
+      description=u'Subjects that you are an expert in.',
+      required=False,
+      value_type=Choice(title=u'Subject', vocabulary=subjectExpertiseVocab),
+      unique=True,
+      default=[])
       
     foundationsWorkshopLocation = Choice(title=u'Preferred Workshop and Exam Location',
       description=u'Where you would prefer to attend the '
