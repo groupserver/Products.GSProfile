@@ -88,6 +88,9 @@
           </tal:block>
         </ul>
       </div><!--groups-->
+      <p tal:replace="structure provider:groupserver.SiteMemberships">
+        A list of site memberships.
+      </p>
       <div class="cols"
         tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
         <div id="files" class="rightColumn">
