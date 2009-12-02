@@ -75,22 +75,25 @@
             </tal:block>
           </ul>
         </div>
-      </div><!--vcard-->      
-      <div id="groups" 
-        tal:define="groups view/groupMembership"
-        tal:condition="groups">
-        <h2>Group Membership</h2>
-        <ul>
-          <tal:block repeat="group groups">
-            <li><a href="#" class="group"
-              tal:content="group/name" 
-              tal:attributes="href group/url">Group!</a></li>
-          </tal:block>
-        </ul>
-      </div><!--groups-->
-      <p tal:replace="structure provider:groupserver.SiteMemberships">
-        A list of site memberships.
-      </p>
+      </div><!--vcard-->
+      <div id="membership">
+        <p tal:condition="python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id" 
+          tal:replace="structure provider:groupserver.SiteMemberships">
+          A list of site memberships.
+        </p>
+        <div id="groups"
+          tal:define="groups view/groupMembership"
+          tal:condition="groups">
+          <h2>Group Memberships</h2>
+          <ul>
+            <tal:block repeat="group groups">
+              <li><a href="#" class="group"
+                tal:content="group/name" 
+                tal:attributes="href group/url">Group!</a></li>
+            </tal:block>
+          </ul>
+        </div><!--groups-->
+      </div><!--membership-->
       <div class="cols"
         tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
         <div id="files" class="rightColumn">
