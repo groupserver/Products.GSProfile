@@ -30,15 +30,12 @@ GSCheckRequired = function () {
         } else {
             jQuery(button).attr("disabled", "disabled");
         }
-        
+        return true;
     }
 
     var check_widget = function(widget) {
         var retval = false;
         retval = jQuery(widget).val() != '';
-        if (!retval) {
-          alert(widget);
-        }
         return retval;
     }
 
@@ -53,7 +50,7 @@ GSCheckRequired = function () {
             */
             button = b;
             widgets = w;
-            
+                        
             var i = 0;
             for ( i in widgets ) {
                 jQuery(widgets[i]).keyup(function(event) {
