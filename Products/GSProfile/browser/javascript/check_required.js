@@ -21,17 +21,19 @@ GSCheckRequired = function () {
         var i = 0;
         var widget = null;
         var numWidgets = widgets.length;
-        for (i=0; i < numWidgets; i++) {
+        var submitButton = null;
+        submitButton = jQuery(button);
+        for ( i=0; i < numWidgets; i++ ) {
             widget = widgets[i];
             checksOut = checksOut && check_widget(widget);
-            if (!checksOut) {
+            if ( !checksOut ) {
                 break;
             }
         }
         if ( checksOut ) {
-            jQuery(button).removeAttr("disabled");
+            submitButton.removeAttr("disabled");
         } else {
-            jQuery(button).attr("disabled", "disabled");
+            submitButton.attr("disabled", "disabled");
         }
         return true;
     }
