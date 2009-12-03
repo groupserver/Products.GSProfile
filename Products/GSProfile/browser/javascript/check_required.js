@@ -24,6 +24,9 @@ GSCheckRequired = function () {
         for (i=0; i < numWidgets; i++) {
             widget = widgets[i];
             checksOut = checksOut && check_widget(widget);
+            if (!checksOut) {
+                break;
+            }
         }
         if ( checksOut ) {
             jQuery(button).removeAttr("disabled");
