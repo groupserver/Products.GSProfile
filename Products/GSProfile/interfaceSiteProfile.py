@@ -575,19 +575,19 @@ class IDoWireProfileAdminJoinCSV(IDoWireProfileAdminJoin):
 ########
 
 class IEDemProfile(IGSCoreProfile):
-    givenName = TextLine(title=u'First Name',
+    givenName = TextLine(title=u'Given Name',
       description=u'The name that you are commonly called, which is given '
         u'to you by your parents.',
       required=True)
-    
-    familyName = TextLine(title=u'Last Name',
+     
+    familyName = TextLine(title=u'Family Name',
       description=u'The name that you inherit by birth, or acquire by '
         u'marriage.',
       required=True)
     
-    fn = TextLine(title=u'Display Name',
-      description=u'The name that you want others to see. This is usually ' 
-        u'your first name followed by your last name.',
+    fn = TextLine(title=u'Full Name',
+      description=u'T The name you want others to see. This must contain '
+        u'you real first and last name, but you may add a nickname.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
@@ -623,10 +623,11 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    url = URI(title=u'Personal Website or Blog URL',
-      description=u'The URL for your website, or weblog.',
+    url = URI(title=u'Best Web Link About You',
+      description=u'The URL for the website, page, weblog, or feed about '
+        u'you.',
       required=False)
-
+ 
     org = TextLine(title=u'Organisation',
       description=u'The organisation that you are primarily engaged with.',
       required=False,
@@ -649,6 +650,11 @@ class IEDemProfile(IGSCoreProfile):
        u'The street address number is required by some groups for admin '\
        u'purposes, but it is only shown to the site-administrators of '\
        u'e-democracy.org. Contact your forum manager for more information.',
+      required=False,
+      default=u'')
+      
+    adr_postal_code = TextLine(title=u'Postal/Zip Code'
+      description=u'The postal code (also known as a zip code) for you.Y',
       required=False,
       default=u'')
 
