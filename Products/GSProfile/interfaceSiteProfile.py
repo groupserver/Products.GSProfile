@@ -597,11 +597,13 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    tz = Choice(title=u'Timezone',
-      description=u'The timezone you wish to use',
+    streetAddress = TextLine(title=u'Street Address (Hidden)',
+      description=u'Your street address. '\
+       u'The street address number is required by some groups for admin '\
+       u'purposes, but it is only shown to the site-administrators of '\
+       u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
-      default=u'UTC',
-      vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
+      default=u'')
 
     neighbourhood = TextLine(title=u'Neighbourhood',
       description=u'The neighbourhood or village where you live.',
@@ -620,6 +622,12 @@ class IEDemProfile(IGSCoreProfile):
       
     countryName = TextLine(title=u'Country',
       description=u'The country where you live.',
+      required=False,
+      default=u'')
+
+      
+    adr_postal_code = TextLine(title=u'Postal/Zip Code',
+      description=u'Your postal code (also known as a zip code).',
       required=False,
       default=u'')
 
@@ -645,18 +653,11 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default='')
 
-    streetAddress = TextLine(title=u'Street Address (Hidden)',
-      description=u'Your street address. '\
-       u'The street address number is required by some groups for admin '\
-       u'purposes, but it is only shown to the site-administrators of '\
-       u'e-democracy.org. Contact your forum manager for more information.',
+    tz = Choice(title=u'Timezone',
+      description=u'The timezone you wish to use',
       required=False,
-      default=u'')
-      
-    adr_postal_code = TextLine(title=u'Postal/Zip Code',
-      description=u'Your postal code (also known as a zip code).',
-      required=False,
-      default=u'')
+      default=u'UTC',
+      vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
 
 class IEDemProfileRegister(IEDemProfile):
     joinable_groups = List(title=u'Joinable Groups',
