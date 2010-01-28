@@ -8,11 +8,6 @@
         Edit Profile
       </span>
     </title>
-    <tal:block metal:fill-slot="style">
-     <link rel="stylesheet" 
-      type="text/css" media="screen" 
-      href="/++resource++wymeditor-20080123/skins/default/screen.css" />
-    </tal:block>
   </head>
   <body>
     <div metal:fill-slot="messages" tal:condition="view/status" 
@@ -103,6 +98,10 @@
             GSPopupFormHelp.init('#edit-profile');
         });
       </script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor-20090831/jquery.wymeditor.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++gswym.js">&#160;</script>
     </tal:block>
   </body>
 </html>

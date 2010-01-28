@@ -67,19 +67,17 @@
         tal:content="provider:groupserver.RequiredWidgetsJavaScript">
         alert("I have not been replaced.");
       </script>
-      <script type="text/javascript" 
-        src="/++resource++wymeditor-20090204/jquery.wymeditor.js">&#160;</script>
-      <!--script type="text/javascript" 
-        src="/++resource++wymeditor-20080123/init.js">&#160;</script-->
       <script type="text/javascript"
         src="/++resource++popup_help-20071218.js">&#160;</script>
       <script type="text/javascript">
         jQuery(document).ready( function() {
             GSPopupFormHelp.init('#edit-profile');
-            jQuery('#form\\.actions\\.change').addClass('wymupdate');
-            jQuery('.wymeditor').wymeditor();
         });
       </script>
+      <script type="text/javascript" 
+        src="/++resource++wymeditor-20090831/jquery.wymeditor.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++gswym.js">&#160;</script>
     </tal:block>
   </body>
 </html>
