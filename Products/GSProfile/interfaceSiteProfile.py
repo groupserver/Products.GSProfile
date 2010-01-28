@@ -653,8 +653,8 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
       
-    adr_postal_code = TextLine(title=u'Postal/Zip Code'
-      description=u'The postal code (also known as a zip code) for you.Y',
+    adr_postal_code = TextLine(title=u'Postal/Zip Code',
+      description=u'Your postal code (also known as a zip code).',
       required=False,
       default=u'')
 
