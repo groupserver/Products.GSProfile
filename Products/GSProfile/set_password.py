@@ -15,6 +15,20 @@ from profileaudit import *
 import logging
 log = logging.getLogger('GSSetPassword')
 
+
+def set_password(context, password):
+    '''Set the password for the logged in user, and log the fact.'''
+    assert context
+    assert password
+    assert type(password) in (str, unicode)
+    
+    loggedInUser = createObject('groupserver.LoggedInUser', context)
+    assert not(loggedInUser.anonymous), 'Not logged in'
+
+    loggedInUser.user.set_password(password)
+
+    auditer = ProfileAuditer(context).info(SET_PASSWORD)
+
 class SetPasswordForm(PageForm):
     form_fields = form.Fields(IGSSetPassword)
     label = u'Change Password'
@@ -31,8 +45,8 @@ class SetPasswordForm(PageForm):
     #   "handle_set" set to the success handler,
     #   "handle_set_action_failure" as the failure handler, and adds the
     #   action to the "actions" instance variable (creating it if 
-    #   necessary). I did not need to explicitly state that "Reset" is the 
-    #   label, but it helps with readability.
+    #   necessary). I did not need to explicitly state the label, but it 
+    #   helps with readability.
     @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
@@ -40,13 +54,7 @@ class SetPasswordForm(PageForm):
         assert action
         assert data
         
-        loggedInUser = createObject('groupserver.LoggedInUser',
-                                    self.context)
-        assert not(loggedInUser.anonymous), 'Not logged in'
-        loggedInUser.user.set_password(data['password1'])
-        
-        self.auditer = ProfileAuditer(self.context)
-        self.auditer.info(SET_PASSWORD)
+        set_password(self.context, data['password1'])
         
         self.status = u'Your password has been changed.'
         assert type(self.status) == unicode
@@ -70,14 +78,7 @@ class SetPasswordRegisterForm(SetPasswordForm):
         assert action
         assert data
 
-        loggedInUser = createObject('groupserver.LoggedInUser',
-                                    self.context)
-        assert not(loggedInUser.anonymous), 'Not logged in'
-        user = loggedInUser.user
-        user.set_password(data['password1'])
-        
-        self.auditer = ProfileAuditer(self.context)
-        self.auditer.info(SET_PASSWORD)
+        set_password(self.context, data['password1'])
 
         # Clean up
         user.clear_userPasswordResetVerificationIds()
@@ -86,6 +87,12 @@ class SetPasswordRegisterForm(SetPasswordForm):
           uri = '/'
         uri = '%s?welcome=1' % uri
         return self.request.RESPONSE.redirect(uri)
+        
+    @property
+    def userEmail(self):
+        retval = self.context.get_emailAddresses()
+        assert retval
+        return retval
 
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
@@ -100,14 +107,7 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         assert action
         assert data
 
-        loggedInUser = createObject('groupserver.LoggedInUser',
-                                    self.context)
-        assert not(loggedInUser.anonymous), 'Not logged in'
-        user = loggedInUser.user
-        user.set_password(data['password1'])
-
-        self.auditer = ProfileAuditer(self.context)
-        self.auditer.info(SET_PASSWORD)
+        set_password(self.context, data['password1'])
 
         site_root = self.context.site_root()
         invitation = user.get_invitation(data['invitationId'])

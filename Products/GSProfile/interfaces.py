@@ -37,7 +37,14 @@ class IGSSetPassword(Interface):
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
 
-class IGSSetPasswordRegister(IGSSetPassword):
+class IGSSetPasswordRegister(Interface):
+    password1 = TextLine(title=u'Password',
+        description=u'Your new password. For security, your password '\
+          u'should contain a mixture of letters and numbers, and '\
+          u'must be over four letters long.',
+        required=True,
+        min_length=4)
+
     came_from = URI(title=u'Came From',
       description=u'The page to return to after retistration has finished',
       required=False)
