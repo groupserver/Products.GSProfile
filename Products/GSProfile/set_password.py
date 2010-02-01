@@ -80,7 +80,8 @@ class SetPasswordRegisterForm(SetPasswordForm):
         assert data
 
         set_password(self.context, data['password1'])
-        
+
+        userInfo = createObject('groupserver.LoggedInUser', self.context)
         uri = '%s/registration_profile.html' % userInfo.url
         cf = str(data.get('came_from'))
         if cf == 'None':
