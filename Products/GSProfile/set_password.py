@@ -26,7 +26,7 @@ def set_password(context, password):
     assert not(loggedInUser.anonymous), 'Not logged in'
 
     loggedInUser.user.set_password(password)
-    user.clear_userPasswordResetVerificationIds()
+    loggedInUser.user.clear_userPasswordResetVerificationIds()
 
     auditer = ProfileAuditer(context).info(SET_PASSWORD)
 
