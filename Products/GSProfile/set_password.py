@@ -1,20 +1,15 @@
 # coding=utf-8
-'''Implementation of the Reset Password Request form.
-'''
+'''Implementation of the Reset Password Request form.'''
 from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from Products.XWFCore import XWFUtils
-from Products.GSProfile.interfaces import *
 from Products.CustomUserFolder.userinfo import GSUserInfo
 from Products.GSGroupMember.utils import inform_ptn_coach_of_join
-
+from interfaces import IGSSetPassword, IGSSetPasswordAdminJoin
 from profileaudit import *
-
 import logging
 log = logging.getLogger('GSSetPassword')
-
 
 def set_password(context, password):
     '''Set the password for the logged in user, and log the fact.'''
@@ -65,39 +60,6 @@ class SetPasswordForm(PageForm):
             self.status=u'<p>%s</p>' % errors[0]
         else:
             self.status = u'<p>There were errors:</p>'
-
-class SetPasswordRegisterForm(SetPasswordForm):
-    form_fields = form.Fields(IGSSetPasswordRegister)
-    label = u'Set Password'
-    pageTemplateFileName = 'browser/templates/set_password_register.pt'
-    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-        
-    @form.action(label=u'Set', failure='handle_set_action_failure')
-    def handle_set(self, action, data):
-        assert self.context
-        assert self.form_fields
-        assert action
-        assert data
-
-        set_password(self.context, data['password1'])
-
-        userInfo = createObject('groupserver.LoggedInUser', self.context)
-        uri = '%s/registration_profile.html' % userInfo.url
-        cf = str(data.get('came_from'))
-        if cf == 'None':
-            cf = ''
-        gid = str(data.get('groupId'))
-        if gid == 'None':
-            gid = ''
-        uri = '%s?form.joinable_groups:list=%s&form.came_from=%s' %\
-            (uri, gid, cf)
-        return self.request.RESPONSE.redirect(uri)
-
-    @property
-    def userEmail(self):
-        retval = self.context.get_emailAddresses()
-        assert retval
-        return retval
 
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
