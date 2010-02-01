@@ -97,7 +97,7 @@ class RequestRegistrationForm(PageForm):
             utils.send_verification_message(site, user, email)
             
             # Go to the edit-profile page
-            uri = '%s/registration_profile.html' % userInfo.url
+            uri = '%s/register_password.html' % userInfo.url
             cf = str(data.get('came_from'))
             if cf == 'None':
               cf = ''

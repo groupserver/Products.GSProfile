@@ -34,47 +34,51 @@
       </dl>
     </div>
     <tal:block metal:fill-slot="body">
+      <h1 tal:content="view/label">Edit Profile</h1>
+      <p>
+        <strong>Thanks for that!</strong>
+        Your password has been set.
+      </p>
+      <p>
+        You can now change your profile.
+        When you have finished, click the 
+        <samp class="button" 
+          tal:define="action python:[a for a in view.actions][0].label"
+          tal:content="action">Big R</samp> 
+        button.
+        Some profile fields are required (and are marked
+        <span class="required"><label>like this</label></span>).
+        Required fields must be filled in before you can click the
+        <samp class="button" 
+          tal:define="action python:[a for a in view.actions][0].label"
+          tal:content="action">Big R</samp> 
+        button.
+      </p>
+      <p>
+        Most of your profile properties are only visible to other
+        logged in users of
+        <span class="site" 
+          tal:content="view/siteInfo/get_name">this site</span>,
+        when they visit your profile page.
+        However, if you post to a public group, then your name will be
+        visible to all visitors to that group, even if
+        they are not logged in.
+        You will be able to change all your profile properties later.
+      </p>
+      <div id="privacy" class="disclosureWidget">
+        <p>
+          <a class="disclosureButton" id="privacy-button"
+            href="javascript:showHideDisclosure('privacy')">Your privacy 
+            is important, and will be maintained  according to the 
+            privacy policy of 
+            <span class="site" tal:content="siteName">this site</span>.</a>
+        </p>
+        <div class="disclosureShowHide" style="display: none;">
+          <div id="privacy-content">Loading&#8230;</div>
+        </div><!--disclosureShowHide-->
+      </div><!--privacy-->
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="edit-profile">
-        
-        <h1 tal:content="view/label">Edit Profile</h1>
-        <p>
-          Welcome!
-          An email message has been sent to your email account, asking you
-          to verify that you control the address
-          <code class="email" 
-            tal:content="python:view.userEmail[0]">your@email.address</code>.
-          You can now edit your profile, while waiting for the message to 
-          arrive in your email inbox.
-          When you have finished, click the 
-          <samp class="button" 
-            tal:define="action python:[a for a in view.actions][0].label"
-            tal:content="action">Big R</samp> 
-          button.
-        </p>
-        <p>
-          Most of your profile properties are only visible to other
-          logged in users of
-          <span class="site" 
-            tal:content="view/siteInfo/get_name">this site</span>,
-          when they visit your profile page.
-          However, if you post to a public group, then your name and 
-          image will be visible to all visitors to that group, even if
-          they are not logged in.
-          You will be able to change all your profile properties later.
-        </p>
-        <div id="privacy" class="disclosureWidget">
-          <p>
-            <a class="disclosureButton" id="privacy-button"
-              href="javascript:showHideDisclosure('privacy')">Your privacy 
-              is important, and will be maintained  according to the 
-              privacy policy of 
-              <span class="site" tal:content="siteName">this site</span>.</a>
-          </p>
-          <div class="disclosureShowHide" style="display: none;">
-            <div id="privacy-content">Loading&#8230;</div>
-          </div>
-        </div>
         <tal:block define="widgets python:[w for w in view.widgets][:-1]">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>

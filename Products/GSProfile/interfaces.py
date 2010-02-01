@@ -14,47 +14,6 @@ try:
 except ImportError, e:
     pass
 
-class IGSSetPassword(Interface):
-    """Schema for setting the user's password. The password is entered
-      twice by the user, to confirm that it is correct."""
-      
-    password1 = Password(title=u'Password',
-        description=u'Your new password. For security, your password '\
-          u'should contain a mixture of letters and numbers, and '\
-          u'must be over four letters long.',
-        required=True,
-        min_length=4)
-        
-    password2 = Password(title=u'Confirm Password',
-        description=u'Confirm your new password by repeating it here.'\
-          u'What you type in this field must match what you type in the '\
-          u'Password field.',
-        required=True,
-        min_length=4)
-
-    @invariant
-    def passwordsMatch(passwords):
-        if passwords.password1 != passwords.password2:
-            raise Invalid('Passwords do not match')
-
-class IGSSetPasswordRegister(Interface):
-    password1 = TextLine(title=u'Password',
-        description=u'Your new password. For security, your password '\
-          u'should contain a mixture of letters and numbers, and '\
-          u'must be over four letters long.',
-        required=True,
-        min_length=4)
-
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
-
-class IGSSetPasswordAdminJoin(IGSSetPassword):
-    invitationId = ASCIILine(title=u'Invitation Identifier',
-      description=u'The identifier sent to you when you were invited to '\
-        u'join the group.',
-      required=True)
-
 # Address Forms
 
 class IGSEmailAddressEntry(Interface):
@@ -254,4 +213,52 @@ class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
     email = EmailAddress(title=u'Email Address',
         description=u'Your email address.',
         required=True)
+
+# Passwords
+
+class IGSSetPassword(Interface):
+    """Schema for setting the user's password. The password is entered
+      twice by the user, to confirm that it is correct."""
+      
+    password1 = Password(title=u'Password',
+        description=u'Your new password. For security, your password '\
+          u'should contain a mixture of letters and numbers, and '\
+          u'must be over four letters long.',
+        required=True,
+        min_length=4)
+        
+    password2 = Password(title=u'Confirm Password',
+        description=u'Confirm your new password by repeating it here.'\
+          u'What you type in this field must match what you type in the '\
+          u'Password field.',
+        required=True,
+        min_length=4)
+
+    @invariant
+    def passwordsMatch(passwords):
+        if passwords.password1 != passwords.password2:
+            raise Invalid('Passwords do not match')
+
+class IGSSetPasswordRegister(Interface):
+    password1 = TextLine(title=u'Password',
+        description=u'Your new password. For security, your password '\
+          u'should contain a mixture of letters and numbers, and '\
+          u'must be over four letters long.',
+        required=True,
+        min_length=4)
+
+    groupId = GroupID(title=u'Group Identifier',
+      description=u'The identifier for the group that you '
+        u'wish to join.',
+      required=False)
+
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+
+class IGSSetPasswordAdminJoin(IGSSetPassword):
+    invitationId = ASCIILine(title=u'Invitation Identifier',
+      description=u'The identifier sent to you when you were invited to '\
+        u'join the group.',
+      required=True)
 

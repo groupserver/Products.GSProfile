@@ -234,7 +234,10 @@ class RegisterEditProfileForm(EditProfileForm):
           cf = ''
         
         if self.user_has_verified_email():
-            uri = 'register_password.html?form.came_from=%s' % cf
+            uri = str(data.get('came_from'))
+            if uri == 'None':
+                uri = '/'
+            uri = '%s?welcome=1' % uri
         else:
             email = self.context.get_emailAddresses()[0]
             uri = 'verify_wait.html?form.email=%s&form.came_from=%s' %\

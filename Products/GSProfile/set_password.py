@@ -26,6 +26,7 @@ def set_password(context, password):
     assert not(loggedInUser.anonymous), 'Not logged in'
 
     loggedInUser.user.set_password(password)
+    user.clear_userPasswordResetVerificationIds()
 
     auditer = ProfileAuditer(context).info(SET_PASSWORD)
 
@@ -79,20 +80,17 @@ class SetPasswordRegisterForm(SetPasswordForm):
         assert data
 
         set_password(self.context, data['password1'])
-
-        # Clean up
-        user.clear_userPasswordResetVerificationIds()
-        uri = str(data.get('came_from'))
-        if uri == 'None':
-          uri = '/'
-        uri = '%s?welcome=1' % uri
-        return self.request.RESPONSE.redirect(uri)
         
-    @property
-    def userEmail(self):
-        retval = self.context.get_emailAddresses()
-        assert retval
-        return retval
+        uri = '%s/registration_profile.html' % userInfo.url
+        cf = str(data.get('came_from'))
+        if cf == 'None':
+            cf = ''
+        gid = str(data.get('groupId'))
+        if gid == 'None':
+            gid = ''
+        uri = '%s?form.joinable_groups:list=%s&form.came_from=%s' %\
+            (uri, gid, cf)
+        return self.request.RESPONSE.redirect(uri)
 
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
