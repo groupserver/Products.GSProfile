@@ -92,6 +92,12 @@ class SetPasswordRegisterForm(SetPasswordForm):
             (uri, gid, cf)
         return self.request.RESPONSE.redirect(uri)
 
+    @property
+    def userEmail(self):
+        retval = self.context.get_emailAddresses()
+        assert retval
+        return retval
+
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
     label = u'Set Password'
