@@ -183,11 +183,11 @@
   <!--interface 
     interface=".interfaces.IGSRequestRegistrationMarker"
     type="zope.app.content.interfaces.IContentType" /-->
-   <browser:page 
+   <!--browser:page 
     for=".interfaces.IGSRequestRegistrationMarker"
     name="index.html"
     class=".request_registration.RequestRegistrationForm"
-    permission="zope2.View" />
+    permission="zope2.View" /-->
  
    <browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
