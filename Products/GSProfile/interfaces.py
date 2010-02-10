@@ -5,6 +5,7 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import *
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.contentprovider.interfaces import IContentProvider
+from zope.component import createObject
 from interfaceCoreProfile import *
 from emailaddress import EmailAddress
 try:
@@ -12,6 +13,40 @@ try:
     from interfaceSiteProfile import *
 except ImportError, e:
     pass
+
+class IGSSetPassword(Interface):
+    """Schema for setting the user's password. The password is entered
+      twice by the user, to confirm that it is correct."""
+      
+    password1 = Password(title=u'Password',
+        description=u'Your new password. For security, your password '\
+          u'should contain a mixture of letters and numbers, and '\
+          u'must be over four letters long.',
+        required=True,
+        min_length=4)
+        
+    password2 = Password(title=u'Confirm Password',
+        description=u'Confirm your new password by repeating it here.'\
+          u'What you type in this field must match what you type in the '\
+          u'Password field.',
+        required=True,
+        min_length=4)
+
+    @invariant
+    def passwordsMatch(passwords):
+        if passwords.password1 != passwords.password2:
+            raise Invalid('Passwords do not match')
+
+class IGSSetPasswordRegister(IGSSetPassword):
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+
+class IGSSetPasswordAdminJoin(IGSSetPassword):
+    invitationId = ASCIILine(title=u'Invitation Identifier',
+      description=u'The identifier sent to you when you were invited to '\
+        u'join the group.',
+      required=True)
 
 # Address Forms
 
@@ -23,7 +58,52 @@ class IGSEmailAddressEntry(Interface):
 class IGSRequestPasswordReset(IGSEmailAddressEntry):
     """Schema used to request that the user's password is reset.
     """
+    
+class IGSResendVerification(IGSEmailAddressEntry):
+    """Schema use to define the user-interface that the user uses to
+    resend his or her verification email, while in the middle of 
+    registration."""
 
+class IGSVerifyWait(IGSEmailAddressEntry):
+    """Schema use to define the user-interface presented while the user
+    waits for verification of his or her email address."""
+
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+    
+# Registration
+class GroupIDNotFound(ValidationError):
+    """Group identifier not found"""
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return 'Group identifier %s not found' % repr(self.value)
+    def doc(self):
+        return self.__str__()
+
+class GroupID(ASCIILine):
+    def constraint(self, value):
+        groupsInfo = createObject('groupserver.GroupsInfo', self.context)
+        groupIds = groupsInfo.get_visible_group_ids()
+        if value not in groupIds:
+            raise GroupIDNotFound(value)
+        return True
+
+class IGSRequestRegistration(IGSEmailAddressEntry):
+    """Schema use to define the user-interface that start the whole
+    registration process"""
+    # Unfortunately the group identifier is not checked against the 
+    #   joinable groups, because there is no "user" to check with.
+    groupId = GroupID(title=u'Group Identifier',
+      description=u'The identifier for the group that you '
+        u'wish to join.',
+      required=False)
+
+    came_from = URI(title=u'Came From',
+      description=u'The page to return to after retistration has finished',
+      required=False)
+        
 # Email Address Verification
 
 class VIDNotFound(ValidationError):
@@ -107,6 +187,10 @@ class IGSRequestPasswordResetMarker(Interface):
     """Marker interface for the request password reset page.
     """
 
+class IGSRequestRegistrationMarker(Interface):
+    """Marker interface for the request registration page.
+    """
+
 class IGSSetPasswordMarker(Interface):
     """Marker interface for the set password page.
     """
@@ -153,34 +237,14 @@ class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
           u'widgets are not filled out.',
         required=True)
 
-# Passwords
+class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
+    pageTemplateFileName = Text(title=u"Page Template File Name",
+      description=u'The name of the ZPT file that is used to render the '\
+        u'javascript.',
+      required=False,
+      default=u"browser/templates/verify_wait_javascript.pt")
 
-class IGSSetPassword(Interface):
-    """Schema for setting the user's password. The password is entered
-      twice by the user, to confirm that it is correct."""
-      
-    password1 = Password(title=u'Password',
-        description=u'Your new password. For security, your password '\
-          u'should contain a mixture of letters and numbers, and '\
-          u'must be over four letters long.',
-        required=True,
-        min_length=4)
-        
-    password2 = Password(title=u'Confirm Password',
-        description=u'Confirm your new password by repeating it here.'\
-          u'What you type in this field must match what you type in the '\
-          u'Password field.',
-        required=True,
-        min_length=4)
-
-    @invariant
-    def passwordsMatch(passwords):
-        if passwords.password1 != passwords.password2:
-            raise Invalid('Passwords do not match')
-
-class IGSSetPasswordAdminJoin(IGSSetPassword):
-    invitationId = ASCIILine(title=u'Invitation Identifier',
-      description=u'The identifier sent to you when you were invited to '\
-        u'join the group.',
-      required=True)
+    email = EmailAddress(title=u'Email Address',
+        description=u'Your email address.',
+        required=True)
 

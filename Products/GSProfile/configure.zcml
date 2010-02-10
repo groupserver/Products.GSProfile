@@ -26,6 +26,9 @@
   <browser:resource name="check_password-20080212.js" 
     file="browser/javascript/check_password.js"
     permission="zope2.View" />
+  <browser:resource name="check_email_verified-20080408.js"
+    file="browser/javascript/check_email_verified.js"
+    permission="zope2.View" />
   <!--This resource is not used by standard GroupServer profiles,
     - but those sites that have given name and family name fields
     - for the users may find it useful. -->
@@ -44,6 +47,10 @@
   <interface 
     interface=".interfaces.IGSRequestPasswordReset" />
   <interface 
+    interface=".interfaces.IGSRequestRegistration" />
+  <interface 
+    interface=".interfaces.IGSResendVerification" />
+  <interface 
     interface=".interfaces.IGSVerifyAddress" />
 
   <interface 
@@ -59,14 +66,15 @@
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
     
   <interface 
+    interface=".interfaces.IGSAwaitingVerificationJavaScriptContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+  <interface 
     interface=".interfaces.IGSUserImage"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
 
   <interface 
     interface=".interfaceCoreProfile.IGSCoreProfile" />
-
-  <interface 
-    interface=".interfaces.IGSSetPassword"/>
 
   <include files="*-site.zcml" />
 
@@ -74,6 +82,12 @@
   <interface 
     interface=".interfaces.IGSReigstration" 
     type="zope.app.content.interfaces.IContentType" />
+
+  <browser:page 
+    for="*"
+    name="request_registration.html"
+    class=".request_registration.RequestRegistrationForm"
+    permission="zope2.Public"/>
 
   <browser:page 
     for="Products.XWFChat.interfaces.IGSGroupFolder"
@@ -88,6 +102,34 @@
     template="browser/templates/admin_create_users_from_csv.pt"
     permission="zope2.ManageUsers"/>
 
+   <browser:page 
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="admin_remote_request_register.html"
+    class=".request_registration_remote.GSRemoteRequestRegistration"
+    template="browser/templates/request_register_remote.pt"
+    permission="zope2.View" />
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="registration_profile.html"
+    class=".edit_profile.RegisterEditProfileForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_address.html"
+    class="Products.GSContent.view.GSContentView"
+    template="browser/templates/verify_address.pt"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_wait.html"
+    class=".verify_wait.VerifyWaitForm"
+    permission="zope2.ManageProperties" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_email.ajax"
+    class=".view_address_verified.GSAddressVerifiedView"
+    permission="zope2.ManageProperties" />
 
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory=".profile_redirect.GSRedirectLogin"
@@ -98,12 +140,7 @@
     factory=".profile_redirect.GSRedirectVerify"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="verify" />  
-   <browser:page 
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="verify_address.html"
-    class="Products.GSContent.view.GSContentView"
-    template="browser/templates/verify_address.pt"
-    permission="zope2.ManageProperties" />
+
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory=".profile_redirect.GSRedirectAdminVerified"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
@@ -146,10 +183,25 @@
     class=".request_password_reset.RequestPasswordResetForm"
     permission="zope2.Public" />
 
+  <interface 
+    interface=".interfaces.IGSRequestRegistrationMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for=".interfaces.IGSRequestRegistrationMarker"
+    name="index.html"
+    class=".request_registration.RequestRegistrationForm"
+    permission="zope2.View" />
+ 
    <browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="password.html"
     class=".set_password.SetPasswordForm"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="register_password.html"
+    class=".set_password.SetPasswordRegisterForm"
     permission="zope2.ManageProperties" />
 
    <browser:page

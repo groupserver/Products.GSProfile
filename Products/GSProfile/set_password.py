@@ -1,29 +1,19 @@
 # coding=utf-8
-'''Implementation of the Reset Password Request form.'''
+'''Implementation of the Reset Password Request form.
+'''
 from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.XWFCore import XWFUtils
+from Products.GSProfile.interfaces import *
 from Products.CustomUserFolder.userinfo import GSUserInfo
 from Products.GSGroupMember.utils import inform_ptn_coach_of_join
-from interfaces import IGSSetPassword, IGSSetPasswordAdminJoin
+
 from profileaudit import *
+
 import logging
 log = logging.getLogger('GSSetPassword')
-
-def set_password(context, password):
-    '''Set the password for the logged in user, and log the fact.'''
-    assert context
-    assert password
-    assert type(password) in (str, unicode)
-    
-    loggedInUser = createObject('groupserver.LoggedInUser', context)
-    assert not(loggedInUser.anonymous), 'Not logged in'
-
-    loggedInUser.user.set_password(password)
-    loggedInUser.user.clear_userPasswordResetVerificationIds()
-
-    auditer = ProfileAuditer(context).info(SET_PASSWORD)
 
 class SetPasswordForm(PageForm):
     form_fields = form.Fields(IGSSetPassword)
@@ -41,8 +31,8 @@ class SetPasswordForm(PageForm):
     #   "handle_set" set to the success handler,
     #   "handle_set_action_failure" as the failure handler, and adds the
     #   action to the "actions" instance variable (creating it if 
-    #   necessary). I did not need to explicitly state the label, but it 
-    #   helps with readability.
+    #   necessary). I did not need to explicitly state that "Reset" is the 
+    #   label, but it helps with readability.
     @form.action(label=u'Change', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         assert self.context
@@ -50,7 +40,13 @@ class SetPasswordForm(PageForm):
         assert action
         assert data
         
-        set_password(self.context, data['password1'])
+        loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert not(loggedInUser.anonymous), 'Not logged in'
+        loggedInUser.user.set_password(data['password1'])
+        
+        self.auditer = ProfileAuditer(self.context)
+        self.auditer.info(SET_PASSWORD)
         
         self.status = u'Your password has been changed.'
         assert type(self.status) == unicode
@@ -60,6 +56,36 @@ class SetPasswordForm(PageForm):
             self.status=u'<p>%s</p>' % errors[0]
         else:
             self.status = u'<p>There were errors:</p>'
+
+class SetPasswordRegisterForm(SetPasswordForm):
+    form_fields = form.Fields(IGSSetPasswordRegister)
+    label = u'Set Password'
+    pageTemplateFileName = 'browser/templates/set_password_register.pt'
+    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
+        
+    @form.action(label=u'Set', failure='handle_set_action_failure')
+    def handle_set(self, action, data):
+        assert self.context
+        assert self.form_fields
+        assert action
+        assert data
+
+        loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert not(loggedInUser.anonymous), 'Not logged in'
+        user = loggedInUser.user
+        user.set_password(data['password1'])
+        
+        self.auditer = ProfileAuditer(self.context)
+        self.auditer.info(SET_PASSWORD)
+
+        # Clean up
+        user.clear_userPasswordResetVerificationIds()
+        uri = str(data.get('came_from'))
+        if uri == 'None':
+          uri = '/'
+        uri = '%s?welcome=1' % uri
+        return self.request.RESPONSE.redirect(uri)
 
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
@@ -74,7 +100,14 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         assert action
         assert data
 
-        set_password(self.context, data['password1'])
+        loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert not(loggedInUser.anonymous), 'Not logged in'
+        user = loggedInUser.user
+        user.set_password(data['password1'])
+
+        self.auditer = ProfileAuditer(self.context)
+        self.auditer.info(SET_PASSWORD)
 
         site_root = self.context.site_root()
         invitation = user.get_invitation(data['invitationId'])

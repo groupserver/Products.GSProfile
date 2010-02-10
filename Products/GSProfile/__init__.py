@@ -1,6 +1,8 @@
 import profileContextMenu, userImage, utils, formwidgets, \
-  viewprofilejavascript, requiredwidgetsjavascript
+  viewprofilejavascript, requiredwidgetsjavascript, \
+    awaitingverificationcontentprovider
 from admin_join import AdminJoinEditProfileForm
+from edit_profile import RegisterEditProfileForm
 from create_users_from_csv import CreateUsersForm
 from AccessControl import ModuleSecurityInfo
 from AccessControl import allow_class
