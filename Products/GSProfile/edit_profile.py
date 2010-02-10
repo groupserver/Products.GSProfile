@@ -15,7 +15,6 @@ from zope.app.apidoc.interface import getFieldsInOrder
 from zope.schema import *
 from Products.XWFCore.XWFUtils import comma_comma_and
 from Products.CustomUserFolder.interfaces import IGSUserInfo
-from Products.GSGroupMember.groupmembership import join_group
 from Products.GSGroupMember.utils import inform_ptn_coach_of_join
 from utils import profile_interface_name, profile_interface, \
   enforce_schema
