@@ -63,34 +63,6 @@ class SetPasswordForm(PageForm):
         else:
             self.status = u'<p>There were errors:</p>'
 
-class SetPasswordRegisterForm(SetPasswordForm):
-    form_fields = form.Fields(IGSSetPasswordRegister)
-    label = u'Set Password'
-    pageTemplateFileName = 'browser/templates/set_password_register.pt'
-    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-        
-    @form.action(label=u'Set', failure='handle_set_action_failure')
-    def handle_set(self, action, data):
-        assert self.context
-        assert self.form_fields
-        assert action
-        assert data
-
-        loggedInUser = createObject('groupserver.LoggedInUser',
-                                    self.context)
-        assert not(loggedInUser.anonymous), 'Not logged in'
-        user = loggedInUser.user
-        
-        set_password(user, data['password1'])
-        
-        # Clean up
-        user.clear_userPasswordResetVerificationIds()
-        uri = str(data.get('came_from'))
-        if uri == 'None':
-          uri = '/'
-        uri = '%s?welcome=1' % uri
-        return self.request.RESPONSE.redirect(uri)
-
 class SetPasswordAdminJoinForm(SetPasswordForm):
     form_fields = form.Fields(IGSSetPasswordAdminJoin)
     label = u'Set Password'
