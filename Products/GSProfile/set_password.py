@@ -15,6 +15,14 @@ from profileaudit import *
 import logging
 log = logging.getLogger('GSSetPassword')
 
+def set_password(user, password):
+    assert user, 'Not logged in, user is %s' % user
+
+    user.set_password(password)
+
+    auditer = ProfileAuditer(user).info(SET_PASSWORD)
+
+
 class SetPasswordForm(PageForm):
     form_fields = form.Fields(IGSSetPassword)
     label = u'Change Password'
@@ -43,11 +51,9 @@ class SetPasswordForm(PageForm):
         loggedInUser = createObject('groupserver.LoggedInUser',
                                     self.context)
         assert not(loggedInUser.anonymous), 'Not logged in'
-        loggedInUser.user.set_password(data['password1'])
         
-        self.auditer = ProfileAuditer(self.context)
-        self.auditer.info(SET_PASSWORD)
-        
+        set_password(loggedInUser.user, data['password1'])
+                
         self.status = u'Your password has been changed.'
         assert type(self.status) == unicode
 
@@ -74,11 +80,9 @@ class SetPasswordRegisterForm(SetPasswordForm):
                                     self.context)
         assert not(loggedInUser.anonymous), 'Not logged in'
         user = loggedInUser.user
-        user.set_password(data['password1'])
         
-        self.auditer = ProfileAuditer(self.context)
-        self.auditer.info(SET_PASSWORD)
-
+        set_password(user, data['password1'])
+        
         # Clean up
         user.clear_userPasswordResetVerificationIds()
         uri = str(data.get('came_from'))
@@ -103,11 +107,8 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         loggedInUser = createObject('groupserver.LoggedInUser',
                                     self.context)
         assert not(loggedInUser.anonymous), 'Not logged in'
-        user = loggedInUser.user
-        user.set_password(data['password1'])
-
-        self.auditer = ProfileAuditer(self.context)
-        self.auditer.info(SET_PASSWORD)
+        
+        set_password(user, data['password1'])
 
         site_root = self.context.site_root()
         invitation = user.get_invitation(data['invitationId'])

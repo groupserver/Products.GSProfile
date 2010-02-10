@@ -3,9 +3,6 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:five="http://namespaces.zope.org/five"
   i18n_domain="groupserver">
-
-  <!-- declare a marker interface on the Folder class to allow us 
-    to add marker Interfaces, views and adaptation -->
   <five:implements 
     class="OFS.Folder.Folder"
     interface="zope.app.folder.interfaces.IFolder" />
@@ -26,9 +23,9 @@
   <browser:resource name="check_password-20080212.js" 
     file="browser/javascript/check_password.js"
     permission="zope2.View" />
-  <browser:resource name="check_email_verified-20080408.js"
+  <!--browser:resource name="check_email_verified-20080408.js"
     file="browser/javascript/check_email_verified.js"
-    permission="zope2.View" />
+    permission="zope2.View" /-->
   <!--This resource is not used by standard GroupServer profiles,
     - but those sites that have given name and family name fields
     - for the users may find it useful. -->
@@ -46,8 +43,8 @@
     interface=".interfaces.IGSEmailAddressEntry" />
   <interface 
     interface=".interfaces.IGSRequestPasswordReset" />
-  <interface 
-    interface=".interfaces.IGSRequestRegistration" />
+  <!--interface 
+    interface=".interfaces.IGSRequestRegistration" /-->
   <interface 
     interface=".interfaces.IGSResendVerification" />
   <interface 
@@ -83,11 +80,11 @@
     interface=".interfaces.IGSReigstration" 
     type="zope.app.content.interfaces.IContentType" />
 
-  <browser:page 
+  <!--browser:page 
     for="*"
     name="request_registration.html"
     class=".request_registration.RequestRegistrationForm"
-    permission="zope2.Public"/>
+    permission="zope2.Public"/-->
 
   <browser:page 
     for="Products.XWFChat.interfaces.IGSGroupFolder"
@@ -102,34 +99,34 @@
     template="browser/templates/admin_create_users_from_csv.pt"
     permission="zope2.ManageUsers"/>
 
-   <browser:page 
+   <!--browser:page 
     for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="admin_remote_request_register.html"
     class=".request_registration_remote.GSRemoteRequestRegistration"
     template="browser/templates/request_register_remote.pt"
-    permission="zope2.View" />
+    permission="zope2.View" /-->
 
-   <browser:page 
+   <!--browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="registration_profile.html"
     class=".edit_profile.RegisterEditProfileForm"
-    permission="zope2.ManageProperties" />
+    permission="zope2.ManageProperties" /--> 
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="verify_address.html"
     class="Products.GSContent.view.GSContentView"
     template="browser/templates/verify_address.pt"
     permission="zope2.ManageProperties" />
-   <browser:page 
+   <!--browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="verify_wait.html"
     class=".verify_wait.VerifyWaitForm"
-    permission="zope2.ManageProperties" />
-   <browser:page 
+    permission="zope2.ManageProperties" /-->
+   <!--browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="verify_email.ajax"
     class=".view_address_verified.GSAddressVerifiedView"
-    permission="zope2.ManageProperties" />
+    permission="zope2.ManageProperties" /-->
 
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory=".profile_redirect.GSRedirectLogin"
@@ -183,9 +180,9 @@
     class=".request_password_reset.RequestPasswordResetForm"
     permission="zope2.Public" />
 
-  <interface 
+  <!--interface 
     interface=".interfaces.IGSRequestRegistrationMarker"
-    type="zope.app.content.interfaces.IContentType" />
+    type="zope.app.content.interfaces.IContentType" /-->
    <browser:page 
     for=".interfaces.IGSRequestRegistrationMarker"
     name="index.html"

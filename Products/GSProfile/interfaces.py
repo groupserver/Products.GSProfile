@@ -90,20 +90,6 @@ class GroupID(ASCIILine):
             raise GroupIDNotFound(value)
         return True
 
-class IGSRequestRegistration(IGSEmailAddressEntry):
-    """Schema use to define the user-interface that start the whole
-    registration process"""
-    # Unfortunately the group identifier is not checked against the 
-    #   joinable groups, because there is no "user" to check with.
-    groupId = GroupID(title=u'Group Identifier',
-      description=u'The identifier for the group that you '
-        u'wish to join.',
-      required=False)
-
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
-        
 # Email Address Verification
 
 class VIDNotFound(ValidationError):
