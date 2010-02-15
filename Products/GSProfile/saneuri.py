@@ -10,7 +10,9 @@ system to enter domains such as ``groupserver.org`` as a URI, rather
 than strict URIs such as <http://groupserver.org>.
 
 How dear the users fail to follow `RFC2396 
-<http://www.ietf.org/rfc/rfc2396.txt>`_ to the letter!'''
+<http://www.ietf.org/rfc/rfc2396.txt>`_ to the letter!'
+
+TODO: Split this off into its own module, so it can be used widely.'''
 from urlparse import urlparse # Use urlparse to parse urls. Shock! 
 from zope.schema import URI
 
