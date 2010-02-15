@@ -26,7 +26,7 @@ class IOGNProfile(IGSCoreProfile):
       required=False,
       default=u'')
       
-    url = URI(title=u'Personal URL',
+    url = SaneURI(title=u'Personal URL',
       description=u'Your personal website, blog or podcast URL.',
       required=False)
       
@@ -40,7 +40,7 @@ class IOGNProfile(IGSCoreProfile):
       required=False,
       default=u'')
       
-    org_url = URI(title=u'Organisation Website',
+    org_url = SaneURI(title=u'Organisation Website',
       description=u'URL for the organisation you are involved with.',
       required=False)
       
@@ -462,23 +462,23 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default='')
 
-    url = URI(title=u'Your Website',
+    url = SaneURI(title=u'Your Website',
       description=u'The URL for your website, or page on the Web.',
       required=False)
     
-    weblog = URI(title=u'Weblog URL',
+    weblog = SaneURI(title=u'Weblog URL',
       description=u'The location of your weblog (blog).',
       required=False)
 
-    weblog_feed = URI(title=u'Weblog Web Feed',
+    weblog_feed = SaneURI(title=u'Weblog Web Feed',
       description=u'The location of your weblog web-feed.',
       required=False)
 
-    linkedin_url = URI(title=u'LinkedIn URL',
+    linkedin_url = SaneURI(title=u'LinkedIn URL',
       description=u'The URL of your LinkedIn profile page.',
       required=False)
 
-    delicious_url = URI(title=u'Del.icio.us or FURL Links',
+    delicious_url = SaneURI(title=u'Del.icio.us or FURL Links',
       description=u'The URLs of your Del.icio.us or FURL pages.',
       required=False)
 
@@ -516,7 +516,7 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
     
-    org_url = URI(title=u'Organisation Website',
+    org_url = SaneURI(title=u'Organisation Website',
       description=u'The Web page for your organisation.',
       required=False)
 
