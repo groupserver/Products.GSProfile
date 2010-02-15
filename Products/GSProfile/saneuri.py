@@ -9,9 +9,8 @@ far more tolerant of poor input. It is not unheard of for users of a
 system to enter ``groupserver.org`` as a URI, rather than 
 ``http://groupserver.org``.
 
-The users are fools, how dear they fail to follow `RFC2396 
-<http://www.ietf.org/rfc/rfc2396.txt>`_ to the letter!
-'''
+How dear the users fail to follow `RFC2396 
+<http://www.ietf.org/rfc/rfc2396.txt>`_ to the letter!'''
 from urlparse import urlparse # Use urlparse to parse urls. Shock! 
 from zope.schema import URI
 
@@ -22,14 +21,35 @@ def sanitise_uri(uri):
     -----------
     
     Adds the ``http://`` scheme (alias protocol, alias method) to the
-    URI if none is provided.'''
+    URI if none is provided.
+    
+    Arguments
+    ---------
+    
+    ``uri`` The string containing the URI to be sanitised.
+    
+    Returns
+    -------
+    
+    A string containing the sanitised URI.
+    
+    Side Effects
+    ------------
+    
+    None.'''
     retval = url
     if not(urlparse(uri)[0]):
         retval = 'http://%s' % uri
     return retval
 
 class SaneURI(URI):
-
+    '''Sane URI schema field
+    
+    Description
+    -----------
+    
+    An extension of the URI schema field that sanitises the input before
+    checking it.'''
     def constraint(self, uri):
         saneUri = sanitise_uri(uri)
         return super(SaneURI, self).constraint(saneUri)

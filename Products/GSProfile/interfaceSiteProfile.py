@@ -6,6 +6,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
   deliveryVocab
 from emailaddress import EmailAddress
+from saneuri import SaneURI
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -631,7 +632,7 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    url = URI(title=u'Best Web Link About You',
+    url = SaneURI(title=u'Best Web Link About You',
       description=u'The URL for the website, page, weblog, or feed about '
         u'you.',
       required=False)
@@ -641,7 +642,7 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    org_url = URI(title=u'Organisation Website',
+    org_url = SaneURI(title=u'Organisation Website',
       description=u'The Web page for your organisation.',
       required=False)
 
