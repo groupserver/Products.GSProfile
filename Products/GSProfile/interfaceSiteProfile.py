@@ -300,23 +300,22 @@ class IABELProfile(IGSCoreProfile):
       unique=True,
       default=[])
       
-    foundationsWorkshopLocation = Choice(title=u'Preferred Workshop and Exam Location',
+    foundationsWorkshopLocation = Choice(title=u'Preferred Foundations Workshop and Exam Location',
       description=u'Where you would prefer to attend the '
         u'Foundations workshop and examination.',
       vocabulary=locationVocab,
-#      vocabulary='abel.ExamLocations',
       default='a',
       required=False)
 
-    preferredWorkshopLocation = Choice(title=u'Preferred Workshop Location',
+    preferredWorkshopLocation = Choice(title=u'Preferred PAS Workshop Location',
       description=u'Where you would prefer to attend the '\
-        u'CAPAS (PAS) workshop.',
+        u'PAS workshop.',
       vocabulary=locationVocab,
       default='a',
       required=False)
     
-    preferredExamLocation = Choice(title=u'Preferred Exam Location',
-      description=u'Where you would prefer to sit CAPEX (PCE 2).',
+    preferredExamLocation = Choice(title=u'Preferred PCE 2 Location',
+      description=u'Where you would prefer to sit PCE 2.',
       vocabulary='abel.ExamLocations',
       required=False)
 
