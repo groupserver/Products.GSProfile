@@ -39,9 +39,12 @@ def sanitise_uri(uri):
     ------------
     
     None.'''
-    retval = uri
-    if not(urlparse(uri)[0]):
-        retval = 'http://%s' % uri
+    if uri == None:
+      retval = ''
+    else:
+      retval = uri
+      if not(urlparse(uri)[0]):
+          retval = 'http://%s' % uri
     return retval
 
 class SaneURI(URI):
