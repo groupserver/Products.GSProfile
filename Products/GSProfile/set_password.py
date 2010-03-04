@@ -79,6 +79,7 @@ class SetPasswordAdminJoinForm(SetPasswordForm):
         loggedInUser = createObject('groupserver.LoggedInUser',
                                     self.context)
         assert not(loggedInUser.anonymous), 'Not logged in'
+        user = loggedInUser.user
         
         set_password(user, data['password1'])
 
