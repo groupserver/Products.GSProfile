@@ -7,7 +7,8 @@ from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
 import Products.GSContent.interfaces
-from Products.XWFCore.XWFUtils import get_user_realnames, 
+from Products.XWFCore.XWFUtils import get_user_realnames, \
+  get_support_email
 from Products.XWFCore.odict import ODict
 import zope.app.apidoc.interface # 
 
