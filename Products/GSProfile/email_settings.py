@@ -7,7 +7,7 @@ from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
 import Products.GSContent.interfaces
-from Products.XWFCore import XWFUtils
+from Products.XWFCore.XWFUtils import get_user_realnames, 
 from Products.XWFCore.odict import ODict
 import zope.app.apidoc.interface # 
 
@@ -51,7 +51,7 @@ class GSEmailSettings(BrowserView):
     @property
     def userName(self):
         retval = u''
-        retval = XWFUtils.get_user_realnames(self.__user)
+        retval = get_user_realnames(self.__user)
 
         return retval
     
@@ -164,7 +164,7 @@ class GSEmailSettings(BrowserView):
 
     @property
     def verificationEmailAddress(self):
-        retval = XWFUtils.getOption(self.context, 'userVerificationEmail')
+        retval = get_support_email(self.context, self.siteInfo.id)
         assert type(retval) == str
         assert '@' in retval
         return retval
