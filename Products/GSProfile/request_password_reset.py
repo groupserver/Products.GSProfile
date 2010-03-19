@@ -2,12 +2,11 @@
 '''Implementation of the Reset Password Request form.
 '''
 import time, md5
-from Products.Five.formlib.formbase import PageForm
 from zope.component import createObject
 from zope.formlib import form
+from Products.Five.formlib.formbase import PageForm
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-
-from Products.XWFCore import XWFUtils
+from Products.XWFCore.XWFUtils import convert_int2b62, get_support_email
 from Products.GSProfile.interfaces import *
 
 import logging
@@ -22,6 +21,13 @@ class RequestPasswordResetForm(PageForm):
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
+
+    @property
+    def supportEmailAddress(self):
+        retval = get_support_email(self.context, self.siteInfo.id)
+        assert type(retval) == str
+        assert '@' in retval
+        return retval
 
     # --=mpj17=--
     # The "form.action" decorator creates an action instance, with
@@ -76,7 +82,7 @@ class RequestPasswordResetForm(PageForm):
 
         # Let us hope that the verification ID *is* unique
         vNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-        verificationId = str(XWFUtils.convert_int2b62(vNum))
+        verificationId = str(convert_int2b62(vNum))
         user.add_password_verification(verificationId)
         
         n_dict = {}
