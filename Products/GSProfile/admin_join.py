@@ -163,7 +163,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
             self.status = u'<p>There are errors:</p>'
 
     def create_user(self, data):
-        email  = data['email']
+        email  = data['email'].strip()
         m = 'AdminJoinEditProfileForm: No user with the email '\
           'address <%s>.' % email
         log.info(m)

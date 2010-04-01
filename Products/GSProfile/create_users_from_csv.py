@@ -477,7 +477,7 @@ class CreateUsersForm(BrowserView):
         assert 'email' in fields
         assert fields['email']
         
-        email = fields['email']
+        email = fields['email'].strip()
         
         user = utils.create_user_from_email(self.context, email)
         userInfo = IGSUserInfo(user)
