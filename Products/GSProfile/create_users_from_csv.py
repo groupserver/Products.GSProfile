@@ -410,7 +410,7 @@ class CreateUsersForm(BrowserView):
         result = {}
         new = 0
         
-        email = fields['email']
+        email = fields['email'].strip()
         
         emailChecker = NewEmailAddress(title=u'Email')
         emailChecker.context = self.context # --=mpj17=-- Legit?

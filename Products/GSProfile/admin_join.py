@@ -95,7 +95,7 @@ class AdminJoinEditProfileForm(EditProfileForm):
 
     def actual_handle_add(self, action, data):
         acl_users = self.context.acl_users
-        email = data['email']
+        email = data['email'].strip()
 
         adminInfo = createObject('groupserver.LoggedInUser', self.context)
         m = u'AdminJoinEditProfileForm: Admin %s (%s) joining user with '\
