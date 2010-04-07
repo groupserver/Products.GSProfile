@@ -72,19 +72,6 @@
     interface=".interfaces.IGSReigstration" 
     type="zope.app.content.interfaces.IContentType" />
 
-  <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
-    name="admin_join.html"
-    class=".admin_join.AdminJoinEditProfileForm"
-    permission="zope2.ManageUsers"/>
-    
-  <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
-    name="admin_join_csv.html"
-    class=".create_users_from_csv.CreateUsersForm"
-    template="browser/templates/admin_create_users_from_csv.pt"
-    permission="zope2.ManageUsers"/>
-
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="verify_address.html"
