@@ -137,12 +137,6 @@
     class=".set_password.SetPasswordForm"
     permission="zope2.ManageProperties" />
 
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="join_password.html"
-    class=".set_password.SetPasswordAdminJoinForm"
-    permission="zope2.ManageProperties" />
-
   <browser:menu 
     id="user_profile_menu"
     title="Test of the profile menus" />
