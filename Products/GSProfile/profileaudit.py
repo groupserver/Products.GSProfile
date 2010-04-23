@@ -70,7 +70,7 @@ class SetPasswordEvent(BasicAuditEvent):
         retval = u'%s (%s) set password on %s (%s)' %\
           (self.instanceUserInfo.name, self.instanceUserInfo.id,
            self.siteInfo.name, self.siteInfo.id)
-        return retval
+        return retval.encode('ascii', 'ignore')
 
     @property
     def xhtml(self):
