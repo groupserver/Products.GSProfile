@@ -201,7 +201,6 @@ class IABELProfile(IGSCoreProfile):
     gender = Choice(title=u'Gender',
       description=u'The gender that people perceive you as having '\
         u'(your identified gender).',
-      default=u'Female',
       vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
       required=False)
       
@@ -244,7 +243,6 @@ class IABELProfile(IGSCoreProfile):
 
     adr_type = Choice(title=u'Address Type',
       description=u'Type of address',
-      default=u'work',
       vocabulary=addressTypeVocab, 
       required=False)
       
@@ -282,13 +280,11 @@ class IABELProfile(IGSCoreProfile):
       
     adr_postal_code = TextLine(title=u'Post Code',
       description=u'The postal code for the address.',
-      required=False,
-      default=u'')
+      required=False)
 
     employer_classification = Choice(title=u'Employer Classification',
       description=u'Employer Classification',
       vocabulary=employerClassificationVocab,
-      default='publicPractice_business',
       required=False)
 
     employer_classification_other = TextLine(
@@ -303,28 +299,24 @@ class IABELProfile(IGSCoreProfile):
     college = Choice(title=u'College',
       description=u'Intended NZICA College',
       vocabulary=collegeVocab,
-      default='ca',
       required=False)
       
     subjectExpertise = List(title=u'Subject Expertise',
       description=u'Subjects that you are an expert in.',
       required=False,
       value_type=Choice(title=u'Subject', vocabulary=subjectExpertiseVocab),
-      unique=True,
-      default=[])
+      unique=True)
       
     foundationsWorkshopLocation = Choice(title=u'Preferred Foundations Workshop and Exam Location',
       description=u'Where you would prefer to attend the '
         u'Foundations workshop and examination.',
       vocabulary=locationVocab,
-      default='a',
       required=False)
 
     preferredWorkshopLocation = Choice(title=u'Preferred PAS Workshop Location',
       description=u'Where you would prefer to attend the '\
         u'PAS workshop.',
       vocabulary=locationVocab,
-      default='a',
       required=False)
     
     preferredExamLocation = Choice(title=u'Preferred PCE 2 Location',
@@ -349,7 +341,6 @@ class IABELProfile(IGSCoreProfile):
       
     biography = Text(title=u'Biography',
       description=u'A description of your life and interests.',
-      default=u'', 
       required=False)
       
     tz = Choice(title=u'Timezone',
