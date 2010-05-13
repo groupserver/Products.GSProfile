@@ -103,7 +103,7 @@ class ChangeProfileEvent(BasicAuditEvent):
            fieldName, self.instanceDatum,
            self.instanceUserInfo.name, self.instanceUserInfo.id,
            old, new, self.siteInfo.name, self.siteInfo.id)
-        return retval
+        return retval.encode('ascii', 'ignore')
         
     def get_old_new(self):
         retval = [b64decode(d).decode('utf-8')

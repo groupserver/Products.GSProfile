@@ -216,6 +216,11 @@ class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
         description=u'The ID of the button to lock if the required '\
           u'widgets are not filled out.',
         required=True)
+        
+    list = ASCIILine(title=u"List",
+        description=u'The UL element that lists the widgets.',
+        required=False,
+        default='')
 
 class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
     pageTemplateFileName = Text(title=u"Page Template File Name",

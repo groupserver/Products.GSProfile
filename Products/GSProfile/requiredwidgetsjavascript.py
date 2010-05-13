@@ -36,7 +36,8 @@ class GSRequiredWidgetsJavaScriptContentProvider(object):
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
         return pageTemplate(view=self, 
           requiredWidgetsArray=self.requiredWidgetsArray,
-          button=self.button)
+          button=self.button,
+          list=self.list)
 
 zope.component.provideAdapter(GSRequiredWidgetsJavaScriptContentProvider,
     provides=zope.contentprovider.interfaces.IContentProvider,
