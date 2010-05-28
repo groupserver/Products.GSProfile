@@ -579,19 +579,19 @@ class IDoWireProfileAdminJoinCSV(IDoWireProfileAdminJoin):
 ########
 
 class IEDemProfile(IGSCoreProfile):
-    givenName = TextLine(title=u'Given Name',
+    givenName = TextLine(title=u'Given (First) Name',
       description=u'The name that you are commonly called, which is given '
         u'to you by your parents.',
       required=True)
      
-    familyName = TextLine(title=u'Family Name',
+    familyName = TextLine(title=u'Family (Last) Name',
       description=u'The name that you inherit by birth, or acquire by '
         u'marriage.',
       required=True)
     
     fn = TextLine(title=u'Full Name',
-      description=u'T The name you want others to see. This must contain '
-        u'you real first and last name, but you may add a nickname.',
+      description=u'The name you want others to see. This must contain '
+        u'your real first and last name, but you may add a nickname.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
