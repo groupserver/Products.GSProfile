@@ -160,7 +160,7 @@ class IABELProfile(IGSCoreProfile):
       
     familyName = TextLine(title=u'Family Name',
       description=u'The name of your family, which you inherited '\
-        u'by birth, or acquired by marriage.' \
+        u'by birth, or acquired by marriage. ' \
         u'For example "Keeling" for Philip Keeling, or "Ban" for '\
         u'Ban Ki-moon.',
       required=False,
