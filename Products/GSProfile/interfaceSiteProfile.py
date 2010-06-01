@@ -63,7 +63,7 @@ class IOGNProfileRegister(IOGNProfile):
     
 
 class IOGNProfileAdminJoin(IOGNProfile):
-    toAddr = EmailAddress(title=u'Email To',
+    email = EmailAddress(title=u'Email Address',
       description=u'The email address of the new group member.'\
         u'The invitation will be sent to this address, and the address '\
         u'will become the default address for the new group member.',
@@ -71,30 +71,17 @@ class IOGNProfileAdminJoin(IOGNProfile):
 
 class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
     message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the two links that allow the user to accept '\
-            u'or reject the inviation.',
-        required=True)
-    
-    fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
-        u'line in the invitation tat you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
-      required=True)
+      description=u'The message that appears at the top of the email '\
+        u'invitation to the new group member. The message will appear before '\
+        u'the two links that allow the user to accept or reject the '\
+        u'inviation.',
+        required=False)
 
     delivery = Choice(title=u'Group Message Delivery Settings',
       description=u'The message delivery settings for the new user',
       vocabulary=deliveryVocab,
       default='email')
-
-    subject = TextLine(title=u'Subject',
-        description=u'The subject line of the invitation message that '\
-            u'will be sent to the new member',
-        required=True)
-
     
-
 class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
     pass
 
