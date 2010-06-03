@@ -5,8 +5,5 @@
   xmlns:sqlos="http://namespaces.sqlobject.org/sqlos"
   xmlns:five="http://namespaces.zope.org/five">
 
-  <interface 
-    interface=".interfaceSiteProfile.IOGNProfile" />
-
 </configure>
 
