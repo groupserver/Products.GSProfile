@@ -7,7 +7,8 @@ from zope.schema import * #@UnusedWildImport
 from Products.XWFCore import XWFUtils
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.GSGroupMember.groupmembership import \
-  join_group, user_member_of_group, invite_to_groups, user_admin_of_group
+  join_group, user_member_of_group, user_admin_of_group
+from gs.group.member.invite.utils import invite_to_groups
 import interfaces
 import utils
 from edit_profile import * #@UnusedWildImport

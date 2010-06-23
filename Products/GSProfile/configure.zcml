@@ -72,11 +72,11 @@
     interface=".interfaces.IGSReigstration" 
     type="zope.app.content.interfaces.IContentType" />
 
-  <browser:page 
+  <!--browser:page 
     for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="admin_join.html"
     class=".admin_join.AdminJoinEditProfileForm"
-    permission="zope2.ManageUsers"/>
+    permission="zope2.ManageUsers"/-->
     
   <browser:page 
     for="Products.XWFChat.interfaces.IGSGroupFolder"
@@ -150,11 +150,11 @@
     class=".set_password.SetPasswordForm"
     permission="zope2.ManageProperties" />
 
-   <browser:page
+   <!--browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="join_password.html"
     class=".set_password.SetPasswordAdminJoinForm"
-    permission="zope2.ManageProperties" />
+    permission="zope2.ManageProperties" /-->
 
   <browser:menu 
     id="user_profile_menu"
