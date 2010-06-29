@@ -6,12 +6,12 @@
           title string:Profile of ${view/userInfo/name};">Profile</a>
     </p>
     <ul>
-      <!--tal:block repeat="page view/pages"-->
       <tal:block repeat="page view/pages">
         <li>
-          <a href="#" tal:attributes="href page/action; 
-              class python:view.page_class(page);
-              title page/description"
+          <a href="#" 
+            tal:attributes="href string:${view/userInfo/url}/${page/action}; 
+            class python:view.page_class(page);
+            title page/description"
             tal:content="page/title">Page Name</a>
         </li>
       </tal:block>
