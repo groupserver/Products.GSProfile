@@ -39,7 +39,6 @@ GSCheckRequired = function () {
             submitButton.removeAttr("disabled");
         } else {
             submitButton.attr("disabled", "disabled");
-            alert(unfinished);
         }
         return true;
     }
