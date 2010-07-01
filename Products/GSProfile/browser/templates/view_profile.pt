@@ -76,6 +76,10 @@
           </ul>
         </div>
       </div><!--vcard-->
+      <p tal:condition="python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id" 
+        tal:replace="structure provider:groupserver.GroupInvitationList">
+        A list of group invitations.
+      </p>
       <div id="membership">
         <p tal:condition="python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id" 
           tal:replace="structure provider:groupserver.SiteMemberships">
