@@ -1,10 +1,14 @@
 # coding=utf-8
 '''Implementation of the Reset Password Request form.
 '''
+try:
+    from Products.Five.formlib.formbase import PageForm
+except ImportError:
+    from five.formlib.formbase import PageForm
+    
 import time, md5
 from zope.component import createObject
 from zope.formlib import form
-from Products.Five.formlib.formbase import PageForm
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.XWFCore.XWFUtils import convert_int2b62, get_support_email
 from Products.GSProfile.interfaces import *
