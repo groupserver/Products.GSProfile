@@ -30,7 +30,6 @@ class GSAuditTrailView(BrowserView):
         for i in rawItems:
             i = self.marshal_data(i)
             event = createObject(i['subsystem'], self.context, **i)
-            # print event # --=mpj17=-- Useful for debugging __str__ methods
             events.append(event)
         return events
 
