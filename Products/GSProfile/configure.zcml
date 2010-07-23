@@ -3,13 +3,7 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:five="http://namespaces.zope.org/five"
   i18n_domain="groupserver">
-  <five:implements 
-    class="OFS.Folder.Folder"
-    interface="zope.app.folder.interfaces.IFolder" />
-  <!-- make it known to Five -->
-  <five:traversable 
-    class="OFS.Folder.Folder" />
-  
+
   <!-- Generic resources -->
   <browser:resource name="check_email-20080214.js" 
     file="browser/javascript/check_email.js"
@@ -30,7 +24,6 @@
 
 
   <!-- Form schemas -->
-  
   <interface 
     interface=".interfaces.IGSSetPassword" />
   <interface 
