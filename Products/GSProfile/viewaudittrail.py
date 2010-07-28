@@ -61,6 +61,6 @@ class GSAuditTrailView(BrowserView):
     def get_groupInfo(self, gid):
         # TODO: Cache
         return gid and \
-          createObject('groupserver.GroupInfo', self.context, gid)\
+          createObject('groupserver.GroupInfo', self.userInfo.user, gid)\
           or None
 
