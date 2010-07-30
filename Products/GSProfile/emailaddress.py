@@ -9,7 +9,7 @@ from zope.schema import *
 import re
 from utils import get_acl_users_for_context
 
-EMAIL_RE = r'[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}'
+EMAIL_RE = r'^[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}$'
 check_email = re.compile(EMAIL_RE).match
 
 BANNED_DOMAINS = ['dodgit.com', 'enterto.com', 'myspamless.com',
