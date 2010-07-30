@@ -42,19 +42,6 @@ class IGSSetPasswordRegister(IGSSetPassword):
       description=u'The page to return to after retistration has finished',
       required=False)
 
-class IGSSetPasswordAdminJoin(Interface):
-    password1 = ASCIILine(title=u'Password',
-        description=u'Your new password. For security, your password '\
-          u'should contain a mixture of letters and numbers, and '\
-          u'must be over four letters long.',
-        required=True,
-        min_length=4)
-
-    invitationId = ASCIILine(title=u'Invitation Identifier',
-      description=u'The identifier sent to you when you were invited to '\
-        u'join the group.',
-      required=True)
-
 # Address Forms
 
 class IGSEmailAddressEntry(Interface):
@@ -229,6 +216,11 @@ class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
         description=u'The ID of the button to lock if the required '\
           u'widgets are not filled out.',
         required=True)
+        
+    list = ASCIILine(title=u"List",
+        description=u'The UL element that lists the widgets.',
+        required=False,
+        default='')
 
 class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
     pageTemplateFileName = Text(title=u"Page Template File Name",

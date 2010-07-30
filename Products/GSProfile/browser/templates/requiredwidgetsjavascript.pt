@@ -3,9 +3,17 @@
   jQuery(document).ready( function () {
       var gsRequiredWidgets = new Array(<tal:block 
           replace="options/requiredWidgetsArray" />);
-      GSCheckRequired.init(
-        gsRequiredWidgets, 
-        "<tal:block replace="options/button" />");
+      <tal:block condition="not:options/list">
+        GSCheckRequired.init(
+          gsRequiredWidgets, 
+          "<tal:block replace="options/button" />");
+      </tal:block>
+      <tal:block condition="options/list">
+        GSCheckRequired.init_list(
+          gsRequiredWidgets, 
+          "<tal:block replace="options/button" />",
+          "<tal:block replace="options/list" />");
+      </tal:block>
   });
 </tal:block>
 

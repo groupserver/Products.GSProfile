@@ -1,7 +1,11 @@
 # coding=utf-8
-'''Implementation of the Edit Image form.
+'''Implementation of the Edit Nickname form.
 '''
-from Products.Five.formlib.formbase import PageForm
+try:
+    from five.formlib.formbase import PageForm
+except ImportError:
+    from Products.Five.formlib.formbase import PageForm
+    
 from zope.component import createObject, adapts
 from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
@@ -41,9 +45,6 @@ class GSSetNickname(PageForm):
     #   label, but it helps with readability.
     @form.action(label=u'Set', failure='handle_set_action_failure')
     def handle_set(self, action, data):
-        # This may seem a bit daft, but there is method to my madness. The
-        #   "showImage" value is set by simple assignment, while the
-        #   "image" is set using 
         assert self.context
         assert self.form_fields
         nickname = data['nickname']
@@ -61,16 +62,4 @@ class GSSetNickname(PageForm):
             self.status = u'<p>There is an error:</p>'
         else:
             self.status = u'<p>There are errors:</p>'
-
-    def set_image(self, image):
-        assert self.context.contactsimages
-        images = self.context.contactsimages
-        
-        userImageName = '%s.jpg' % self.context.getId()
-        origimage = getattr(images, userImageName, None)
-        if origimage:
-            images.manage_delObjects([origimage.getId()])
-
-        userName = XWFUtils.get_user_realnames(self.context)
-        images.manage_addImage(userImageName, image, userName)
 
