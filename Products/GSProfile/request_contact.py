@@ -7,11 +7,11 @@ except ImportError:
     from Products.Five.formlib.formbase import PageForm
     
 from zope.component import createObject, adapts
-from zope.interface import implements, providedBy, implementedBy,\
+from zope.interface import implements, providedBy, implementedBy, \
   directlyProvidedBy, alsoProvides
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget, \
   TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
@@ -32,7 +32,7 @@ class GSRequestContact(PageForm):
         self.userInfo = IGSUserInfo(context)
 
     @property
-    def anonymous_viewing_page( self ):
+    def anonymous_viewing_page(self):
         assert self.request
         assert self.context
 

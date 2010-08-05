@@ -14,7 +14,7 @@ class GSProfileContextMenuContentProvider(object):
     """GroupServer context-menu for the user profile area.
     """
 
-    zope.interface.implements( IGSProfileContextMenuContentProvider )
+    zope.interface.implements(IGSProfileContextMenuContentProvider)
     zope.component.adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)
@@ -29,9 +29,9 @@ class GSProfileContextMenuContentProvider(object):
     def update(self):
         self.__updated = True
 
-        self.siteInfo = createObject('groupserver.SiteInfo', 
+        self.siteInfo = createObject('groupserver.SiteInfo',
           self.context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', 
+        self.groupsInfo = createObject('groupserver.GroupsInfo',
           self.context)
         self.userInfo = IGSUserInfo(self.context)
 

@@ -1,23 +1,20 @@
 # coding=utf-8
-'''Implementation of the Edit Image form.
+''' Implementation of the Edit Image form.
 '''
 try:
     from five.formlib.formbase import PageForm
 except ImportError:
     from Products.Five.formlib.formbase import PageForm
-    
-from zope.component import createObject, adapts
-from zope.interface import implements, providedBy, implementedBy,\
-  directlyProvidedBy, alsoProvides
-from zope.formlib import form
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
-  TextAreaWidget
-from zope.security.interfaces import Forbidden
-from zope.app.apidoc.interface import getFieldsInOrder
+
 from Products.XWFCore import XWFUtils
-from interfaceCoreProfile import *
-from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
+from zope.component import createObject
+from zope.interface import alsoProvides
+from zope.formlib import form
+from zope.schema import getFieldsInOrder
+
+from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from interfaceCoreProfile import IGSProfileImage
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 
 import os
 
@@ -39,7 +36,6 @@ class GSEditImageForm(PageForm):
 
     @property
     def userName(self):
-        retval = u''
         retval = XWFUtils.get_user_realnames(self.context)
         return retval
 
@@ -96,9 +92,7 @@ class GSEditImageForm(PageForm):
                                                        (siteId,))
 
         userImageName = '%s.jpg' % self.context.getId()
-
-        userName = XWFUtils.get_user_realnames(self.context)
-
+        
         userImagePath = os.path.join(contactImageDir, userImageName)
         
         f = file(userImagePath, 'wb')

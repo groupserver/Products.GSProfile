@@ -2,7 +2,7 @@
 from zope.interface import implements, providedBy
 from zope.component import createObject
 from zope.schema.vocabulary import SimpleTerm
-from zope.schema.interfaces import IVocabulary,\
+from zope.schema.interfaces import IVocabulary, \
   IVocabularyTokenized, ITitledTokenizedTerm
 from zope.interface.common.mapping import IEnumerableMapping 
 from zope.schema import *
@@ -21,7 +21,7 @@ BANNED_DOMAINS = ['dodgit.com', 'enterto.com', 'myspamless.com',
 
 def disposable_address(e):
     userAddress = e.lower()
-    retval = reduce(lambda a, b: a or b, 
+    retval = reduce(lambda a, b: a or b,
                     [d in userAddress for d in BANNED_DOMAINS], False)
     assert type(retval) == bool
     return retval
@@ -71,7 +71,7 @@ class EmailAddressExists(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return u'The email address "%s" already exists on this site.' %\
+        return u'The email address "%s" already exists on this site.' % \
           self.value
     def doc(self):
         return self.__str__()

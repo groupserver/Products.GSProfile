@@ -63,7 +63,7 @@ class SetPasswordForm(PageForm):
 
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:
-            self.status=u'<p>%s</p>' % errors[0]
+            self.status = u'<p>%s</p>' % errors[0]
         else:
             self.status = u'<p>There were errors:</p>'
 

@@ -49,7 +49,7 @@ class RequestPasswordResetForm(PageForm):
         
         if self.address_exists(data['email']):
             m = u'Password Reset: sending a reset message out to the user '\
-              u'with the address <%s> on the site %s (%s)' %\
+              u'with the address <%s> on the site %s (%s)' % \
               (data['email'], self.siteInfo.name, self.siteInfo.id)
             log.info(m)
             self.reset_password(data['email'])
@@ -62,7 +62,7 @@ class RequestPasswordResetForm(PageForm):
             url = 'request_registration.html?form.email=%s' % data['email']
             m = u'Password Reset: Redirecting from the request password'\
               u'reset page to the request registration page (%s) '\
-              u'for the address <%s> on the site %s (%s)' %\
+              u'for the address <%s> on the site %s (%s)' % \
               (url, data['email'], self.siteInfo.name, self.siteInfo.id)
             log.info(m)
             
@@ -81,7 +81,7 @@ class RequestPasswordResetForm(PageForm):
     def reset_password(self, email):
         acl_users = self.context.site_root().acl_users
         user = acl_users.get_userByEmail(email)
-        assert user!= None, 'No user with email address %s' % email
+        assert user != None, 'No user with email address %s' % email
         
 
         # Let us hope that the verification ID *is* unique
@@ -92,7 +92,7 @@ class RequestPasswordResetForm(PageForm):
         n_dict = {}
         n_dict['verificationId'] = verificationId
         n_dict['userId'] = user.getId()
-        n_dict['userFn'] = user.getProperty('fn','')
+        n_dict['userFn'] = user.getProperty('fn', '')
         n_dict['siteName'] = self.siteInfo.get_name()
         n_dict['siteURL'] = self.siteInfo.get_url()
         user.send_notification('reset_password', 'default', n_dict=n_dict)

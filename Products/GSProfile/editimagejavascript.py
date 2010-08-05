@@ -9,7 +9,7 @@ class GSEditImageJavaScriptContentProvider(object):
     """Content provider for the JavaScript on the edit image pages.
     """
 
-    zope.interface.implements( IGSViewProfileJavaScriptContentProvider )
+    zope.interface.implements(IGSViewProfileJavaScriptContentProvider)
     zope.component.adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)
@@ -22,14 +22,14 @@ class GSEditImageJavaScriptContentProvider(object):
         
     def update(self):
         self.__updated = True
-        self.siteInfo = createObject('groupserver.SiteInfo', 
+        self.siteInfo = createObject('groupserver.SiteInfo',
           self.context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', 
+        self.groupsInfo = createObject('groupserver.GroupsInfo',
           self.context)
         self.userInfo = IGSUserInfo(self.context)
 
         rws = [w for w in self.widgets if w.required]
-        rwIds = ['\'#%s\''%w.name.replace('.','\\\\.') for w in rws]
+        rwIds = ['\'#%s\'' % w.name.replace('.', '\\\\.') for w in rws]
         self.requiredWidgetsArray = '%s' % ', '.join(rwIds);
 
     def render(self):
@@ -37,7 +37,7 @@ class GSEditImageJavaScriptContentProvider(object):
             raise interfaces.UpdateNotCalled
 
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
-        return pageTemplate(view=self, 
+        return pageTemplate(view=self,
           requiredWidgetsArray=self.requiredWidgetsArray)
 
 zope.component.provideAdapter(GSViewProfileJavaScriptContentProvider,
