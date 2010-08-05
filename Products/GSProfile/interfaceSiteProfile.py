@@ -79,7 +79,7 @@ class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
     fromAddr = Choice(title=u'Email From',
       description=u'The email address that you want in the "From" '\
         u'line in the invitation tat you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
+      vocabulary='EmailAddressesForLoggedInUser',
       required=True)
 
     delivery = Choice(title=u'Group Message Delivery Settings',
@@ -100,50 +100,50 @@ class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
 ########
 
 collegeVocab = SimpleVocabulary([
-  SimpleTerm('ca', 'ca',  u'College of Chartered Accountants'),
-  SimpleTerm('aca','aca', u'College of Associated Chartered Accountants'), 
-  SimpleTerm('at', 'at',  u'College of Accounting Technicians')])
+  SimpleTerm('ca', 'ca', u'College of Chartered Accountants'),
+  SimpleTerm('aca', 'aca', u'College of Associated Chartered Accountants'),
+  SimpleTerm('at', 'at', u'College of Accounting Technicians')])
 
 locationVocab = SimpleVocabulary([
-  SimpleTerm('n','n', u'Auckland, North of Harbour Bridge'),
-  SimpleTerm('a','a', u'Auckland, South of Harbour Bridge'), 
-  SimpleTerm('h','h', u'Hamilton'), 
-  SimpleTerm('t','t', u'Tauranga'),
-  SimpleTerm('p','p', u'Palmerston North'), 
-  SimpleTerm('w','w', u'Wellington'), 
-  SimpleTerm('c','c', u'Christchurch'), 
-  SimpleTerm('d','d', u'Dunedin'),
-  SimpleTerm('lon','lon', u'London')])
+  SimpleTerm('n', 'n', u'Auckland, North of Harbour Bridge'),
+  SimpleTerm('a', 'a', u'Auckland, South of Harbour Bridge'),
+  SimpleTerm('h', 'h', u'Hamilton'),
+  SimpleTerm('t', 't', u'Tauranga'),
+  SimpleTerm('p', 'p', u'Palmerston North'),
+  SimpleTerm('w', 'w', u'Wellington'),
+  SimpleTerm('c', 'c', u'Christchurch'),
+  SimpleTerm('d', 'd', u'Dunedin'),
+  SimpleTerm('lon', 'lon', u'London')])
 
 addressTypeVocab = SimpleVocabulary([
-  SimpleTerm('work', 'work',  u'Work'),
-  SimpleTerm('home', 'home',  u'Home')])
+  SimpleTerm('work', 'work', u'Work'),
+  SimpleTerm('home', 'home', u'Home')])
   
 employerClassificationVocab = SimpleVocabulary([
-  SimpleTerm('publicPractice_business', 'publicPractice_business',  
+  SimpleTerm('publicPractice_business', 'publicPractice_business',
              u'Public Practice Business Services'),
-  SimpleTerm('publicPractice_audit',    'publicPractice_audit',  
+  SimpleTerm('publicPractice_audit', 'publicPractice_audit',
              u'Public Practice Audit'),
-  SimpleTerm('publicPractice_tax',      'publicPractice_tax',  
+  SimpleTerm('publicPractice_tax', 'publicPractice_tax',
              u'Public Practice Tax'),
-  SimpleTerm('publicPractice_other',    'publicPractice_other',  
+  SimpleTerm('publicPractice_other', 'publicPractice_other',
              u'Public Practice Other'),
-  SimpleTerm('corporate',     'corporate',      u'Corporate Sector'),
-  SimpleTerm('publicSector',  'publicSector',   u'Public Sector'),
-  SimpleTerm('academic',      'academic',       u'Academic'),
-  SimpleTerm('notforprofit',  'notforprofit',   u'Not for Profit'),
-  SimpleTerm('other',         'other',          u'Other'),])
+  SimpleTerm('corporate', 'corporate', u'Corporate Sector'),
+  SimpleTerm('publicSector', 'publicSector', u'Public Sector'),
+  SimpleTerm('academic', 'academic', u'Academic'),
+  SimpleTerm('notforprofit', 'notforprofit', u'Not for Profit'),
+  SimpleTerm('other', 'other', u'Other'), ])
 
 subjectExpertiseVocab = SimpleVocabulary([
-  SimpleTerm('management_accounting', 'management_accounting',  
+  SimpleTerm('management_accounting', 'management_accounting',
              u'Management Accounting'),
-  SimpleTerm('financial_accounting', 'financial_accounting',  
+  SimpleTerm('financial_accounting', 'financial_accounting',
              u'Financial Accounting'),
-  SimpleTerm('finance',  'finance',  u'Finance'),
+  SimpleTerm('finance', 'finance', u'Finance'),
   SimpleTerm('taxation', 'taxation', u'Taxation'),
   SimpleTerm('auditing', 'auditing', u'Auditing'),
-  SimpleTerm('business_strategy', 'business_strategy',  
-             u'Business Strategy'),])
+  SimpleTerm('business_strategy', 'business_strategy',
+             u'Business Strategy'), ])
 
 class IABELProfile(IGSCoreProfile):
     membershipID = TextLine(title=u'NZICA Membership Number',
@@ -178,7 +178,7 @@ class IABELProfile(IGSCoreProfile):
       description=u'The name that is commonly used to greet you. '\
         u'This name may be a shorter version of one of your given '\
         u'names — such as Liz, Phil, Mike, or Beth — or a '\
-        u'different name entirely!', 
+        u'different name entirely!',
       required=False)
       
     fn = TextLine(title=u'eCampus Display Name',
@@ -240,7 +240,7 @@ class IABELProfile(IGSCoreProfile):
 
     adr_type = Choice(title=u'Address Type',
       description=u'Type of address',
-      vocabulary=addressTypeVocab, 
+      vocabulary=addressTypeVocab,
       required=False)
       
     adr_extended_address = TextLine(title=u'Extended Address',
@@ -325,7 +325,7 @@ class IABELProfile(IGSCoreProfile):
       description=u'You require special support to participate in '\
         u'the programme. If you select this option, ABEL will '\
         u'contact you to determine the support you require.',
-      default=False, 
+      default=False,
       required=False)
       
     specialDiet = Bool(title=u'Special Dietary Requirements',
@@ -333,7 +333,7 @@ class IABELProfile(IGSCoreProfile):
         u'the general populous for medical, religious, ethical or '\
         u'other reasons. If you selected this option ABEL will '\
         u'contact you to determine your requirements.',
-      default=False, 
+      default=False,
       required=False)
       
     biography = Text(title=u'Biography',
@@ -523,7 +523,7 @@ class IDoWireProfile(IGSCoreProfile):
 
     org_type = TextLine(title=u'Organisation Type',
       description=u'The type organisation that you are primarily engaged '
-        u'with.', 
+        u'with.',
       required=False,
       default=u'')
     

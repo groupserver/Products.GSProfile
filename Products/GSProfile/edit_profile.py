@@ -7,27 +7,22 @@ except ImportError:
     from Products.Five.formlib.formbase import PageForm
 
 from base64 import b64encode
-from zope.component import createObject, adapts
-from zope.interface import implements, providedBy, implementedBy,\
-  directlyProvidedBy, alsoProvides
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile \
   import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget, \
   TextAreaWidget
-from zope.app.apidoc.interface import getFieldsInOrder
-from zope.schema import *
+from zope.schema import getFieldsInOrder
 from Products.XWFCore.XWFUtils import comma_comma_and
-from Products.CustomUserFolder.interfaces import IGSUserInfo
-from Products.GSGroupMember.utils import inform_ptn_coach_of_join
-from utils import profile_interface_name, profile_interface, \
-  enforce_schema
+from utils import enforce_schema
 from zope.app.form.browser.widget import renderElement
-import interfaces
+from zope.component import createObject
 
 import logging
 log = logging.getLogger('GSEditProfile')
-from profileaudit import *
+
+from Products.GSProfile.profileaudit import profile_interface, ProfileAuditer, CHANGE_PROFILE
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 
 def select_widget(field, request):
     retval = SelectWidget(field, field.vocabulary, request)
@@ -47,7 +42,7 @@ class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
                              value=value)
         label = '<label class="checkboxLabel" for="%s">%s</label>' % \
           (widgetId, text)
-        gId = widgetId.replace('.','-')
+        gId = widgetId.replace('.', '-')
         return self._joinButtonToMessageTemplate % (gId, elem, label)
     
     def renderSelectedItem(self, index, text, value, name, cssClass):
@@ -61,13 +56,13 @@ class NotBrokenMultiCheckBoxWidget(MultiCheckBoxWidget):
                              checked="checked")
         label = '<label class="checkboxLabel" for="%s">%s</label>' % \
           (widgetId, text)
-        gId = widgetId.replace('.','-')
+        gId = widgetId.replace('.', '-')
         return self._joinButtonToMessageTemplate % (gId, elem, label)
 
 
 def multi_check_box_widget(field, request):
-    return NotBrokenMultiCheckBoxWidget(field, 
-                                        field.value_type.vocabulary, 
+    return NotBrokenMultiCheckBoxWidget(field,
+                                        field.value_type.vocabulary,
                                         request)
     
     
@@ -130,12 +125,12 @@ class EditProfileForm(PageForm):
         assert type(retval) == unicode
         return retval
 
-    def audit_and_get_changed(self, data, skip = []):
+    def audit_and_get_changed(self, data, skip=[]):
         fields = [field for field in getFieldsInOrder(self.interface)
                   if not field[1].readonly]
         # --=mpj17=-- There *must* be a better way to skip the joinable
         #  groups data, and still get a list of altered fields in a sane
-         #  order, but I am far too tired to figure it out
+        #  order, but I am far too tired to figure it out
         alteredFields = []
         for field in fields:
             fieldId = field[0]

@@ -21,7 +21,7 @@ import logging
 log = logging.getLogger('GSUserProfiles')
 
 def ec(name):
-    return ''.join([ord(d)>127 and hex(ord(d)).replace('0x', r'%') or d
+    return ''.join([ord(d) > 127 and hex(ord(d)).replace('0x', r'%') or d
                    for d in name])
 
 class GSUserProfiles(BrowserView):
@@ -50,7 +50,7 @@ class GSUserProfiles(BrowserView):
                 url = '/p/%s/' % cnn
                 retval = self.request.response.redirect(url)
         else:
-            m  = "No user with the nickname %s" % ec(name)
+            m = "No user with the nickname %s" % ec(name)
             log.info(m)
                    
             raise NotFound, m

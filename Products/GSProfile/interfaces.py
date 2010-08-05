@@ -1,16 +1,15 @@
 # coding=utf-8
 """Interfaces for the registration and password-reset pages."""
-import re, pytz
-from zope.interface.interface import Interface, Invalid, invariant
-from zope.schema import *
-from zope.schema.vocabulary import SimpleVocabulary
+from zope.schema import ASCIILine, Bool, Dict, Field, Password, URI, ValidationError, List, Text #@UnusedImport
 from zope.contentprovider.interfaces import IContentProvider
+from zope.interface import Interface, invariant, Invalid #@UnusedImport
 from zope.component import createObject
-from interfaceCoreProfile import *
-from emailaddress import EmailAddress
+
+from interfaceCoreProfile import * #@UnusedWildImport
 try:
     # The site profile may not exist.
-    from interfaceSiteProfile import *
+    from interfaceSiteProfile import * #@UnusedWildImport
+    pass
 except ImportError, e:
     pass
 
@@ -33,7 +32,7 @@ class IGSSetPassword(Interface):
         min_length=4)
 
     @invariant
-    def passwordsMatch(passwords):
+    def passwordsMatch(passwords): #@NoSelf
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
 

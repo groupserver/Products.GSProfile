@@ -11,7 +11,7 @@ class GSFormWidgets(object):
     """The standard layout for GroupServer Form Widgets
     """
 
-    zope.interface.implements( IGSFormWidgets )
+    zope.interface.implements(IGSFormWidgets)
     adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)

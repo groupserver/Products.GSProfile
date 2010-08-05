@@ -7,7 +7,7 @@ from interfaces import *
 
 class GSRequiredWidgetsJavaScriptContentProvider(object):
     """Content provider for the required widgets JavaScript."""
-    zope.interface.implements( IGSRequiredWidgetsJavaScriptContentProvider )
+    zope.interface.implements(IGSRequiredWidgetsJavaScriptContentProvider)
     zope.component.adapts(zope.interface.Interface,
         zope.publisher.interfaces.browser.IDefaultBrowserLayer,
         zope.interface.Interface)
@@ -20,13 +20,13 @@ class GSRequiredWidgetsJavaScriptContentProvider(object):
         
     def update(self):
         self.__updated = True
-        self.siteInfo = createObject('groupserver.SiteInfo', 
+        self.siteInfo = createObject('groupserver.SiteInfo',
           self.context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', 
+        self.groupsInfo = createObject('groupserver.GroupsInfo',
           self.context)
 
         rws = [w for w in self.widgets if w.required]
-        rwIds = ['\'#%s\''%w.name.replace('.','\\\\.') for w in rws]
+        rwIds = ['\'#%s\'' % w.name.replace('.', '\\\\.') for w in rws]
         self.requiredWidgetsArray = '%s' % ', '.join(rwIds);
 
     def render(self):
@@ -34,7 +34,7 @@ class GSRequiredWidgetsJavaScriptContentProvider(object):
             raise interfaces.UpdateNotCalled
 
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
-        return pageTemplate(view=self, 
+        return pageTemplate(view=self,
           requiredWidgetsArray=self.requiredWidgetsArray,
           button=self.button,
           list=self.list)

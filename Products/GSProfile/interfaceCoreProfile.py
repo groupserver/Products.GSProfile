@@ -14,9 +14,9 @@ def display_name_not_nul(text):
     return retval
 
 deliveryVocab = SimpleVocabulary([
-  SimpleTerm('email', 'email',  u'One email per post.'),
-  SimpleTerm('digest','digest', u'Daily digest of topics.'), 
-  SimpleTerm('web',   'web',    u'Web only.')])
+  SimpleTerm('email', 'email', u'One email per post.'),
+  SimpleTerm('digest', 'digest', u'Daily digest of topics.'),
+  SimpleTerm('web', 'web', u'Web only.')])
 
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
@@ -145,7 +145,7 @@ class VNicknameUsed(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        msg = 'The nickname %s is already in use.' %\
+        msg = 'The nickname %s is already in use.' % \
           repr(self.value)
         return msg
     def doc(self):
@@ -155,7 +155,7 @@ class VUserIDUsed(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        msg = 'The user-identifier %s is already in use.' %\
+        msg = 'The user-identifier %s is already in use.' % \
           repr(self.value)
         return msg
     def doc(self):

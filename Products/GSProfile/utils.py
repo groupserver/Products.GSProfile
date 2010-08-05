@@ -2,7 +2,7 @@
 import time, md5
 from zope.component import createObject
 from zope.schema import *
-from zope.interface import implements, providedBy, implementedBy,\
+from zope.interface import implements, providedBy, implementedBy, \
   directlyProvidedBy, alsoProvides
 
 from string import ascii_lowercase, digits
@@ -68,7 +68,7 @@ def send_verification_message(context, user, email):
       Adds an entry to the email-address-verification table.
     '''
     assert context != None
-    assert user!= None
+    assert user != None
     assert email in user.get_emailAddresses(), \
       'Email <%s> not in %s' % (email, user.get_emailAddresses())
     siteInfo = createObject('groupserver.SiteInfo', context)
@@ -79,13 +79,13 @@ def send_verification_message(context, user, email):
     n_dict = {}
     n_dict['verificationId'] = verificationId
     n_dict['userId'] = user.getId()
-    n_dict['userFn'] = user.getProperty('fn','')
+    n_dict['userFn'] = user.getProperty('fn', '')
     n_dict['siteName'] = siteInfo.get_name()
     n_dict['siteURL'] = siteInfo.get_url()
     user.send_notification(
-      n_type='verify_email_address', 
+      n_type='verify_email_address',
       n_id='default',
-      n_dict=n_dict, 
+      n_dict=n_dict,
       email_only=[email])
     m = 'utils.send_verification_message: Sent an email-verification '\
       'message to <%s> for the user %s (%s)' % \
@@ -116,7 +116,7 @@ def create_user_from_email(context, email):
     
     # --=mpj17=-- Ensure that the user's profile is owned by the user, and
     #   *only* the user.
-    assign_ownership(user, user.getId(), recursive=0, 
+    assign_ownership(user, user.getId(), recursive=0,
       acl_user_path='/'.join(acl_users.getPhysicalPath()))
     user.manage_delLocalRoles([uid for uid in 
                                user.users_with_local_role('Owner')

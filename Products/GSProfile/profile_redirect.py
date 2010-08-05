@@ -53,18 +53,18 @@ class GSRedirectVerify(GSRedirectBase):
             if user:
                 userInfo = IGSUserInfo(user)
                 m = 'GSProfileRedirect: Going to verify the address with '\
-                  'the verification ID %s for the user %s (%s).'  % \
+                  'the verification ID %s for the user %s (%s).' % \
                   (verificationId, userInfo.name, userInfo.id)
                 log.info(m)
                 
                 utils.login(self.context, user)
                 emailAddress = user.verify_emailAddress(verificationId)
                 m = 'GSProfileRedirect: Verified the address <%s> for '\
-                  'the user %s (%s)' % (emailAddress, 
+                  'the user %s (%s)' % (emailAddress,
                     user.getProperty('fn', ''), user.getId())
                 log.info(m)
 
-                uri = '%s/verify_address.html?email=%s' %\
+                uri = '%s/verify_address.html?email=%s' % \
                   (userInfo.url, emailAddress)
             else: # Cannot find user
                 uri = '/verify-user-not-found?id=%s' % verificationId
@@ -151,7 +151,7 @@ class GSRedirectRejectInvite(GSRedirectBase):
                   'siteURL':  siteInfo.get_url(),
                 }
                 admin.send_notification(
-                  n_type='admin_create_new_user_rejected', 
+                  n_type='admin_create_new_user_rejected',
                   n_id='default',
                   n_dict=n_dict)
 

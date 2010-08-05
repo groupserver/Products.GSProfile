@@ -65,7 +65,7 @@ if not sys.modules.has_key('Testing'):
             zope_home = os.path.dirname(os.path.dirname(p))
             sys.path[:1] = [p0, p, zope_home]
             break
-        p, d = s and ('','') or os.path.split(p)
+        p, d = s and ('', '') or os.path.split(p)
     else:
         print 'Unable to locate Testing package.',
         print 'You might need to set SOFTWARE_HOME.'

@@ -7,11 +7,11 @@ except ImportError:
     from Products.Five.formlib.formbase import PageForm
     
 from zope.component import createObject, adapts
-from zope.interface import implements, providedBy, implementedBy,\
+from zope.interface import implements, providedBy, implementedBy, \
   directlyProvidedBy, alsoProvides
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget, \
   TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
@@ -49,10 +49,10 @@ class GSSetNickname(PageForm):
         assert self.form_fields
         nickname = data['nickname']
         self.userInfo.user.add_nickname(nickname)
-        url = '%s%s' %(self.siteInfo.url, self.userInfo.url)
+        url = '%s%s' % (self.siteInfo.url, self.userInfo.url)
         self.status = u'The nickname "%s" has been set. Your profile can '\
           u'now be accessed through '\
-          u'<a href="%s"><code class="url">%s</code></a>.' %\
+          u'<a href="%s"><code class="url">%s</code></a>.' % \
           (nickname, url, url)
         assert self.status
         assert type(self.status) == unicode
