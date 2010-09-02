@@ -72,7 +72,7 @@ class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
-            u'appear before the two links that allow the user to accept '\
+            u'appear before the link that allows the member to accept '\
             u'or reject the inviation.',
         required=True)
     
@@ -369,7 +369,7 @@ class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
-            u'appear before the two links that allow the user to accept '\
+            u'appear before the link that allows the member to accept '\
             u'or reject the inviation.',
         required=True)
     
@@ -570,7 +570,7 @@ class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
-            u'appear before the two links that allow the user to accept '\
+            u'appear before the link that allows the member to accept '\
             u'or reject the inviation.',
         required=True)
     
@@ -705,7 +705,7 @@ class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
-            u'appear before the two links that allow the user to accept '\
+            u'appear before the link that allows the member to accept '\
             u'or reject the inviation.',
         required=True)
     
