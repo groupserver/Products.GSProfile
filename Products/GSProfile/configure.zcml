@@ -87,13 +87,15 @@
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="initlogin" />  
 
+  <!--depricated-->
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectRejectInvite"
+    factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="reject_invite" />  
 
+  <!--depricated-->
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectAcceptInvite"
+    factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="join_group" />  
 
