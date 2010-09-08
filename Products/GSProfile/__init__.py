@@ -1,8 +1,6 @@
 # coding=utf-8
 import profileContextMenu, userImage, utils, formwidgets, \
     viewprofilejavascript, requiredwidgetsjavascript
-from admin_join import AdminJoinEditProfileForm
-from create_users_from_csv import CreateUsersForm
 from AccessControl import ModuleSecurityInfo
 from AccessControl import allow_class
 

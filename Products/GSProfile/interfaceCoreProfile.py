@@ -14,9 +14,9 @@ def display_name_not_nul(text):
     return retval
 
 deliveryVocab = SimpleVocabulary([
-  SimpleTerm('email', 'email',  u'One email per post.'),
-  SimpleTerm('digest','digest', u'Daily digest of topics.'), 
-  SimpleTerm('web',   'web',    u'Web only.')])
+  SimpleTerm('email', 'email', u'One email per post.'),
+  SimpleTerm('digest', 'digest', u'Daily digest of topics.'),
+  SimpleTerm('web', 'web', u'Web only.')])
 
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
@@ -50,29 +50,36 @@ class IGSCoreProfileRegister(IGSCoreProfile):
       description=u'The page to return to after retistration has finished',
       required=False)
     
-
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
-    email = EmailAddress(title=u'Email Address',
+    toAddr = EmailAddress(title=u'Email To',
       description=u'The email address of the new group member.'\
         u'The invitation will be sent to this address, and the address '\
         u'will become the default address for the new group member.',
       required=True)
-    # --=mpj17=-- A normal email address field is used, rather than a
-    #   *new* email address field, because we want to add users who 
-    #   exist on the system :)
-    
+
 class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
     message = Text(title=u'Invitation Message',
-      description=u'The message that appears at the top of the email '\
-        u'invitation to the new group member. The message will appear before '\
-        u'the two links that allow the user to accept or reject the '\
-        u'inviation.',
-        required=False)
+        description=u'The message that appears at the top of the email '\
+            u'invitation to the new group member. The message will '\
+            u'appear before the two links that allow the user to accept '\
+            u'or reject the inviation.',
+        required=True)
+    
+    fromAddr = Choice(title=u'Email From',
+      description=u'The email address that you want in the "From" '\
+        u'line in the invitation tat you send.',
+      vocabulary = 'EmailAddressesForLoggedInUser',
+      required=True)
 
     delivery = Choice(title=u'Group Message Delivery Settings',
       description=u'The message delivery settings for the new user',
       vocabulary=deliveryVocab,
       default='email')
+
+    subject = TextLine(title=u'Subject',
+        description=u'The subject line of the invitation message that '\
+            u'will be sent to the new member',
+        required=True)    
 
 class IGSCoreProfileAdminJoinCSV(IGSCoreProfileAdminJoin):
     pass
@@ -138,7 +145,7 @@ class VNicknameUsed(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        msg = 'The nickname %s is already in use.' %\
+        msg = 'The nickname %s is already in use.' % \
           repr(self.value)
         return msg
     def doc(self):
@@ -148,7 +155,7 @@ class VUserIDUsed(ValidationError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        msg = 'The user-identifier %s is already in use.' %\
+        msg = 'The user-identifier %s is already in use.' % \
           repr(self.value)
         return msg
     def doc(self):

@@ -1,17 +1,17 @@
 # coding=utf-8
-'''Implementation of the Edit Image form.
+'''Implementation of the Edit Nickname form.
 '''
 try:
     from five.formlib.formbase import PageForm
 except ImportError:
-    from Products.Five.formlib.formbase import PageForm    
-
+    from Products.Five.formlib.formbase import PageForm
+    
 from zope.component import createObject, adapts
-from zope.interface import implements, providedBy, implementedBy,\
+from zope.interface import implements, providedBy, implementedBy, \
   directlyProvidedBy, alsoProvides
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
+from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget, \
   TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
@@ -45,17 +45,14 @@ class GSSetNickname(PageForm):
     #   label, but it helps with readability.
     @form.action(label=u'Set', failure='handle_set_action_failure')
     def handle_set(self, action, data):
-        # This may seem a bit daft, but there is method to my madness. The
-        #   "showImage" value is set by simple assignment, while the
-        #   "image" is set using 
         assert self.context
         assert self.form_fields
         nickname = data['nickname']
         self.userInfo.user.add_nickname(nickname)
-        url = '%s%s' %(self.siteInfo.url, self.userInfo.url)
+        url = '%s%s' % (self.siteInfo.url, self.userInfo.url)
         self.status = u'The nickname "%s" has been set. Your profile can '\
           u'now be accessed through '\
-          u'<a href="%s"><code class="url">%s</code></a>.' %\
+          u'<a href="%s"><code class="url">%s</code></a>.' % \
           (nickname, url, url)
         assert self.status
         assert type(self.status) == unicode
@@ -65,16 +62,4 @@ class GSSetNickname(PageForm):
             self.status = u'<p>There is an error:</p>'
         else:
             self.status = u'<p>There are errors:</p>'
-
-    def set_image(self, image):
-        assert self.context.contactsimages
-        images = self.context.contactsimages
-        
-        userImageName = '%s.jpg' % self.context.getId()
-        origimage = getattr(images, userImageName, None)
-        if origimage:
-            images.manage_delObjects([origimage.getId()])
-
-        userName = XWFUtils.get_user_realnames(self.context)
-        images.manage_addImage(userImageName, image, userName)
 

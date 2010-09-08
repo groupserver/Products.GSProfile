@@ -9,7 +9,7 @@ from Products.GSProfile.interfaces import IGSUserImage
 class GSUserImageContentProvider(object):
     """GroupServer view of the user image
     """
-    implements( IGSUserImage )
+    implements(IGSUserImage)
     adapts(Interface, IDefaultBrowserLayer, Interface)
 
     def __init__(self, context, request, view):
@@ -22,9 +22,9 @@ class GSUserImageContentProvider(object):
     def update(self):
         self.__updated = True
 
-        self.siteInfo = createObject('groupserver.SiteInfo', 
+        self.siteInfo = createObject('groupserver.SiteInfo',
           self.context)
-        self.groupsInfo = createObject('groupserver.GroupsInfo', 
+        self.groupsInfo = createObject('groupserver.GroupsInfo',
           self.context)
 
     def render(self):

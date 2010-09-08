@@ -4,10 +4,6 @@
   xmlns:five="http://namespaces.zope.org/five"
   i18n_domain="groupserver">
 
-  <class class="OFS.Folder.Folder">
-     <implements interface="zope.app.folder.interfaces.IFolder" />
-  </class>
-  
   <!-- Generic resources -->
   <browser:resource name="check_email-20080214.js" 
     file="browser/javascript/check_email.js"
@@ -26,8 +22,8 @@
     file="browser/javascript/suggest_fn.js"
     permission="zope2.Public" />
 
+
   <!-- Form schemas -->
-  
   <interface 
     interface=".interfaces.IGSSetPassword" />
   <interface 
@@ -69,19 +65,6 @@
     interface=".interfaces.IGSReigstration" 
     type="zope.app.content.interfaces.IContentType" />
 
-  <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
-    name="admin_join.html"
-    class=".admin_join.AdminJoinEditProfileForm"
-    permission="zope2.ManageUsers"/>
-    
-  <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
-    name="admin_join_csv.html"
-    class=".create_users_from_csv.CreateUsersForm"
-    template="browser/templates/admin_create_users_from_csv.pt"
-    permission="zope2.ManageUsers"/>
-
    <browser:page 
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="verify_address.html"
@@ -104,13 +87,15 @@
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="initlogin" />  
 
+  <!--depricated-->
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectRejectInvite"
+    factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="reject_invite" />  
 
+  <!--depricated-->
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectAcceptInvite"
+    factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="join_group" />  
 
@@ -145,12 +130,6 @@
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="password.html"
     class=".set_password.SetPasswordForm"
-    permission="zope2.ManageProperties" />
-
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="join_password.html"
-    class=".set_password.SetPasswordAdminJoinForm"
     permission="zope2.ManageProperties" />
 
   <browser:menu 

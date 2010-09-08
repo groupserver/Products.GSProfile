@@ -13,7 +13,7 @@ from Products.XWFCore.odict import ODict
 import zope.app.apidoc.interface # 
 
 from interfaces import *
-from emailaddress import NewEmailAddress, NotAValidEmailAddress,\
+from emailaddress import NewEmailAddress, NotAValidEmailAddress, \
   DisposableEmailAddressNotAllowed, EmailAddressExists
 import utils
 
@@ -33,7 +33,7 @@ class GSEmailSettings(BrowserView):
         self.__user = self.__get_user()
         self.__addressData = []
         self.__preferredAddresses = []
-        self.__verifiedAddresses  = []
+        self.__verifiedAddresses = []
         self.__groupEmailSettings = []
 
     def __get_user(self):
@@ -100,7 +100,7 @@ class GSEmailSettings(BrowserView):
 
     @property
     def verifiedAddressesNoDefault(self):
-        retval =\
+        retval = \
           (len(self.preferredAddresses) < 1) and (len(self.verifiedAddresses) > 0)
         assert type(retval) == bool
         return retval
@@ -135,7 +135,7 @@ class GSEmailSettings(BrowserView):
             self.__verifiedAddresses = self.__user.get_verifiedEmailAddresses()
         retval = self.__verifiedAddresses
         assert type(retval) == list
-        log.info('verifiedAddresses %s'%retval)
+        log.info('verifiedAddresses %s' % retval)
         return retval
         
     @property
@@ -199,7 +199,7 @@ class GSEmailSettings(BrowserView):
             if button == 'newAddress-button':
                 assert 'newAddress' in form.keys()
                 newAddress = form['newAddress']
-                error, message  = self.add_email(newAddress)
+                error, message = self.add_email(newAddress)
             else:
                 addressId = button.split('-')[0]
                 address = [a for a in self.userAddresses 
@@ -258,8 +258,8 @@ class GSEmailSettings(BrowserView):
         grpAddrs = self.__user.remove_deliveryEmailAddressByKey(gid, addr)
         message = u'%s\n<li>Removed <code class="email">%s</code> from '\
           u'the delivery settings for '\
-          u'<a class="group" href="%s">%s</a></li>' %\
-          (message, address.address, setting.group.get_url(), 
+          u'<a class="group" href="%s">%s</a></li>' % \
+          (message, address.address, setting.group.get_url(),
             setting.group.get_name())
             
         if ((grpAddrs == []) and (setting.setting == 2)):
@@ -272,8 +272,8 @@ class GSEmailSettings(BrowserView):
             addrPlural = ((len(defl) == 1) and u'address') or u'addresses'
             message = u'%s\n<li>Messages from '\
               u'<a class="group" href="%s">%s</a> will now be sent to '\
-              'your default %s: %s.</li>' %\
-              (message, setting.group.get_url(), 
+              'your default %s: %s.</li>' % \
+              (message, setting.group.get_url(),
                 setting.group.get_name(), addrPlural, deflHtml)
 
         elif ((grpAddrs != []) and (setting.setting == 2)):
@@ -281,8 +281,8 @@ class GSEmailSettings(BrowserView):
             addrsHtml = self.__addrs_to_html(grpAddrs)
             message = u'%s\n<li>Messages from '\
               u'<a class="group" href="%s">%s</a> will now be '\
-              u'sent to %s.</li>' %\
-              (message, setting.group.get_url(), 
+              u'sent to %s.</li>' % \
+              (message, setting.group.get_url(),
                 setting.group.get_name(), addrsHtml)
 
         assert message
@@ -309,7 +309,7 @@ class GSEmailSettings(BrowserView):
 
         assert ((address.default and self.multipleDefault) or
           (not address.default)), \
-          'Will not remove the only default address <%s> from %s (%s)' %\
+          'Will not remove the only default address <%s> from %s (%s)' % \
           (address.address, self.__user.getProperty('fn', ''), \
            self.__user.getId())
 
@@ -336,7 +336,7 @@ class GSEmailSettings(BrowserView):
         assert not address.verified, 'Address %s already verified' % \
           address.address
 
-        utils.send_verification_message(self.context, self.__user, 
+        utils.send_verification_message(self.context, self.__user,
           address.address)
 
         message = self.verification_message(address.address)
@@ -361,7 +361,7 @@ class GSEmailSettings(BrowserView):
         if address.address not in newDefl:
             newDefl.append(address.address)
         deflHtmlAddrs = self.__addrs_to_html(newDefl)
-        message = u'%s\n<li>Your default email addresses are %s</li>' %\
+        message = u'%s\n<li>Your default email addresses are %s</li>' % \
           (message, deflHtmlAddrs)
 
         message = u'<ul>%s</ul>' % message
@@ -388,7 +388,7 @@ class GSEmailSettings(BrowserView):
         addrPlural = ((len(newDefl) == 1) and u'address is') \
           or u'addresses are'
         deflHtmlAddrs = self.__addrs_to_html(newDefl)
-        message = u'%s\n<li>Your default email %s %s</li>' %\
+        message = u'%s\n<li>Your default email %s %s</li>' % \
           (message, addrPlural, deflHtmlAddrs)
         message = u'<ul>%s</ul>' % message
         
@@ -444,14 +444,14 @@ class Address(object):
       verified:  True if the address has been verified as being controlled
                  by the user.
     """
-    def __init__(self, emailAddress, defaultAddresses=[], 
+    def __init__(self, emailAddress, defaultAddresses=[],
                  verifiedAddresses=[]):
         assert type(emailAddress) == str
         assert type(defaultAddresses) == list
         assert type(verifiedAddresses) == list
 
         self.address = emailAddress
-        addressId = emailAddress.replace('@','at').replace('-', 'dash')
+        addressId = emailAddress.replace('@', 'at').replace('-', 'dash')
         self.addressId = addressId
         self.default = emailAddress in defaultAddresses
         self.verified = emailAddress in verifiedAddresses
@@ -494,6 +494,6 @@ class GroupEmailSetting(object):
         assert self.group
         assert self.group == group
         assert type(self.setting) == int
-        assert self.setting in range(0,4)
+        assert self.setting in range(0, 4)
         assert type(self.addresses) == list
 

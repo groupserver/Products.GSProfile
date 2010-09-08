@@ -2,7 +2,7 @@
 import time, md5
 from zope.component import createObject
 from zope.schema import *
-from zope.interface import implements, providedBy, implementedBy,\
+from zope.interface import implements, providedBy, implementedBy, \
   directlyProvidedBy, alsoProvides
 
 from string import ascii_lowercase, digits
@@ -68,7 +68,7 @@ def send_verification_message(context, user, email):
       Adds an entry to the email-address-verification table.
     '''
     assert context != None
-    assert user!= None
+    assert user != None
     assert email in user.get_emailAddresses(), \
       'Email <%s> not in %s' % (email, user.get_emailAddresses())
     siteInfo = createObject('groupserver.SiteInfo', context)
@@ -79,13 +79,13 @@ def send_verification_message(context, user, email):
     n_dict = {}
     n_dict['verificationId'] = verificationId
     n_dict['userId'] = user.getId()
-    n_dict['userFn'] = user.getProperty('fn','')
+    n_dict['userFn'] = user.getProperty('fn', '')
     n_dict['siteName'] = siteInfo.get_name()
     n_dict['siteURL'] = siteInfo.get_url()
     user.send_notification(
-      n_type='verify_email_address', 
+      n_type='verify_email_address',
       n_id='default',
-      n_dict=n_dict, 
+      n_dict=n_dict,
       email_only=[email])
     m = 'utils.send_verification_message: Sent an email-verification '\
       'message to <%s> for the user %s (%s)' % \
@@ -116,7 +116,7 @@ def create_user_from_email(context, email):
     
     # --=mpj17=-- Ensure that the user's profile is owned by the user, and
     #   *only* the user.
-    assign_ownership(user, user.getId(), recursive=0, 
+    assign_ownership(user, user.getId(), recursive=0,
       acl_user_path='/'.join(acl_users.getPhysicalPath()))
     user.manage_delLocalRoles([uid for uid in 
                                user.users_with_local_role('Owner')
@@ -130,68 +130,6 @@ def create_user_from_email(context, email):
     assert user
     assert isinstance(user, CustomUser)
     return user
-
-def send_add_user_notification(u, a, groupInfo, message=u''):
-    """Send an Add User notification to a new user
-    
-    DESCRIPTION
-      When a new user is added to the site, he or she needs to be informed
-      of their new account. This function sends the appropriate 
-      notification to the user.
-      
-    ARGUMENTS
-      user        The instance of the user to add.
-      admin       The instance of the administrator who is adding the user.
-      groupInfo   Information about the group the user is being added to.
-      message     An optional message to send to the user, in addition to
-                  the standard message.
-    RETURNS
-      None.
-      
-    SIDE EFFECTS
-      * Creates a verification-ID for the user's first (and only) email
-        address and adds it to the email-address verification table.
-      * Sends an "admin_create_new_user" message to the user, containing
-        "message".
-    """
-    assert u
-    user = userInfo_to_user(u)
-    assert a
-    admin = userInfo_to_user(a)
-    assert admin.get_preferredEmailAddresses(), 'Admin has no preferred email addresses'
-    #assert isinstance(admin, CustomUser)
-    assert groupInfo
-    assert (type(message) in (str, unicode)) or (message == None)
-    
-    siteInfo = groupInfo.siteInfo
-    # As the user is a brand-new user, he or she only has one address.
-    email = user.get_emailAddresses()[0]
-    invitationId = verificationId_from_email(email)
-
-    user.add_invitation(invitationId, admin.getId(),
-      siteInfo.get_id(), groupInfo.get_id())
-    user.add_emailAddressVerification(invitationId, email)
-    
-    if message == None:
-        message = ''
-    
-    n_dict = {}
-    n_dict['verificationId'] = invitationId
-    n_dict['userId'] = user.getId()
-    n_dict['userFn'] = user.getProperty('fn','')
-    n_dict['siteName'] = siteInfo.get_name()
-    n_dict['groupName'] = groupInfo.get_name()
-    n_dict['siteURL'] = siteInfo.get_url()
-    n_dict['admin'] = {
-      'name':    admin.getProperty('fn', ''),
-      'address': admin.get_preferredEmailAddresses()[0],
-      'message': message}
-    
-    user.send_notification(
-      n_type='admin_create_new_user', 
-      n_id='default',
-      n_dict=n_dict, 
-      email_only=[email])
 
 def enforce_schema(inputData, schema):
     """

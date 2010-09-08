@@ -5,7 +5,7 @@ try:
     from five.formlib.formbase import PageForm
 except ImportError:
     from Products.Five.formlib.formbase import PageForm
-
+    
 from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
@@ -63,52 +63,7 @@ class SetPasswordForm(PageForm):
 
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:
-            self.status=u'<p>%s</p>' % errors[0]
+            self.status = u'<p>%s</p>' % errors[0]
         else:
             self.status = u'<p>There were errors:</p>'
-
-class SetPasswordAdminJoinForm(SetPasswordForm):
-    form_fields = form.Fields(IGSSetPasswordAdminJoin)
-    label = u'Set Password'
-    pageTemplateFileName = 'browser/templates/set_password_join.pt'
-    template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-
-    @form.action(label=u'Set', failure='handle_set_action_failure')
-    def handle_set(self, action, data):
-        assert self.context
-        assert self.form_fields
-        assert action
-        assert data
-
-        loggedInUser = createObject('groupserver.LoggedInUser',
-                                    self.context)
-        assert not(loggedInUser.anonymous), 'Not logged in'
-        user = loggedInUser.user
-        
-        set_password(user, data['password1'])
-
-        site_root = self.context.site_root()
-        invitation = user.get_invitation(data['invitationId'])
-        groups = getattr(site_root.Content, invitation['site_id']).groups
-        grp = getattr(groups, invitation['group_id'])
-        groupInfo = createObject('groupserver.GroupInfo', grp)
-
-        # Add User to the Group
-        userGroup = '%s_member' % groupInfo.get_id()
-        if userGroup not in user.getGroups():
-            user.add_groupWithNotification(userGroup)
-        assert userGroup in user.getGroups()
-        user.remove_invitations()
-        user.verify_emailAddress(data['invitationId'])
-
-        ptnCoachId = groupInfo.get_property('ptn_coach_id', '')
-        if ptnCoachId:
-            ptnCoachInfo = createObject('groupserver.UserFromId', 
-                                        self.context, ptnCoachId)
-            inform_ptn_coach_of_join(ptnCoachInfo, self.userInfo, groupInfo)
-        
-        uri = '%s?welcome=1' % groupInfo.get_url()
-        m = u'SetPasswordAdminJoinForm: redirecting user to %s' % uri
-        log.info(m)
-        return self.request.RESPONSE.redirect(uri)
 

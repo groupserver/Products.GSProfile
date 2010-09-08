@@ -12,7 +12,7 @@ class GSAuditTrailView(BrowserView):
         assert request
         BrowserView.__init__(self, context, request)
 
-        self.siteInfo = createObject('groupserver.SiteInfo', 
+        self.siteInfo = createObject('groupserver.SiteInfo',
           context)
         self.userInfo = IGSUserInfo(context)
 
@@ -30,7 +30,6 @@ class GSAuditTrailView(BrowserView):
         for i in rawItems:
             i = self.marshal_data(i)
             event = createObject(i['subsystem'], self.context, **i)
-            # print event # --=mpj17=-- Useful for debugging __str__ methods
             events.append(event)
         return events
 
@@ -54,7 +53,7 @@ class GSAuditTrailView(BrowserView):
 
     def get_userInfo(self, uid):
         # Cache, as we deal with so many user-infos.
-        retval = self.users.get(uid,\
+        retval = self.users.get(uid, \
           createObject('groupserver.UserFromId', self.context, uid))
         self.users[uid] = retval
         return retval
@@ -62,6 +61,6 @@ class GSAuditTrailView(BrowserView):
     def get_groupInfo(self, gid):
         # TODO: Cache
         return gid and \
-          createObject('groupserver.GroupInfo', self.context, gid)\
+          createObject('groupserver.GroupInfo', self.userInfo.user, gid)\
           or None
 

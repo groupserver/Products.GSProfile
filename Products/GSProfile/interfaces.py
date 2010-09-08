@@ -1,16 +1,15 @@
 # coding=utf-8
 """Interfaces for the registration and password-reset pages."""
-import re, pytz
-from zope.interface.interface import Interface, Invalid, invariant
-from zope.schema import *
-from zope.schema.vocabulary import SimpleVocabulary
+from zope.schema import ASCIILine, Bool, Dict, Field, Password, URI, ValidationError, List, Text #@UnusedImport
 from zope.contentprovider.interfaces import IContentProvider
+from zope.interface import Interface, invariant, Invalid #@UnusedImport
 from zope.component import createObject
-from interfaceCoreProfile import *
-from emailaddress import EmailAddress
+
+from interfaceCoreProfile import * #@UnusedWildImport
 try:
     # The site profile may not exist.
-    from interfaceSiteProfile import *
+    from interfaceSiteProfile import * #@UnusedWildImport
+    pass
 except ImportError, e:
     pass
 
@@ -33,7 +32,7 @@ class IGSSetPassword(Interface):
         min_length=4)
 
     @invariant
-    def passwordsMatch(passwords):
+    def passwordsMatch(passwords): #@NoSelf
         if passwords.password1 != passwords.password2:
             raise Invalid('Passwords do not match')
 
@@ -41,19 +40,6 @@ class IGSSetPasswordRegister(IGSSetPassword):
     came_from = URI(title=u'Came From',
       description=u'The page to return to after retistration has finished',
       required=False)
-
-class IGSSetPasswordAdminJoin(Interface):
-    password1 = ASCIILine(title=u'Password',
-        description=u'Your new password. For security, your password '\
-          u'should contain a mixture of letters and numbers, and '\
-          u'must be over four letters long.',
-        required=True,
-        min_length=4)
-
-    invitationId = ASCIILine(title=u'Invitation Identifier',
-      description=u'The identifier sent to you when you were invited to '\
-        u'join the group.',
-      required=True)
 
 # Address Forms
 
@@ -229,6 +215,11 @@ class IGSRequiredWidgetsJavaScriptContentProvider(IContentProvider):
         description=u'The ID of the button to lock if the required '\
           u'widgets are not filled out.',
         required=True)
+        
+    list = ASCIILine(title=u"List",
+        description=u'The UL element that lists the widgets.',
+        required=False,
+        default='')
 
 class IGSAwaitingVerificationJavaScriptContentProvider(IContentProvider):
     pageTemplateFileName = Text(title=u"Page Template File Name",

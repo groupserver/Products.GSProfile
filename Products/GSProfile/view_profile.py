@@ -86,12 +86,12 @@ class GSProfileView(BrowserView):
         p = self.props[propertyId].bind(self.context)
         if (hasattr(p, 'vocabulary') and (p.vocabulary == None)):
             # Deal with named vocabularies
-            p.vocabulary = getUtility(IVocabularyFactory,\
+            p.vocabulary = getUtility(IVocabularyFactory, \
                 p.vocabularyName, self.context)
         r = p.query(self.context, default)
         if  hasattr(p, 'vocabulary'):
             try:
-                retval =  p.vocabulary.getTerm(r).title
+                retval = p.vocabulary.getTerm(r).title
             except LookupError, e:
                 retval = r
             except AttributeError, e:

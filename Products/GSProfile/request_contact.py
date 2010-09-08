@@ -2,6 +2,8 @@
 '''Implementation of the Request Contact form.
 '''
 try:
+    from five.formlib.formbase import PageForm
+except ImportError:
     from Products.Five.formlib.formbase import PageForm
 except ImportError:
     from five.formlib.formbase import PageForm
@@ -30,17 +32,15 @@ class GSRequestContact(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.userInfo = IGSUserInfo(context)
-
-    @property
-    def anonymous_viewing_page( self ):
-        assert self.request
-        assert self.context
-
-        roles = self.request.AUTHENTICATED_USER.getRolesInContext(self.context)
-        retval = 'Authenticated' not in roles
+        self.__loggedInUser = None
         
-        assert type(retval) == bool
-        return retval
+    @property
+    def loggedInUser(self):
+        if self.__loggedInUser == None:
+            self.__loggedInUser = createObject('groupserver.LoggedInUser',
+                                    self.context)
+        assert self.__loggedInUser != None
+        return self.__loggedInUser
 
     @form.action(label=u'Request Contact', failure='handle_set_action_failure')
     def handle_set(self, action, data):

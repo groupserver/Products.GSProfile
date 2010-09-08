@@ -34,7 +34,7 @@
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="request-contact"
-        tal:condition="not:view/anonymous_viewing_page">
+        tal:condition="not:view/loggedInUser/anonymous">
         
         <h1 tal:content="view/label">Request Contact</h1>
         <p>
@@ -46,17 +46,16 @@
         </p>
         <ul>
           <li><em>Your</em> name 
-            (<span class="name"
-              tal:content="python:context.request.AUTHENTICATED_USER.fn"/>)
+            (<span class="name" tal:content="view/loggedInUser/name"/>)
           </li>
           <li><em>Your</em> email address
             (<span class="emails"
-              tal:content="python:context.request.AUTHENTICATED_USER.get_defaultDeliveryEmailAddresses()[0]"/>),
+              tal:content="python:view.loggedInUser.user.get_defaultDeliveryEmailAddresses()[0]"/>),
             and
           </li>
           <li>Information in 
             <a href="#"
-              tal:attributes="href python:'/p/%s' % context.request.AUTHENTICATED_USER.getUserName()"><em>your</em>
+              tal:attributes="href view/loggedInUser/url"><em>your</em>
               profile.</a></li>
         </ul>
         <tal:block define="widgets view/widgets">
