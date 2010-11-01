@@ -125,7 +125,7 @@ class GSEmailSettings(BrowserView):
         retval = self.__preferredAddresses
         assert type(retval) == list
         # --=mpj17=-- We cannot assume that the user has a preferred, 
-        #   address, as the preferred address may have been bou bouncing.
+        #   address, as the preferred address may have been bouncing.
         # assert len(retval) > 0
         return retval
         
@@ -490,7 +490,6 @@ class GroupEmailSetting(object):
         grpAddrs = user.get_specificEmailAddressesByKey(group.get_id())
         self.default = len(grpAddrs) == 0
         self.addresses = user.get_deliveryEmailAddressesByKey(group.get_id())
-
         assert self.group
         assert self.group == group
         assert type(self.setting) == int

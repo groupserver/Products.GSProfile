@@ -250,5 +250,11 @@
       name="EmailAddressesForLoggedInUser"
       />
 
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="Products.GSProfile.emailaddress.EmailAddressesForUser"
+      name="EmailAddressesForUser"
+      />
+
 </configure>
 

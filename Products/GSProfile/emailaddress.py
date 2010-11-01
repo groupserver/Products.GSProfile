@@ -9,6 +9,8 @@ from zope.schema import *
 import re
 from utils import get_acl_users_for_context
 
+from Products.CustomUserFolder.interfaces import IGSUserInfo
+
 EMAIL_RE = r'^[a-zA-Z0-9\._%-]+@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,4}$'
 check_email = re.compile(EMAIL_RE).match
 
@@ -83,24 +85,24 @@ class NewEmailAddress(EmailAddress):
             raise EmailAddressExists(value)
         return True
 
-class EmailAddressesForLoggedInUser(object): #--=mpj17=-- make generic
+class EmailAddressesForUser(object):
     implements(IVocabulary, IVocabularyTokenized)
     __used_for__ = IEnumerableMapping
 
     def __init__(self, context):
         self.context = context
-        self.userInfo = createObject('groupserver.LoggedInUser', context)
-        self.siteInfo = createObject('groupserver.SiteInfo', context)
+        # the context we are passed should be a user info
+        self.userInfo = context
         
-        self.__addresses = None
-        
+        self._addresses = None
+
     @property
     def addresses(self):
-        if self.__addresses == None:
-            self.__addresses = \
+        if self._addresses == None:
+            self._addresses = \
               self.userInfo.user.get_verifiedEmailAddresses()
-        assert type(self.__addresses) == list
-        return self.__addresses
+        assert type(self._addresses) == list
+        return self._addresses
         
     def __iter__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
@@ -141,3 +143,12 @@ class EmailAddressesForLoggedInUser(object): #--=mpj17=-- make generic
                 return retval
         raise LookupError, token
 
+class EmailAddressesForLoggedInUser(EmailAddressesForUser):
+    """ Similar to EmailAddressesForUser, but makes the assumption
+        that we always want the addresses of the user that is logged in.
+    """
+    def __init__(self, context):
+        self.context = context
+        self.userInfo = createObject('groupserver.LoggedInUser', context)
+        
+        self._addresses = None
