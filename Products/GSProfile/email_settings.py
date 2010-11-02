@@ -39,7 +39,7 @@ class GSEmailSettings(BrowserView):
     def __get_user(self):
         assert self.context
         
-        userId = self.context.getId()
+        userId = self.userId
         site_root = self.context.site_root()
         assert site_root
         assert hasattr(site_root, 'acl_users'), 'acl_users not found'
@@ -51,9 +51,14 @@ class GSEmailSettings(BrowserView):
         
     @property
     def userName(self):
-        retval = u''
         retval = get_user_realnames(self.__user)
 
+        return retval
+    
+    @property
+    def userId(self):
+        retval = self.context.getId()
+        
         return retval
     
     @property

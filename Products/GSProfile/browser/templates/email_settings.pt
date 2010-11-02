@@ -292,7 +292,7 @@
                 </td>
                 <td>
                   <a title="Change the email settings for this group"
-                    tal:attributes="href string:${setting/group/get_url}/email_settings"
+                    tal:attributes="href string:${setting/group/relative_url}/email_settings.html?userId=${view/userId}"
                     href="#">Change</a>
                 </td>
               </tr>
