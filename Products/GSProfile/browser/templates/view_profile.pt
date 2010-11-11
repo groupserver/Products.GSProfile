@@ -86,14 +86,23 @@
           A list of site memberships.
         </p>
         <div id="groups"
-          tal:define="groups view/groupMembership"
+          tal:define="groups view/groupMembership;
+            isViewingSelf python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id;
+            isSiteAdmin python:view.request.AUTHENTICATED_USER.getId() in 
+              [a.id for a in view.siteInfo.site_admins]"
           tal:condition="groups">
           <h2>Group Memberships</h2>
           <ul>
             <tal:block repeat="group groups">
-              <li><a href="#" class="group"
-                tal:content="group/name" 
-                tal:attributes="href group/url">Group!</a></li>
+              <li tal:define="isGroupAdmin python:view.request.AUTHENTICATED_USER.getId() in 
+                    [a.id for a in group.group_admins]">
+                <a href="#" class="group"
+                  tal:content="group/name" 
+                  tal:attributes="href group/url">Group!</a>
+                  <span tal:condition="python:(isSiteAdmin or isGroupAdmin) and 
+                    not(isViewingSelf)">(<a href="#"
+                    tal:attributes="href string:${group/url}/managemembers.html?showOnly=${view/userInfo/id}">Manage Membership</a>)</span>
+              </li>
             </tal:block>
           </ul>
         </div><!--groups-->
