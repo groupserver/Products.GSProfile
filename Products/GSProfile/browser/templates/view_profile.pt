@@ -18,6 +18,11 @@
         tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;f=1;
           title string:All files by ${fn}: ${view/siteInfo/get_name}"/>
     </tal:block>
+    <style metal:fill-slot="style">
+      #membership a.manage {
+        padding: 0px 0px 0.69em 1.39em
+      }
+    </style>
   </head>
   <body>
     <tal:block metal:fill-slot="contextnavigation">
@@ -99,9 +104,10 @@
                 <a href="#" class="group"
                   tal:content="group/name" 
                   tal:attributes="href group/url">Group!</a>
-                  <span tal:condition="python:(isSiteAdmin or isGroupAdmin) and 
-                    not(isViewingSelf)">(<a href="#"
-                    tal:attributes="href string:${group/url}/managemembers.html?showOnly=${view/userInfo/id}">Manage Membership</a>)</span>
+                <a href="#" class="manage"
+                  tal:condition="python:(isSiteAdmin or isGroupAdmin) and 
+                    not(isViewingSelf)"
+                  tal:attributes="href string:${group/url}/managemembers.html?showOnly=${view/userInfo/id}">Manage Membership</a>
               </li>
             </tal:block>
           </ul>
