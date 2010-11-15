@@ -93,14 +93,14 @@
         <div id="groups"
           tal:define="groups view/groupMembership;
             isViewingSelf python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id;
-            isSiteAdmin python:view.request.AUTHENTICATED_USER.getId() in 
-              [a.id for a in view.siteInfo.site_admins]"
+            isSiteAdmin python:'DivisionAdmin' in 
+              view.request.AUTHENTICATED_USER.getRolesInContext(view.siteInfo.siteObj)"
           tal:condition="groups">
           <h2>Group Memberships</h2>
           <ul>
             <tal:block repeat="group groups">
-              <li tal:define="isGroupAdmin python:view.request.AUTHENTICATED_USER.getId() in 
-                    [a.id for a in group.group_admins]">
+              <li tal:define="isGroupAdmin python:'GroupAdmin' in 
+                view.request.AUTHENTICATED_USER.getRolesInContext(group.groupObj)">
                 <a href="#" class="group"
                   tal:content="group/name" 
                   tal:attributes="href group/url">Group!</a>
