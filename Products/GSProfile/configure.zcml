@@ -73,11 +73,6 @@
     permission="zope2.ManageProperties" />
 
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectLogin"
-    provides="Products.GSRedirect.interfaces.IGSRedirect"
-    name="password" />
-
-  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory=".profile_redirect.GSRedirectVerify"
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="verify" />  
