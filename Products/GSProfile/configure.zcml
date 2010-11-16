@@ -121,12 +121,6 @@
     class=".request_password_reset.RequestPasswordResetForm"
     permission="zope2.Public" />
 
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="password.html"
-    class=".set_password.SetPasswordForm"
-    permission="zope2.ManageProperties" />
-
   <browser:menu 
     id="user_profile_menu"
     title="Test of the profile menus" />
