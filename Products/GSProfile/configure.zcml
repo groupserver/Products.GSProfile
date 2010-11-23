@@ -130,12 +130,6 @@
       description="Change the link to your profile"
       order="4"
       permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="password.html"
-      title="Change Password"
-      description="Change the password you use to log in"
-      order="5"
-      permission="zope2.ManageProperties"/>
   </browser:menuItems>
 
   <interface 
