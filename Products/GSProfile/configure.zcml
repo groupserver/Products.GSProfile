@@ -14,9 +14,6 @@
   <browser:resource name="popup_help-20071218.js" 
     file="browser/javascript/popup_help.js"
     permission="zope2.Public" />
-  <browser:resource name="check_password-20080212.js" 
-    file="browser/javascript/check_password.js"
-    permission="zope2.View" />
   <browser:resource
     name="suggest_fn-20081021.js" 
     file="browser/javascript/suggest_fn.js"
@@ -25,11 +22,7 @@
 
   <!-- Form schemas -->
   <interface 
-    interface=".interfaces.IGSSetPassword" />
-  <interface 
     interface=".interfaces.IGSEmailAddressEntry" />
-  <interface 
-    interface=".interfaces.IGSRequestPasswordReset" />
   <interface 
     interface=".interfaces.IGSResendVerification" />
   <interface 
@@ -77,11 +70,6 @@
     provides="Products.GSRedirect.interfaces.IGSRedirect"
     name="verify" />  
 
-  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectAdminVerified"
-    provides="Products.GSRedirect.interfaces.IGSRedirect"
-    name="initlogin" />  
-
   <!--depricated-->
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
@@ -111,15 +99,6 @@
       name="rejected-invitation-delete"
       template="browser/templates/reject_invite_delete.pt" />
   </browser:pages>
-
-  <interface 
-    interface=".interfaces.IGSRequestPasswordResetMarker" 
-    type="zope.app.content.interfaces.IContentType" />
-   <browser:page 
-    for="*"
-    name="reset_password.html"
-    class=".request_password_reset.RequestPasswordResetForm"
-    permission="zope2.Public" />
 
   <browser:menu 
     id="user_profile_menu"
