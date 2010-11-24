@@ -18,6 +18,11 @@
         tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;f=1;
           title string:All files by ${fn}: ${view/siteInfo/get_name}"/>
     </tal:block>
+    <style metal:fill-slot="style">
+      #membership a.manage {
+        padding: 0px 0px 0.69em 1.39em
+      }
+    </style>
   </head>
   <body>
     <tal:block metal:fill-slot="contextnavigation">
@@ -86,14 +91,24 @@
           A list of site memberships.
         </p>
         <div id="groups"
-          tal:define="groups view/groupMembership"
+          tal:define="groups view/groupMembership;
+            isViewingSelf python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id;
+            isSiteAdmin python:'DivisionAdmin' in 
+              view.request.AUTHENTICATED_USER.getRolesInContext(view.siteInfo.siteObj)"
           tal:condition="groups">
           <h2>Group Memberships</h2>
           <ul>
             <tal:block repeat="group groups">
-              <li><a href="#" class="group"
-                tal:content="group/name" 
-                tal:attributes="href group/url">Group!</a></li>
+              <li tal:define="isGroupAdmin python:'GroupAdmin' in 
+                view.request.AUTHENTICATED_USER.getRolesInContext(group.groupObj)">
+                <a href="#" class="group"
+                  tal:content="group/name" 
+                  tal:attributes="href group/url">Group!</a>
+                <a href="#" class="manage"
+                  tal:condition="python:(isSiteAdmin or isGroupAdmin) and 
+                    not(isViewingSelf)"
+                  tal:attributes="href string:${group/url}/managemembers.html?showOnly=${view/userInfo/id}">Manage Membership</a>
+              </li>
             </tal:block>
           </ul>
         </div><!--groups-->

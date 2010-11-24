@@ -1,11 +1,4 @@
 # coding=utf-8
-'''Implementation of the Reset Password Request form.
-'''
-try:
-    from five.formlib.formbase import PageForm
-except ImportError:
-    from Products.Five.formlib.formbase import PageForm
-
 from base64 import b64encode
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile \
@@ -17,12 +10,13 @@ from Products.XWFCore.XWFUtils import comma_comma_and
 from utils import enforce_schema
 from zope.app.form.browser.widget import renderElement
 from zope.component import createObject
+from Products.GSProfile.profileaudit import profile_interface, ProfileAuditer, CHANGE_PROFILE
+from Products.CustomUserFolder.interfaces import IGSUserInfo
+from gs.content.form.form import SiteForm
 
 import logging
 log = logging.getLogger('GSEditProfile')
 
-from Products.GSProfile.profileaudit import profile_interface, ProfileAuditer, CHANGE_PROFILE
-from Products.CustomUserFolder.interfaces import IGSUserInfo
 
 def select_widget(field, request):
     retval = SelectWidget(field, field.vocabulary, request)
@@ -71,15 +65,14 @@ def wym_editor_widget(field, request):
     retval.cssClass = 'wymeditor'
     return retval
 
-class EditProfileForm(PageForm):
+class EditProfileForm(SiteForm):
     label = u'Change Profile'
     pageTemplateFileName = 'browser/templates/edit_profile.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     def __init__(self, context, request):
-        PageForm.__init__(self, context, request)
+        SiteForm.__init__(self, context, request)
 
-        self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         self.userInfo = IGSUserInfo(context)
         

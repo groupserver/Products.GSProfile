@@ -39,7 +39,7 @@ class GSEmailSettings(BrowserView):
     def __get_user(self):
         assert self.context
         
-        userId = self.context.getId()
+        userId = self.userId
         site_root = self.context.site_root()
         assert site_root
         assert hasattr(site_root, 'acl_users'), 'acl_users not found'
@@ -51,9 +51,14 @@ class GSEmailSettings(BrowserView):
         
     @property
     def userName(self):
-        retval = u''
         retval = get_user_realnames(self.__user)
 
+        return retval
+    
+    @property
+    def userId(self):
+        retval = self.context.getId()
+        
         return retval
     
     @property
@@ -125,7 +130,7 @@ class GSEmailSettings(BrowserView):
         retval = self.__preferredAddresses
         assert type(retval) == list
         # --=mpj17=-- We cannot assume that the user has a preferred, 
-        #   address, as the preferred address may have been bou bouncing.
+        #   address, as the preferred address may have been bouncing.
         # assert len(retval) > 0
         return retval
         
@@ -490,7 +495,6 @@ class GroupEmailSetting(object):
         grpAddrs = user.get_specificEmailAddressesByKey(group.get_id())
         self.default = len(grpAddrs) == 0
         self.addresses = user.get_deliveryEmailAddressesByKey(group.get_id())
-
         assert self.group
         assert self.group == group
         assert type(self.setting) == int
