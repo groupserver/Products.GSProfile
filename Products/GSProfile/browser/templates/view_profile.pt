@@ -18,11 +18,6 @@
         tal:attributes="href string:/s/search.atom?a=${uid}&amp;t=0&amp;f=1;
           title string:All files by ${fn}: ${view/siteInfo/get_name}"/>
     </tal:block>
-    <style metal:fill-slot="style">
-      #membership a.manage {
-        padding: 0px 0px 0.69em 1.39em
-      }
-    </style>
   </head>
   <body>
     <tal:block metal:fill-slot="contextnavigation">
@@ -31,7 +26,7 @@
         Context Menu
       </span>
     </tal:block>
-    <div metal:fill-slot="body" class="userProfile"
+    <div metal:fill-slot="body" class="userProfile" id="gs-profile-view"
       tal:define="authenticated python:user.has_role('Authenticated')">
       <div class="vcard">
         <h1>Profile of 
@@ -61,6 +56,7 @@
             </tal:block>
           </tbody>
         </table>
+        <div class="noFloat">&#160;</div>
         <div id="emailContact" 
           tal:condition="authenticated"
           tal:define="vis view/emailVisibility">
@@ -85,17 +81,18 @@
         tal:replace="structure provider:groupserver.GroupInvitationList">
         A list of group invitations.
       </p>
-      <div id="membership">
-        <p tal:condition="python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id" 
-          tal:replace="structure provider:groupserver.SiteMemberships">
+      <div id="membership" class="cols">
+        <div class="rightColumn"
+          tal:condition="python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id" 
+          tal:content="structure provider:groupserver.SiteMemberships">
           A list of site memberships.
-        </p>
-        <div id="groups"
+        </div><!--rightColumn-->
+        <div id="groups" class="leftColumn"
+          tal:condition="groups"
           tal:define="groups view/groupMembership;
             isViewingSelf python:view.request.AUTHENTICATED_USER.getId() == view.userInfo.id;
             isSiteAdmin python:'DivisionAdmin' in 
-              view.request.AUTHENTICATED_USER.getRolesInContext(view.siteInfo.siteObj)"
-          tal:condition="groups">
+              view.request.AUTHENTICATED_USER.getRolesInContext(view.siteInfo.siteObj)">
           <h2>Group Memberships</h2>
           <ul>
             <tal:block repeat="group groups">
@@ -113,6 +110,7 @@
           </ul>
         </div><!--groups-->
       </div><!--membership-->
+      <div class="noFloat">&#160;</div>
       <div class="cols"
         tal:define="uid python:view.userInfo.id; fn python:view.userInfo.name">
         <div id="files" class="rightColumn">
