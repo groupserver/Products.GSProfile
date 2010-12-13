@@ -22,7 +22,7 @@
       tal:condition="python:result and result.has_key('message')"
       tal:attributes="class python:(isError and 'message-error') or 'message-result'"
       tal:content="structure result/message"/>
-    <tal:block metal:fill-slot="body"
+    <div id="gs-profile-email-change" metal:fill-slot="body"
       tal:define="addresses view/userAddresses; 
         mAddr view/modifyAddresses">
       <h1>Change Email Settings</h1>
@@ -211,17 +211,24 @@
           Once you have verified this address you will be able to use it
           with your online groups.
         </p>
-        <label for="newAddress">Address</label>
-        <input class="text" type="text" name="newAddress" id="newAddress"
-          title="Address to add"/>
+        <div class="form-widget required">
+          <label title="The email adress to add"
+            for="newAddress">Address</label>
+          <input class="textType" type="text" name="newAddress" 
+            id="newAddress"/>
+        </div>
         <div id="emailHelp">
           <p class="message-error" style="display: none;">
             The email address is not valid.
             Please enter a valid email address.
           </p>
-        </div><!--Password Help-->
-        <input class="button" type="submit" value="Add" 
-          id="newAddress-button" name="newAddress-button"/>
+        </div><!--emailHelp Help-->
+        <div class="buttons">
+          <div class="formelementbutton">
+            <input class="button" type="submit" value="Add" 
+              id="newAddress-button" name="newAddress-button"/>
+          </div>
+        </div><!--buttons-->
       </form><!--changeSettings-->
       
       <div id="userGroupEmailSettings">
@@ -300,7 +307,7 @@
           </tbody>
         </table>
       </div><!--group-email-settings-->
-    </tal:block>
+    </div><!--gs-profile-email-change-->
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
         src="++resource++check_email-20080214.js">&#160;</script>
