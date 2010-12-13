@@ -10,20 +10,19 @@
       tal:content="widget/label">
       A label
     </label>
-                
-    <p class="error" tal:condition="widget/error"
-      tal:content="structure widget/error">
-      Error message
+    <p tal:condition="widget/error"
+      class="form-widget-message ui-widget ui-state-error ui-corner-all">
+      <span class="ui-icon ui-icon-alert">&#160;</span>
+      <span class="msg" tal:content="structure widget/error">
+        Error message
+      </span>
     </p>
-    
     <span
       tal:condition="python:hasattr(widget, 'tag')"
       tal:replace="structure widget">Widget</span>
-      
     <span class="readonlyWidget"
       tal:condition="python:not(hasattr(widget, 'tag'))"
       tal:content="structure widget"/>
-    
     <label for="abc123" title="The hint for the widget" class="checkboxLabel"
       tal:condition="python:hasattr(widget, 'type') and widget.type == 'checkbox'"
       tal:attributes="for widget/name; title widget/hint"
