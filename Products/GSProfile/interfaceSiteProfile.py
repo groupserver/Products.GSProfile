@@ -68,7 +68,16 @@ class IOGNProfileAdminJoin(IOGNProfile):
         u'will become the default address for the new group member.',
       required=True)
 
-class IOGNProfileAdminJoinSingle(IOGNProfileAdminJoin):
+class IOGNProfileAdminDelivery(Interface):
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
+
+class IOGNProfileAdminBasic(IOGNProfileAdminJoin, IOGNProfileAdminDelivery):
+    pass
+
+class IOGNProfileAdminJoinSingle(IOGNProfileAdminBasic):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
@@ -216,7 +225,7 @@ class IABELProfile(IGSCoreProfile):
         u'residence. '\
         u'This is written with digits, spaces, and an optional '\
         u' plus sign. '\
-        u'If you live outside New Zeland put a plus and the '\
+        u'If you live outside New Zealand put a plus and the '\
         u'country-code at the start. '\
         u'For example the phone number for ABEL is '\
         u'+64 3 961 2400.',
@@ -227,7 +236,7 @@ class IABELProfile(IGSCoreProfile):
         u'phone. '\
         u'This is written with digits, spaces, and an optional '\
         u' plus sign. '\
-        u'If you live outside New Zeland put a plus and the '\
+        u'If you live outside New Zealand put a plus and the '\
         u'country-code at the start. '\
         u'For example the phone number for ABEL is '\
         u'+64 3 961 2400.',
@@ -365,7 +374,16 @@ class IABELProfileAdminJoin(IABELProfile):
         u'will become the default address for the new group member.',
       required=True)
 
-class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
+class IABELProfileAdminDelivery(Interface):
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
+
+class IABELProfileAdminBasic(IABELProfileAdminJoin, IABELProfileAdminDelivery):
+    pass
+
+class IABELProfileAdminJoinSingle(IABELProfileAdminBasic):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
@@ -378,11 +396,6 @@ class IABELProfileAdminJoinSingle(IABELProfileAdminJoin):
         u'line in the invitation tat you send.',
       vocabulary = 'EmailAddressesForLoggedInUser',
       required=True)
-
-    delivery = Choice(title=u'Group Message Delivery Settings',
-      description=u'The message delivery settings for the new user',
-      vocabulary=deliveryVocab,
-      default='email')
 
     subject = TextLine(title=u'Subject',
         description=u'The subject line of the invitation message that '\
@@ -555,7 +568,7 @@ class IDoWireProfileRegister(IDoWireProfile):
       default=[])
 
     came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
+      description=u'The page to return to after registration has finished',
       required=False)
     
 
@@ -566,7 +579,17 @@ class IDoWireProfileAdminJoin(IDoWireProfile):
         u'will become the default address for the new group member.',
       required=True)
 
-class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
+class IDoWireProfileAdminDelivery(Interface):
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
+
+class IDoWireProfileAdminBasic(IDoWireProfileAdminJoin, IDoWireProfileAdminDelivery):
+    pass
+
+
+class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminBasic):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
@@ -579,11 +602,6 @@ class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminJoin):
         u'line in the invitation tat you send.',
       vocabulary = 'EmailAddressesForLoggedInUser',
       required=True)
-
-    delivery = Choice(title=u'Group Message Delivery Settings',
-      description=u'The message delivery settings for the new user',
-      vocabulary=deliveryVocab,
-      default='email')
 
     subject = TextLine(title=u'Subject',
         description=u'The subject line of the invitation message that '\
@@ -691,7 +709,7 @@ class IEDemProfileRegister(IEDemProfile):
       default=[])
 
     came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
+      description=u'The page to return to after registration has finished',
       required=False)
     
 class IEDemProfileAdminJoin(IEDemProfile):
@@ -701,25 +719,29 @@ class IEDemProfileAdminJoin(IEDemProfile):
         u'will become the default address for the new group member.',
       required=True)
 
-class IEDemProfileAdminJoinSingle(IEDemProfileAdminJoin):
-    message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the link that allows the member to accept '\
-            u'or reject the inviation.',
-        required=True)
-    
-    fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
-        u'line in the invitation tat you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
-      required=True)
-
+class IEDemProfileAdminDelivery(Interface):
     delivery = Choice(title=u'Group Message Delivery Settings',
       description=u'The message delivery settings for the new user',
       vocabulary=deliveryVocab,
       default='email')
 
+class IEDemProfileAdminBasic(IEDemProfileAdminJoin, IEDemProfileAdminDelivery):
+    pass
+
+class IEDemProfileAdminJoinSingle(IEDemProfileAdminBasic):
+    message = Text(title=u'Invitation Message',
+        description=u'The message that appears at the top of the email '\
+            u'invitation to the new group member. The message will '\
+            u'appear before the link that allows the member to accept '\
+            u'or reject the invitation.',
+        required=True)
+    
+    fromAddr = Choice(title=u'Email From',
+      description=u'The email address that you want in the "From" '\
+        u'line in the invitation that you send.',
+      vocabulary = 'EmailAddressesForLoggedInUser',
+      required=True)
+    
     subject = TextLine(title=u'Subject',
         description=u'The subject line of the invitation message that '\
             u'will be sent to the new member',

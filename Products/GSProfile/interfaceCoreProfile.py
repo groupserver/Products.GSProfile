@@ -57,7 +57,16 @@ class IGSCoreProfileAdminJoin(IGSCoreProfile):
         u'will become the default address for the new group member.',
       required=True)
 
-class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
+class IGSCoreProfileAdminDelivery(Interface):
+    delivery = Choice(title=u'Group Message Delivery Settings',
+      description=u'The message delivery settings for the new user',
+      vocabulary=deliveryVocab,
+      default='email')
+
+class IGSCoreProfileAdminBasic(IGSCoreProfileAdminJoin, IGSCoreProfileAdminDelivery):
+    pass
+
+class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminBasic):
     message = Text(title=u'Invitation Message',
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
@@ -70,11 +79,6 @@ class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminJoin):
         u'line in the invitation tat you send.',
       vocabulary = 'EmailAddressesForLoggedInUser',
       required=True)
-
-    delivery = Choice(title=u'Group Message Delivery Settings',
-      description=u'The message delivery settings for the new user',
-      vocabulary=deliveryVocab,
-      default='email')
 
     subject = TextLine(title=u'Subject',
         description=u'The subject line of the invitation message that '\
