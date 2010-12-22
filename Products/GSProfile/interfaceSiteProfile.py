@@ -114,7 +114,18 @@ collegeVocab = SimpleVocabulary([
   SimpleTerm('aca', 'aca', u'College of Associated Chartered Accountants'),
   SimpleTerm('at', 'at', u'College of Accounting Technicians')])
 
-locationVocab = SimpleVocabulary([
+fndLocationVocab = SimpleVocabulary([
+  SimpleTerm('n', 'n', u'Auckland, North of Harbour Bridge'),
+  SimpleTerm('a', 'a', u'Auckland, South of Harbour Bridge'),
+  SimpleTerm('h', 'h', u'Hamilton'),
+  SimpleTerm('t', 't', u'Tauranga'),
+  SimpleTerm('p', 'p', u'Palmerston North'),
+  SimpleTerm('w', 'w', u'Wellington'),
+  SimpleTerm('c', 'c', u'Christchurch'),
+  SimpleTerm('d', 'd', u'Dunedin'),
+  SimpleTerm('lon', 'lon', u'London')])
+
+pasLocationVocab = SimpleVocabulary([
   SimpleTerm('n', 'n', u'Auckland, North of Harbour Bridge'),
   SimpleTerm('a', 'a', u'Auckland, South of Harbour Bridge'),
   SimpleTerm('h', 'h', u'Hamilton'),
@@ -318,13 +329,13 @@ class IABELProfile(IGSCoreProfile):
     foundationsWorkshopLocation = Choice(title=u'Preferred Foundations Workshop and Exam Location',
       description=u'Where you would prefer to attend the '
         u'Foundations workshop and examination.',
-      vocabulary=locationVocab,
+      vocabulary=fndLocationVocab,
       required=False)
 
     preferredWorkshopLocation = Choice(title=u'Preferred PAS Workshop Location',
       description=u'Where you would prefer to attend the '\
         u'PAS workshop.',
-      vocabulary=locationVocab,
+      vocabulary=pasLocationVocab,
       required=False)
     
     preferredExamLocation = Choice(title=u'Preferred PCE 2 Location',
