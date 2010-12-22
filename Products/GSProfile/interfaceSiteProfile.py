@@ -1,7 +1,8 @@
 # coding=utf-8
 import pytz
 from zope.interface.interface import Interface, Invalid, invariant
-from zope.schema import *
+from zope.schema import ASCIILine, Bool, Choice, Date, Field 
+from zope.schema import Float, Int, List, Text, TextLine, URI
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
   deliveryVocab
@@ -118,6 +119,7 @@ locationVocab = SimpleVocabulary([
   SimpleTerm('a', 'a', u'Auckland, South of Harbour Bridge'),
   SimpleTerm('h', 'h', u'Hamilton'),
   SimpleTerm('t', 't', u'Tauranga'),
+  SimpleTerm('e', 'e', u'Napier'),
   SimpleTerm('p', 'p', u'Palmerston North'),
   SimpleTerm('w', 'w', u'Wellington'),
   SimpleTerm('c', 'c', u'Christchurch'),
