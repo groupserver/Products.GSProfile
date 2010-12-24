@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:five="http://namespaces.zope.org/five"
+  i18n_domain="groupserver">
+
+  <!-- Generic resources -->
+  <browser:resource name="check_email-20080214.js" 
+    file="browser/javascript/check_email.js"
+    permission="zope2.Public" />
+  <browser:resource name="check_required-20071214.js"
+    file="browser/javascript/check_required.js"
+    permission="zope2.Public" />
+  <browser:resource name="popup_help-20071218.js" 
+    file="browser/javascript/popup_help.js"
+    permission="zope2.Public" />
+  <browser:resource
+    name="suggest_fn-20081021.js" 
+    file="browser/javascript/suggest_fn.js"
+    permission="zope2.Public" />
+
+
+  <!-- Form schemas -->
+  <interface 
+    interface=".interfaces.IGSEmailAddressEntry" />
+  <interface 
+    interface=".interfaces.IGSResendVerification" />
+  <interface 
+    interface=".interfaces.IGSVerifyAddress" />
+
+  <interface 
+    interface=".interfaces.IGSProfileContextMenuContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <adapter
+    factory=".profileContextMenu.GSProfileContextMenuContentProvider"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    name="groupserver.ProfileContextMenu"/>
+
+  <interface 
+    interface=".interfaces.IGSViewProfileJavaScriptContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+    
+  <interface 
+    interface=".interfaces.IGSAwaitingVerificationJavaScriptContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+  <interface 
+    interface=".interfaces.IGSUserImage"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+  <interface 
+    interface=".interfaceCoreProfile.IGSCoreProfile" />
+
+  <include files="*-site.zcml" />
+
+  <!-- Marker interfaces and views -->
+  <interface 
+    interface=".interfaces.IGSReigstration" 
+    type="zope.app.content.interfaces.IContentType" />
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="verify_address.html"
+    class="Products.GSContent.view.GSContentView"
+    template="browser/templates/verify_address.pt"
+    permission="zope2.ManageProperties" />
+
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory=".profile_redirect.GSRedirectVerify"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="verify" />  
+
+  <!--depricated-->
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="reject_invite" />  
+
+  <!--depricated-->
+  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
+    factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"
+    provides="Products.GSRedirect.interfaces.IGSRedirect"
+    name="join_group" />  
+
+  <browser:pages
+    for="Products.GSContent.interfaces.IGSSiteFolder"
+    class="Products.GSContent.view.GSContentView"
+    permission="zope2.Public">
+    <browser:page
+      name="user-no-id"
+      template="browser/templates/user_no_id.pt" />
+    <browser:page
+      name="user-not-found"
+      template="browser/templates/user_not_found.pt" />
+    <browser:page
+      name="rejected-invitation"
+      template="browser/templates/reject_invite.pt" />
+    <browser:page
+      name="rejected-invitation-delete"
+      template="browser/templates/reject_invite_delete.pt" />
+  </browser:pages>
+
+  <browser:menu 
+    id="user_profile_menu"
+    title="Test of the profile menus" />
+  <browser:menuItems
+    menu="user_profile_menu"
+    for="Products.CustomUserFolder.interfaces.ICustomUser">
+    <browser:menuItem 
+      action="edit.html"
+      title="Change Profile"
+      description="Change what you show in your profile"
+      order="1"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="image.html"
+      title="Change Image"
+      description="Change the image that is shown on your profile and posts"
+      order="2"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="email.html"
+      title="Change Email Settings"
+      description="Change your email addresses and delivery options"
+      order="3"
+      permission="zope2.ManageProperties"/>
+    <browser:menuItem 
+      action="nickname.html"
+      title="Change Nickname"
+      description="Change the link to your profile"
+      order="4"
+      permission="zope2.ManageProperties"/>
+  </browser:menuItems>
+
+  <interface 
+    interface=".interfaces.IGSUserProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="index.html"
+    class=".view_profile.GSProfileView"
+    template="browser/templates/view_profile.pt"
+    permission="zope2.View" />
+
+  <interface
+    interface=".interfaces.IGSEditProfileMarker"
+    type="zope.app.content.interfaces.IContentType" />
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="edit.html"
+    class=".edit_profile.EditProfileForm"
+    permission="zope2.ManageProperties" />
+
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="image.html"
+    class=".edit_image.GSEditImageForm"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="email.html"
+    class=".email_settings.GSEmailSettings"
+    template="browser/templates/email_settings.pt"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="nickname.html"
+    class=".set_nickname.GSSetNickname"
+    template="browser/templates/set_nickname.pt"
+    permission="zope2.ManageProperties" />
+
+   <browser:page
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="request_contact.html"
+    class=".request_contact.GSRequestContact"
+    template="browser/templates/request_contact.pt"
+    permission="zope2.View" />
+
+  <interface 
+    interface=".interfaces.IGSUserProfiles" />
+  <browser:page
+    for="Products.GSContent.interfaces.IGSSiteFolder"
+    name="p"
+    class=".userprofiles.GSUserProfiles"
+    permission="zope2.View" />
+
+  <interface 
+    interface=".interfaces.IGSFormWidgets"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <interface 
+    interface=".interfaces.IGSRequiredWidgetsJavaScriptContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+
+  <utility factory=".profileaudit.ProfileAuditEventFactory"
+    name="groupserver.ProfileAudit"
+    permission="zope.Public" />
+
+   <browser:page 
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    name="log.html"
+    class=".viewaudittrail.GSAuditTrailView"
+    template="browser/templates/viewaudittrail.pt"
+    permission="zope2.ManageProperties" />
+
+  <!--Vocabularies-->
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="Products.GSProfile.emailaddress.EmailAddressesForLoggedInUser"
+      name="EmailAddressesForLoggedInUser"
+      />
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="Products.GSProfile.emailaddress.EmailAddressesForUser"
+      name="EmailAddressesForUser"
+      />
+
+</configure>
+
