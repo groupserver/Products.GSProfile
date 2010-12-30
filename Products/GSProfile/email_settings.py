@@ -1,12 +1,12 @@
 # coding=utf-8
 import Globals
+import time
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.component import createObject
 from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
-import Products.GSContent.interfaces
 from Products.XWFCore.XWFUtils import get_user_realnames, \
   get_support_email
 from gs.profile.email.verify.emailuser import EmailUser
@@ -15,7 +15,6 @@ import zope.app.apidoc.interface #
 from interfaces import *
 from emailaddress import NewEmailAddress, NotAValidEmailAddress, \
   DisposableEmailAddressNotAllowed, EmailAddressExists
-import utils
 
 import logging
 log = logging.getLogger('GSProfile GSEmailSettings')
@@ -260,11 +259,11 @@ class GSEmailSettings(BrowserView):
         
         gId = setting.group.get_id()
         addr = address.address
-        grpAddrs = self.__user.remove_deliveryEmailAddressByKey(gid, addr)
-        message = u'%s\n<li>Removed <code class="email">%s</code> from '\
+        grpAddrs = self.__user.remove_deliveryEmailAddressByKey(gId, addr)
+        message = u'<li>Removed <code class="email">%s</code> from '\
           u'the delivery settings for '\
           u'<a class="group" href="%s">%s</a></li>' % \
-          (message, address.address, setting.group.get_url(),
+          (address.address, setting.group.get_url(),
             setting.group.get_name())
             
         if ((grpAddrs == []) and (setting.setting == 2)):
@@ -318,7 +317,7 @@ class GSEmailSettings(BrowserView):
           (address.address, self.__user.getProperty('fn', ''), \
            self.__user.getId())
 
-        eu = EmailUser(self.__user, address)
+        eu = EmailUser(self.context, address.address)
         eu.clear_verification_ids()
         message = u'<p>Removed <code class="email">%s</code> from your '\
           u'profile.</p>' % (address.address)
@@ -342,8 +341,8 @@ class GSEmailSettings(BrowserView):
         assert not address.verified, 'Address %s already verified' % \
           address.address
 
-        utils.send_verification_message(self.context, self.__user,
-          address.address)
+        eu = EmailUser(self.context, address.address)
+        eu.send_verification_message()
 
         message = self.verification_message(address.address)
         error = False
@@ -421,7 +420,8 @@ class GSEmailSettings(BrowserView):
             message = self.error_msg(email, unicode(e))
         else:
             self.__user.add_emailAddress(email=email, is_preferred=False)
-            utils.send_verification_message(self.context, self.__user, email)
+            eu = EmailUser(self.context, email)
+            eu.send_verification_message()
             error = False
             message = u'<li>The address %s has been added to your '\
               u'profile.</li>' % newEmailHtml
