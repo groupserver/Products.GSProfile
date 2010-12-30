@@ -9,7 +9,7 @@ from zope.component.interfaces import IFactory
 import Products.GSContent.interfaces
 from Products.XWFCore.XWFUtils import get_user_realnames, \
   get_support_email
-from Products.XWFCore.odict import ODict
+from gs.profile.email.verify.emailuser import EmailUser
 import zope.app.apidoc.interface # 
 
 from interfaces import *
@@ -318,7 +318,8 @@ class GSEmailSettings(BrowserView):
           (address.address, self.__user.getProperty('fn', ''), \
            self.__user.getId())
 
-        self.__user.remove_emailAddressVerification(address.address)
+        eu = EmailUser(self.__user, address)
+        eu.clear_verification_ids()
         message = u'<p>Removed <code class="email">%s</code> from your '\
           u'profile.</p>' % (address.address)
         groupMsg = u''
