@@ -317,8 +317,6 @@ class GSEmailSettings(BrowserView):
           (address.address, self.__user.getProperty('fn', ''), \
            self.__user.getId())
 
-        eu = EmailUser(self.context, address.address)
-        eu.clear_verification_ids()
         message = u'<p>Removed <code class="email">%s</code> from your '\
           u'profile.</p>' % (address.address)
         groupMsg = u''
