@@ -9,7 +9,6 @@ from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
 from Products.XWFCore.XWFUtils import get_user_realnames, \
   get_support_email
-from gs.profile.email.verify.emailuser import EmailUser
 import zope.app.apidoc.interface # 
 
 from interfaces import *
@@ -339,7 +338,8 @@ class GSEmailSettings(BrowserView):
         assert not address.verified, 'Address %s already verified' % \
           address.address
 
-        eu = EmailUser(self.context, address.address)
+        eu = createObject('groupserver.EmailVerificationUserFromEmail',
+                          self.context, address.address)
         eu.send_verification_message()
 
         message = self.verification_message(address.address)
@@ -418,7 +418,8 @@ class GSEmailSettings(BrowserView):
             message = self.error_msg(email, unicode(e))
         else:
             self.__user.add_emailAddress(email=email, is_preferred=False)
-            eu = EmailUser(self.context, email)
+            eu = createObject('groupserver.EmailVerificationUserFromEmail',
+                          self.context, email)
             eu.send_verification_message()
             error = False
             message = u'<li>The address %s has been added to your '\
