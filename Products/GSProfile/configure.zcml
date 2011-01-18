@@ -65,11 +65,6 @@
     template="browser/templates/verify_address.pt"
     permission="zope2.ManageProperties" />
 
-  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectVerify"
-    provides="Products.GSRedirect.interfaces.IGSRedirect"
-    name="verify" />  
-
   <!--depricated-->
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory="gs.profile.invite.invitationredirect.GSInvitationResponseRedirect"

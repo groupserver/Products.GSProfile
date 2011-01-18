@@ -9,7 +9,6 @@ from string import ascii_lowercase, digits
 
 from Products.XWFCore.XWFUtils import convert_int2b62, assign_ownership
 from Products.CustomUserFolder.CustomUser import CustomUser
-from Products.GSGroupMember.groupmembership import userInfo_to_user
 import interfaces
 
 import logging
@@ -38,13 +37,6 @@ def login(context, user):
       (user.getProperty('fn', ''), user.getId())
     log.info(m)
 
-def verificationId_from_email(email):
-      # Let us hope that the verification ID *is* unique
-      vNum = long(md5.new(time.asctime() + email).hexdigest(), 16)
-      verificationId = str(convert_int2b62(vNum))
-      assert type(verificationId) == str
-      return verificationId
-
 def address_exists(context, emailAddress):
     acl_users = __get_acl_users_for_context(context)
     user = acl_users.get_userIdByEmail(emailAddress)
@@ -52,45 +44,6 @@ def address_exists(context, emailAddress):
     
     assert type(retval) == bool
     return retval
-      
-def send_verification_message(context, user, email):
-    '''Send a email-address verification message to a user
-    
-    ARGUMENTS
-      context: The context for the operation
-      user:    The user who is reciving the email message
-      email:   The email address to verify
-      
-    RETURNS
-      None
-      
-    SIDE EFFECTS
-      Adds an entry to the email-address-verification table.
-    '''
-    assert context != None
-    assert user != None
-    assert email in user.get_emailAddresses(), \
-      'Email <%s> not in %s' % (email, user.get_emailAddresses())
-    siteInfo = createObject('groupserver.SiteInfo', context)
-
-    verificationId = verificationId_from_email(email)
-    user.add_emailAddressVerification(verificationId, email)
-    
-    n_dict = {}
-    n_dict['verificationId'] = verificationId
-    n_dict['userId'] = user.getId()
-    n_dict['userFn'] = user.getProperty('fn', '')
-    n_dict['siteName'] = siteInfo.get_name()
-    n_dict['siteURL'] = siteInfo.get_url()
-    user.send_notification(
-      n_type='verify_email_address',
-      n_id='default',
-      n_dict=n_dict,
-      email_only=[email])
-    m = 'utils.send_verification_message: Sent an email-verification '\
-      'message to <%s> for the user %s (%s)' % \
-        (email, user.getProperty('fn', ''), user.getId())
-    log.info(m)
 
 def create_user_from_email(context, email):
     assert email
