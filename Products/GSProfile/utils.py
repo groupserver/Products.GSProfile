@@ -92,9 +92,9 @@ def enforce_schema(inputData, schema):
     """
 
     typeMap = {
-      Text:      'utext',
-      TextLine:  'ustring',
-      ASCII:     'utext',
+      Text:      'text',
+      TextLine:  'string',
+      ASCII:     'text',
       ASCIILine: 'string',
       URI:       'string',
       Bool:      'boolean',
