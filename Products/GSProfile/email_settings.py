@@ -12,7 +12,7 @@ from Products.XWFCore.XWFUtils import get_user_realnames, \
 import zope.app.apidoc.interface # 
 
 from interfaces import *
-from emailaddress import NewEmailAddress, NotAValidEmailAddress, \
+from gs.profile.email.base.emailaddress import NewEmailAddress, NotAValidEmailAddress, \
   DisposableEmailAddressNotAllowed, EmailAddressExists
 
 import logging

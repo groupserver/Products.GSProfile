@@ -4,11 +4,11 @@ from zope.component import createObject
 from zope.schema import *
 from zope.interface import implements, providedBy, implementedBy, \
   directlyProvidedBy, alsoProvides
-
 from string import ascii_lowercase, digits
-
 from Products.XWFCore.XWFUtils import convert_int2b62, assign_ownership
 from Products.CustomUserFolder.CustomUser import CustomUser
+from Products.CustomUserFolder.interfaces import IGSUserInfo
+from gs.profile.email.base.emailuser import EmailUser
 import interfaces
 
 import logging
@@ -37,14 +37,6 @@ def login(context, user):
       (user.getProperty('fn', ''), user.getId())
     log.info(m)
 
-def address_exists(context, emailAddress):
-    acl_users = __get_acl_users_for_context(context)
-    user = acl_users.get_userIdByEmail(emailAddress)
-    retval = user != None
-    
-    assert type(retval) == bool
-    return retval
-
 def create_user_from_email(context, email):
     assert email
     assert type(email) == str, 'Email is a %s, not a str' % type(email)
@@ -66,6 +58,9 @@ def create_user_from_email(context, email):
     displayName = email.split('@')[0]
 
     user = acl_users.simple_register_user(email, userId, displayName)
+    userInfo = IGSUserInfo(user)
+    emailUser = EmailUser(context, userInfo)
+    emailUser.set_delivery(email)
     
     # --=mpj17=-- Ensure that the user's profile is owned by the user, and
     #   *only* the user.

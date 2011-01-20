@@ -200,18 +200,5 @@
     template="browser/templates/viewaudittrail.pt"
     permission="zope2.ManageProperties" />
 
-  <!--Vocabularies-->
-  <utility
-      provides="zope.schema.interfaces.IVocabularyFactory"
-      component="Products.GSProfile.emailaddress.EmailAddressesForLoggedInUser"
-      name="EmailAddressesForLoggedInUser"
-      />
-
-  <utility
-      provides="zope.schema.interfaces.IVocabularyFactory"
-      component="Products.GSProfile.emailaddress.EmailAddressesForUser"
-      name="EmailAddressesForUser"
-      />
-
 </configure>
 

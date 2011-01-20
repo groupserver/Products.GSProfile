@@ -6,7 +6,7 @@ from zope.schema import Float, Int, List, Text, TextLine, URI
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
   deliveryVocab
-from emailaddress import EmailAddress
+from gs.profile.email.base.emailaddress import EmailAddress
 from saneuri import SaneURI
 
 class IOGNProfile(IGSCoreProfile):

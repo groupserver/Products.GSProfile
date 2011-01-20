@@ -2,10 +2,10 @@
 import re, pytz
 from string import ascii_letters, digits
 from zope.interface.interface import Interface, Invalid, invariant
-from zope.schema import *
+from zope.schema import ASCIILine, Bool, Bytes, Choice, List
+from zope.schema import Text, TextLine, URI, ValidationError 
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-from Products.XWFCore import XWFUtils
-from emailaddress import EmailAddress
+from gs.profile.email.base.emailaddress import EmailAddress
 from OFS.Image import Image
 
 def display_name_not_nul(text):
@@ -71,12 +71,12 @@ class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminBasic):
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
             u'appear before the two links that allow the user to accept '\
-            u'or reject the inviation.',
+            u'or reject the invitation.',
         required=True)
     
     fromAddr = Choice(title=u'Email From',
       description=u'The email address that you want in the "From" '\
-        u'line in the invitation tat you send.',
+        u'line in the invitation that you send.',
       vocabulary = 'EmailAddressesForLoggedInUser',
       required=True)
 
