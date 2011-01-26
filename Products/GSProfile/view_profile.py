@@ -1,5 +1,6 @@
 # coding=utf-8
 import Globals
+import zope.app.apidoc.interface
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from zope.component import createObject, getUtility
@@ -7,12 +8,10 @@ from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 from zope.component.interfaces import IFactory
 from zope.schema.interfaces import IVocabularyFactory
-import Products.GSContent.interfaces
 from Products.XWFCore import XWFUtils
 from Products.XWFCore.odict import ODict
 from Products.CustomUserFolder.interfaces import IGSUserInfo
-import zope.app.apidoc.interface
-
+from gs.profile.email.base.emailuser import EmailUser
 from interfaces import *
 
 import logging
@@ -26,6 +25,7 @@ class GSProfileView(BrowserView):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
         self.userInfo = IGSUserInfo(context)
+        self.emailUser = EmailUser(context, self.userInfo)
         
         self.props = self.__properties_dict()
         self.__user = self.__get_user()
@@ -116,7 +116,7 @@ class GSProfileView(BrowserView):
         return retval
 
     def userEmailAddresses(self):
-        retval = self.__user.get_emailAddresses()
+        retval = self.emailUser.get_addresses()
         assert type(retval) == list
         assert retval
         return retval

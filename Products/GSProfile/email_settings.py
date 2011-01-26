@@ -11,7 +11,6 @@ from Products.XWFCore.XWFUtils import get_user_realnames, \
   get_support_email
 import zope.app.apidoc.interface # 
 
-from interfaces import *
 from gs.profile.email.base.emailaddress import NewEmailAddress, NotAValidEmailAddress, \
   DisposableEmailAddressNotAllowed, EmailAddressExists
 

@@ -5,8 +5,8 @@ from zope.interface.interface import Interface, Invalid, invariant
 from zope.schema import ASCIILine, Bool, Bytes, Choice, List
 from zope.schema import Text, TextLine, URI, ValidationError 
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-from gs.profile.email.base.emailaddress import EmailAddress
 from OFS.Image import Image
+from gs.profile.email.base.emailaddress import EmailAddress
 
 def display_name_not_nul(text):
     retval = text.strip() != u''
@@ -47,7 +47,7 @@ class IGSCoreProfileRegister(IGSCoreProfile):
       unique=True,
       default=[])
     came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
+      description=u'The page to return to after registration has finished',
       required=False)
     
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
@@ -182,7 +182,7 @@ class IGSSetNickname(Interface):
     nickname = GSNickname(title=u'Nickname',
       description=u'The nickname you wish to set.'\
         u'A nickname can only contain upper or lower case letters, '\
-        u'digits, underscores and dahses. A nickname cannot contain '\
+        u'digits, underscores and dashes. A nickname cannot contain '\
         u'spaces, and you cannot have a nickname that is used by anyone '\
         u'else.',
       required=True)
@@ -191,7 +191,7 @@ class IGSSetNickname(Interface):
     
 class IGSCreateUserCSV(Interface):
     csvFile = Bytes(title=u'CSV File',
-      description=u'The comma-seperated value file that contains the '
+      description=u'The comma-separated value file that contains the '
         u'membership information you wish to load.',
       required=True,
       default=None)
@@ -199,3 +199,4 @@ class IGSCreateUserCSV(Interface):
 class IGSRequestContact(Interface):
     pass
 
+   

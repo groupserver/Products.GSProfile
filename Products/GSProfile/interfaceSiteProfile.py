@@ -83,12 +83,12 @@ class IOGNProfileAdminJoinSingle(IOGNProfileAdminBasic):
         description=u'The message that appears at the top of the email '\
             u'invitation to the new group member. The message will '\
             u'appear before the link that allows the member to accept '\
-            u'or reject the inviation.',
+            u'or reject the invitation.',
         required=True)
     
     fromAddr = Choice(title=u'Email From',
       description=u'The email address that you want in the "From" '\
-        u'line in the invitation tat you send.',
+        u'line in the invitation that you send.',
       vocabulary='EmailAddressesForLoggedInUser',
       required=True)
 

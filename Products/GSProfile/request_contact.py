@@ -1,13 +1,7 @@
 # coding=utf-8
 '''Implementation of the Request Contact form.
 '''
-try:
-    from five.formlib.formbase import PageForm
-except ImportError:
-    from Products.Five.formlib.formbase import PageForm
-except ImportError:
-    from five.formlib.formbase import PageForm
-    
+from five.formlib.formbase import PageForm
 from zope.component import createObject, adapts
 from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
@@ -17,10 +11,10 @@ from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
   TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
-from Products.XWFCore import XWFUtils
-from interfaceCoreProfile import *
-from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
+from interfaceCoreProfile import IGSRequestContact
+from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.XWFCore.XWFUtils import get_support_email
+from gs.profile.email.base.emailuser import EmailUser
 
 class GSRequestContact(PageForm):
     label = u'Request Contact'
@@ -32,15 +26,23 @@ class GSRequestContact(PageForm):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.userInfo = IGSUserInfo(context)
-        self.__loggedInUser = None
+        self.__loggedInUser = self.__loggedInEmailUser = None
         
     @property
     def loggedInUser(self):
         if self.__loggedInUser == None:
             self.__loggedInUser = createObject('groupserver.LoggedInUser',
                                     self.context)
-        assert self.__loggedInUser != None
+        assert not(self.__loggedInUser.anonymous), \
+          'Contact requested by anonymous user' 
         return self.__loggedInUser
+
+    @property
+    def loggedInEmailUser(self):
+        if self.__loggedInEmailUser == None:
+            self.__loggedInEmailUser = \
+              EmailUser(self.context, self.loggedInUser)
+        return self.__loggedInEmailUser
 
     @form.action(label=u'Request Contact', failure='handle_set_action_failure')
     def handle_set(self, action, data):
@@ -58,19 +60,16 @@ class GSRequestContact(PageForm):
             self.status = u'<p>There are errors:</p>'
 
     def request_contact(self):
-        au = self.request.AUTHENTICATED_USER
-        assert au, 'Contact requested by anonymous user'
-        authUser = self.context.site_root().acl_users.getUser(au.getId())
-        authUserInfo = IGSUserInfo(authUser)
-        email_addresses = self.userInfo.user.get_defaultDeliveryEmailAddresses()
+        emailUser = EmailUser(self.context, self.userInfo)
+        email_addresses = emailUser.get_delivery_addresses()
         if email_addresses:
             n_dict = {
                 'siteName'       : self.siteInfo.name,
                 'supportEmail'   : get_support_email(self.context, self.siteInfo.id),
-                'requestingName' : authUserInfo.name,
-                'requestingEmail': authUser.get_defaultDeliveryEmailAddresses()[0],
+                'requestingName' : self.loggedInUser.name,
+                'requestingEmail': self.loggedInEmailUser.get_delivery_addresses()[0],
                 'siteURL'        : self.siteInfo.url,
-                'requestingId'   : authUserInfo.id
+                'requestingId'   : self.loggedInUser.id
             }
             self.userInfo.user.send_notification('request_contact', 'default', n_dict=n_dict)
 
