@@ -1,19 +1,9 @@
 # coding=utf-8
+from zope.component import createObject
 from zope.publisher.interfaces import IPublishTraverse
-from zope.app.publisher.browser import queryDefaultViewName
 from zope.interface import implements
 from Products.Five import BrowserView
-
-from zope.publisher.interfaces.browser import IBrowserView
-
-from zope.publisher.interfaces.browser import IBrowserPublisher 
-
-from zope.component import getMultiAdapter, getAdapter, ComponentLookupError
-
-from Acquisition import aq_inner, aq_base, aq_chain
-
 from zExceptions import NotFound
-
 from interfaces import IGSUserProfiles
 from utils import escape_c
 
@@ -28,11 +18,9 @@ class GSUserProfiles(BrowserView):
     implements(IGSUserProfiles, IPublishTraverse)
     
     def __init__(self, context, request):
-        self.context = context
-        self.request = request
-        
+        BrowserView.__init__(self, context, request)
+        self.__loggedInUser = None
         self.acl_users = context.acl_users
-        
         self.traverse_subpath = []
     
     def publishTraverse(self, request, name):
@@ -41,7 +29,6 @@ class GSUserProfiles(BrowserView):
         ec_name = ec(name)
         u2 = self.context.acl_users.get_userByNickname(ec_name)
         user = (u1 or u2)
-        
         if user:
             cnn = user.get_canonicalNickname()
             if cnn == ec(name):
@@ -58,5 +45,17 @@ class GSUserProfiles(BrowserView):
         assert retval != None
         return retval
 
+    @property
+    def loggedInUser(self):
+        if self.__loggedInUser == None:
+            self.__loggedInUser = createObject('groupserver.LoggedInUser', 
+                                    self.context)
+        return self.__loggedInUser
 
+    def __call__(self):
+        if self.loggedInUser.anonymous:
+            uri = '/login.html?came_from=/p'
+        else:
+            uri = self.loggedInUser.url
+        return self.request.RESPONSE.redirect(uri)
 
