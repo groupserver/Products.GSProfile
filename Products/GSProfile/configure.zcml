@@ -5,9 +5,6 @@
   i18n_domain="groupserver">
 
   <!-- Generic resources -->
-  <browser:resource name="check_email-20080214.js" 
-    file="browser/javascript/check_email.js"
-    permission="zope2.Public" />
   <browser:resource name="check_required-20071214.js"
     file="browser/javascript/check_required.js"
     permission="zope2.Public" />
