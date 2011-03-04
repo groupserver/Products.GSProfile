@@ -13,7 +13,8 @@ log = logging.getLogger('GSUserProfiles')
 def ec(name):
     return ''.join([ord(d) > 127 and hex(ord(d)).replace('0x', r'%') or d
                    for d in name])
-
+# --=mpj17=-- TODO: rewrite this redirector, and the profile-view, to
+# behave a lot more like the topics, posts, and images.
 class GSUserProfiles(BrowserView):
     implements(IGSUserProfiles, IPublishTraverse)
     
