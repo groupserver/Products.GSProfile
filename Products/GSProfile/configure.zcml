@@ -104,12 +104,6 @@
       order="2"
       permission="zope2.ManageProperties"/>
     <browser:menuItem 
-      action="email.html"
-      title="Change Email Settings"
-      description="Change your email addresses and delivery options"
-      order="3"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
       action="nickname.html"
       title="Change Nickname"
       description="Change the link to your profile"
