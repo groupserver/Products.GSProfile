@@ -17,6 +17,12 @@ from interfaces import *
 import logging
 log = logging.getLogger('GSProfile')
 
+# TODO: The code for displaying profile properties should be moved from
+# the GSProfileView class to a viewlet. The viewlet class would contain
+# the get_propery method, and a properties attribute (defined as the
+# __properties_dict method below). Skins can define their own viewlet,
+# simplifying the code *massively*.
+
 class GSProfileView(BrowserView):
     '''View object for standard GroupServer User-Profile Instances'''
     def __init__(self, context, request):
