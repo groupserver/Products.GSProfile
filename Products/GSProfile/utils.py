@@ -102,7 +102,7 @@ def enforce_schema(inputData, schema):
     for field in fields:
         if not hasattr(inputData, field):
             m = u'%s has no attr %s' % (inputData.getId(), field)
-            log.info(m)
+            log.debug(m)
             default = schema.get(field).default or ''
             t = typeMap.get(type(schema.get(field)), 'ustring')
             inputData.manage_addProperty(field, default, t)
