@@ -124,7 +124,8 @@ class GSProfileView(BrowserView):
     def userEmailAddresses(self):
         retval = self.emailUser.get_addresses()
         assert type(retval) == list
-        assert retval
+        assert retval, 'There are no email addresses for %s (%s)' %\
+          (self.userInfo.name, self.userInfo.id)
         return retval
 
     def groupMembership(self):
