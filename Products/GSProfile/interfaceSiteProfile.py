@@ -659,12 +659,12 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    neighbourhood = TextLine(title=u'Neighbourhood',
+    neighbourhood = TextLine(title=u'Neighborhood/Neighbourhood',
       description=u'The neighbourhood or village where you live.',
       required=False,
       default=u'')
 
-    region = TextLine(title=u'City or Local Authority',
+    region = TextLine(title=u'City (Needed to post)',
       description=u'The area where you live.',
       required=False,
       default=u'')
@@ -685,17 +685,17 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
-    url = SaneURI(title=u'Best Web Link About You',
+    url = SaneURI(title=u'Best Web Link About You (Twitter, LinkedIn, Facebook etc.)',
       description=u'The URL for the website, page, weblog, or feed about '
         u'you.',
       required=False)
  
-    org = TextLine(title=u'Organisation',
+    org = TextLine(title=u'Organization/Organisation',
       description=u'The organisation that you are primarily engaged with.',
       required=False,
       default=u'')
 
-    org_url = SaneURI(title=u'Organisation Website',
+    org_url = SaneURI(title=u'Organization/Organisation Website',
       description=u'The Web page for your organisation.',
       required=False)
 
