@@ -661,12 +661,12 @@ class IEDemProfile(IGSCoreProfile):
 
     neighbourhood = TextLine(title=u'Neighborhood/Neighbourhood',
       description=u'The neighbourhood or village where you live.',
-      required=True,
+      required=False,
       default=u'')
 
     region = TextLine(title=u'City (Needed to post)',
       description=u'The area where you live.',
-      required=True,
+      required=False,
       default=u'')
 
     locality = TextLine(title=u'State or Province',
