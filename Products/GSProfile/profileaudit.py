@@ -17,37 +17,41 @@ SUBSYSTEM = 'groupserver.ProfileAudit'
 import logging
 log = logging.getLogger(SUBSYSTEM) #@UndefinedVariable
 
-UNKNOWN = '0'
-SET_PASSWORD = '1'
-CHANGE_PROFILE = '2'
-REGISTER = '3'
-CREATE_USER = '4'
-
+UNKNOWN         = '0'
+SET_PASSWORD    = '1'
+CHANGE_PROFILE  = '2'
+REGISTER        = '3'
+CREATE_USER     = '4'
+REQUEST_CONTACT = '5'
 class ProfileAuditEventFactory(object):
     implements(IFactory)
 
-    title = u'User Profile Audit-Event Factory'
-    description = u'Creates a GroupServer audit event for profiles'
+    title=u'User Profile Audit-Event Factory'
+    description=u'Creates a GroupServer audit event for profiles'
 
-    def __call__(self, context, event_id, code, date,
-        userInfo, instanceUserInfo, siteInfo, groupInfo=None,
+    def __call__(self, context, event_id,  code, date,
+        userInfo, instanceUserInfo,  siteInfo,  groupInfo = None,
         instanceDatum='', supplementaryDatum='', subsystem=''):
 
         if (code == SET_PASSWORD):
-            event = SetPasswordEvent(context, event_id, date,
+            event = SetPasswordEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo,
               instanceDatum, supplementaryDatum)
         elif (code == CHANGE_PROFILE):
-            event = ChangeProfileEvent(context, event_id, date,
+            event = ChangeProfileEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo,
               instanceDatum, supplementaryDatum)
         elif (code == REGISTER):
-            event = RegisterEvent(context, event_id, date,
+            event = RegisterEvent(context, event_id, date, 
+              userInfo, instanceUserInfo, siteInfo,
+              instanceDatum, supplementaryDatum)
+        elif (code == REQUEST_CONTACT):
+            event = RequestContactEvent(context, event_id, date,
               userInfo, instanceUserInfo, siteInfo,
               instanceDatum, supplementaryDatum)
         else:
-            event = BasicAuditEvent(context, event_id, UNKNOWN, date,
-              userInfo, instanceUserInfo, siteInfo, None,
+            event = BasicAuditEvent(context, event_id, UNKNOWN, date, 
+              userInfo, instanceUserInfo, siteInfo, None, 
               instanceDatum, supplementaryDatum, SUBSYSTEM)
         assert event
         return event
@@ -58,26 +62,26 @@ class ProfileAuditEventFactory(object):
 class SetPasswordEvent(BasicAuditEvent):
     implements(IAuditEvent)
 
-    def __init__(self, context, id, d, userInfo, instanceUserInfo,
-        siteInfo, instanceDatum, supplementaryDatum):
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
         
-        BasicAuditEvent.__init__(self, context, id,
-          SET_PASSWORD, d, userInfo, instanceUserInfo,
-          siteInfo, None, instanceDatum, supplementaryDatum,
+        BasicAuditEvent.__init__(self, context, id, 
+          SET_PASSWORD, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
-        retval = u'%s (%s) set password on %s (%s)' % \
+        retval = u'%s (%s) set password on %s (%s)' %\
           (self.instanceUserInfo.name, self.instanceUserInfo.id,
            self.siteInfo.name, self.siteInfo.id)
-        return retval.encode('ascii', 'ignore')
+        return retval
 
     @property
     def xhtml(self):
         cssClass = u'audit-event profile-event-%s' % self.code
         retval = u'<span class="%s">Set password</span>' % cssClass
         if self.instanceUserInfo.id != self.userInfo.id:
-            retval = u'%s &#8212; %s' % \
+            retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))
         retval = u'%s (%s)' % \
           (retval, munge_date(self.context, self.date))
@@ -86,24 +90,24 @@ class SetPasswordEvent(BasicAuditEvent):
 class ChangeProfileEvent(BasicAuditEvent):
     implements(IAuditEvent)
 
-    def __init__(self, context, id, d, userInfo, instanceUserInfo,
-        siteInfo, instanceDatum, supplementaryDatum):
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
         
-        BasicAuditEvent.__init__(self, context, id,
-          CHANGE_PROFILE, d, userInfo, instanceUserInfo,
-          siteInfo, None, instanceDatum, supplementaryDatum,
+        BasicAuditEvent.__init__(self, context, id, 
+          CHANGE_PROFILE, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
         old, new = self.get_old_new()
         fieldName = self.get_fieldname()
         retval = u'%s (%s) changed profile attribute %s (%s) of '\
-          u'%s (%s) from %s to %s on %s (%s)' % \
-          (self.userInfo.name, self.userInfo.id,
+          u'%s (%s) from %s to %s on %s (%s)' %\
+          (self.userInfo.name, self.userInfo.id, 
            fieldName, self.instanceDatum,
            self.instanceUserInfo.name, self.instanceUserInfo.id,
            old, new, self.siteInfo.name, self.siteInfo.id)
-        return retval.encode('ascii', 'ignore')
+        return retval
         
     def get_old_new(self):
         retval = [b64decode(d).decode('utf-8')
@@ -130,7 +134,7 @@ class ChangeProfileEvent(BasicAuditEvent):
           (cssClass, self.instanceDatum, self.get_fieldname(),
             xml_escape(new), xml_escape(old))
         if self.instanceUserInfo.id != self.userInfo.id:
-            retval = u'%s &#8212; %s' % \
+            retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))
         retval = u'%s (%s)' % \
           (retval, munge_date(self.context, self.date))
@@ -142,16 +146,16 @@ class RegisterEvent(BasicAuditEvent):
     """
     implements(IAuditEvent)
 
-    def __init__(self, context, id, d, userInfo, instanceUserInfo,
-        siteInfo, instanceDatum, supplementaryDatum):
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
         
-        BasicAuditEvent.__init__(self, context, id,
-          REGISTER, d, userInfo, instanceUserInfo,
-          siteInfo, None, instanceDatum, supplementaryDatum,
+        BasicAuditEvent.__init__(self, context, id, 
+          REGISTER, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
-        retval = u'Registering a new user with address <%s>' % \
+        retval = u'Registering a new user with address <%s>' %\
           self.instanceDatum
         return retval
 
@@ -159,11 +163,11 @@ class RegisterEvent(BasicAuditEvent):
     def xhtml(self):
         cssClass = u'audit-event profile-event-%s' % self.code
         retval = u'<span class="%s">Signed up, with address '\
-          u'<code class="email">%s</code></span>' % \
+          u'<code class="email">%s</code></span>' %\
             (cssClass, self.instanceDatum)
         if ((self.instanceUserInfo.id != self.userInfo.id)
             and not(self.userInfo.anonymous)):
-            retval = u'%s &#8212; %s' % \
+            retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))
         retval = u'%s (%s)' % \
           (retval, munge_date(self.context, self.date))
@@ -176,17 +180,17 @@ class CreateUserEvent(BasicAuditEvent):
     """
     implements(IAuditEvent)
 
-    def __init__(self, context, id, d, userInfo, instanceUserInfo,
-        siteInfo, instanceDatum, supplementaryDatum):
+    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
+        siteInfo, instanceDatum,  supplementaryDatum):
         
-        BasicAuditEvent.__init__(self, context, id,
-          REGISTER, d, userInfo, instanceUserInfo,
-          siteInfo, None, instanceDatum, supplementaryDatum,
+        BasicAuditEvent.__init__(self, context, id, 
+          REGISTER, d, userInfo, instanceUserInfo, 
+          siteInfo, None,  instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
         retval = u'Administrator %s (%s) creating a new user with '\
-          u'address <%s>' % \
+          u'address <%s>' %\
           (self.userInfo.name, self.userInfo.id, self.instanceDatum)
         return retval
 
@@ -194,20 +198,43 @@ class CreateUserEvent(BasicAuditEvent):
     def xhtml(self):
         cssClass = u'audit-event profile-event-%s' % self.code
         retval = u'<span class="%s">Created a user, with address '\
-          u'<code class="email">%s</code></span>' % \
+          u'<code class="email">%s</code></span>' %\
             (cssClass, self.instanceDatum)
         if ((self.instanceUserInfo.id != self.userInfo.id)
             and not(self.userInfo.anonymous)):
-            retval = u'%s &#8212; %s' % \
+            retval = u'%s &#8212; %s' %\
               (retval, userInfo_to_anchor(self.userInfo))
         retval = u'%s (%s)' % \
           (retval, munge_date(self.context, self.date))
         return retval
 
+class RequestContactEvent(BasicAuditEvent):
+    """ A user requests contact with the user. 
+   
+         
+    """
+    implements(IAuditEvent)
+
+    def __init__(self, context, id, d, userInfo, instanceUserInfo,
+        siteInfo, instanceDatum,  supplementaryDatum):
+
+        BasicAuditEvent.__init__(self, context, id,
+          REQUEST_CONTACT, d, userInfo, instanceUserInfo,
+          siteInfo, None,  instanceDatum, supplementaryDatum,
+          SUBSYSTEM)
+
+    def __str__(self):
+        raise NotImplementedError
+
+    @property
+    def xhtml(self):
+        raise NotImplementedError
+
+
 class ProfileAuditer(object):
     def __init__(self, user):
         self.user = user
-        self.userInfo = createObject('groupserver.LoggedInUser', user)
+        self.userInfo = createObject('groupserver.LoggedInUser',user)
         self.instanceUserInfo = IGSUserInfo(user)
         self.siteInfo = createObject('groupserver.SiteInfo', user)
         
@@ -216,13 +243,13 @@ class ProfileAuditer(object):
       
         self.factory = ProfileAuditEventFactory()
         
-    def info(self, code, instanceDatum='', supplementaryDatum=''):
+    def info(self, code, instanceDatum = '', supplementaryDatum = ''):
         d = datetime.now(UTC)
-        eventId = event_id_from_data(self.userInfo,
+        eventId = event_id_from_data(self.userInfo, 
           self.instanceUserInfo, self.siteInfo, code, instanceDatum,
           supplementaryDatum)
           
-        e = self.factory(self.user, eventId, code, d,
+        e =  self.factory(self.user, eventId,  code, d,
           self.userInfo, self.instanceUserInfo, self.siteInfo, None,
           instanceDatum, supplementaryDatum, SUBSYSTEM)
           
