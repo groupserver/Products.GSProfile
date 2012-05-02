@@ -1,7 +1,11 @@
 # coding=utf-8
 '''Implementation of the Request Contact form.
 '''
-from five.formlib.formbase import PageForm
+try:
+    from Products.Five.formlib.formbase import PageForm
+except ImportError:
+    from five.formlib.formbase import PageForm
+    
 from zope.component import createObject, adapts
 from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
@@ -11,23 +15,59 @@ from zope.app.form.browser import MultiCheckBoxWidget, SelectWidget,\
   TextAreaWidget
 from zope.security.interfaces import Forbidden
 from zope.app.apidoc.interface import getFieldsInOrder
-from interfaceCoreProfile import IGSRequestContact
-from Products.CustomUserFolder.interfaces import IGSUserInfo
+from Products.XWFCore import XWFUtils
+from interfaceCoreProfile import *
+from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
 from Products.XWFCore.XWFUtils import get_support_email
 from gs.profile.email.base.emailuser import EmailUser
+from profileaudit import *
+import sqlalchemy as sa
+import datetime
 
 class GSRequestContact(PageForm):
     label = u'Request Contact'
     pageTemplateFileName = 'browser/templates/request_contact.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
     form_fields = form.Fields(IGSRequestContact, render_context=False)
+    request24hrlimit = 5
 
     def __init__(self, context, request):
         PageForm.__init__(self, context, request)
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.userInfo = IGSUserInfo(context)
         self.__loggedInUser = self.__loggedInEmailUser = None
-        
+        da = context.zsqlalchemy
+
+        engine = da.engine
+        metadata = sa.BoundMetaData(engine)
+        self.auditEventTable = sa.Table(
+          'audit_event', 
+          metadata, 
+          autoload=True)
+        self.now = datetime.datetime.now()    
+
+    def get_requestLimit(self):
+        return self.request24hrlimit
+
+    def count_contactRequests(self):
+        """ Get a count of the contact requests by this user in the past
+            24 hours.
+
+        """
+        aet = self.auditEventTable
+        statement = aet.select()
+        au = self.request.AUTHENTICATED_USER
+        authUser = self.context.site_root().acl_users.getUser(au.getId())
+        authUserInfo = IGSUserInfo(authUser)
+        statement.append_whereclause(aet.c.user_id==authUserInfo.id)
+        statement.append_whereclause(aet.c.event_date>=(self.now-datetime.timedelta(1)))
+        statement.append_whereclause(aet.c.subsystem=='groupserver.ProfileAudit')
+        statement.append_whereclause(aet.c.event_code==REQUEST_CONTACT)
+         
+        r = statement.execute()
+
+        return r.rowcount
+
     @property
     def loggedInUser(self):
         if self.__loggedInUser == None:
@@ -44,12 +84,32 @@ class GSRequestContact(PageForm):
               EmailUser(self.context, self.loggedInUser)
         return self.__loggedInEmailUser
 
-    @form.action(label=u'Request Contact', failure='handle_set_action_failure')
-    def handle_set(self, action, data):
+    @property
+    def anonymous_viewing_page( self ):
+        assert self.request
         assert self.context
-        self.request_contact()
-        self.status = u'The request for contact has been sent to %s.' \
-          % self.userInfo.name
+
+        roles = self.request.AUTHENTICATED_USER.getRolesInContext(self.context)
+        retval = 'Authenticated' not in roles
+        
+        assert type(retval) == bool
+        return retval
+
+    @form.action(label=u'Request Contact', failure='handle_set_action_failure')
+    def handle_set(self, action, data): 
+        if self.count_contactRequests() > self.request24hrlimit:
+            self.status = u'The request for contact has not been sent. You have exceeded your daily limit of contact requests'
+        else:
+            self.auditer = ProfileAuditer(self.context)
+            assert self.context
+            
+            message = data.get('message', u'')
+            assert isinstance(data['message'], unicode)
+
+            self.request_contact(message)
+            self.status = u'The request for contact has been sent to %s.' \
+                % self.userInfo.name
+         
         assert self.status
         assert type(self.status) == unicode
 
@@ -59,17 +119,22 @@ class GSRequestContact(PageForm):
         else:
             self.status = u'<p>There are errors:</p>'
 
-    def request_contact(self):
-        emailUser = EmailUser(self.context, self.userInfo)
-        email_addresses = emailUser.get_delivery_addresses()
+    def request_contact(self, message):
+        au = self.request.AUTHENTICATED_USER
+        assert au, 'Contact requested by anonymous user'
+        authUser = self.context.site_root().acl_users.getUser(au.getId())
+        authUserInfo = IGSUserInfo(authUser)
+        email_addresses = self.userInfo.user.get_defaultDeliveryEmailAddresses()
         if email_addresses:
             n_dict = {
                 'siteName'       : self.siteInfo.name,
                 'supportEmail'   : get_support_email(self.context, self.siteInfo.id),
-                'requestingName' : self.loggedInUser.name,
-                'requestingEmail': self.loggedInEmailUser.get_delivery_addresses()[0],
+                'requestingName' : authUserInfo.name,
+                'requestingEmail': authUser.get_defaultDeliveryEmailAddresses()[0],
                 'siteURL'        : self.siteInfo.url,
-                'requestingId'   : self.loggedInUser.id
+                'requestingId'   : authUserInfo.id,
+                'message': message
             }
+            self.auditer.info(REQUEST_CONTACT, n_dict['requestingId'], str(n_dict))
             self.userInfo.user.send_notification('request_contact', 'default', n_dict=n_dict)
 

@@ -20,10 +20,15 @@
       </span>
     </tal:block>
     <tal:block metal:fill-slot="body">
+      <tal:block tal:define="requestcount view/count_contactRequests;
+                             request24hrlimit view/get_requestLimit">
+      <tal:block tal:condition="python:requestcount > request24hrlimit">
+       <h1 tal:content="view/label">Request Contact</h1>
+       <p>Unfortunately you have exceeded your request quota for today. You may only send <span tal:replace="request24hrlimit"/> requests per day.</p>  
+      </tal:block>
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="request-contact"
-        tal:condition="not:view/loggedInUser/anonymous">
-        
+        tal:condition="python:not view.loggedInUser.anonymous and (requestcount <= request24hrlimit)">
         <h1 tal:content="view/label">Request Contact</h1>
         <p>
           When you request contact, an email will be sent to 
@@ -57,6 +62,7 @@
           </tal:block>
         </div><!--buttons-->
       </form>
+      </tal:block>
     </tal:block>
   </body>
 </html>
