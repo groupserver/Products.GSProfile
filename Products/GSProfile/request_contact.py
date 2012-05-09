@@ -104,7 +104,8 @@ class GSRequestContact(PageForm):
             assert self.context
             
             message = data.get('message', u'')
-            assert isinstance(data['message'], unicode)
+            if not isinstance(message, unicode):
+                message = unicode(message).encode('utf-8')
 
             self.request_contact(message)
             self.status = u'The request for contact has been sent to %s.' \
