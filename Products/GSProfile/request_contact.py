@@ -6,6 +6,8 @@ try:
 except ImportError:
     from five.formlib.formbase import PageForm
     
+import sqlalchemy as sa
+import datetime
 from zope.component import createObject, adapts
 from zope.interface import implements, providedBy, implementedBy,\
   directlyProvidedBy, alsoProvides
@@ -20,9 +22,8 @@ from interfaceCoreProfile import *
 from Products.CustomUserFolder.interfaces import ICustomUser, IGSUserInfo
 from Products.XWFCore.XWFUtils import get_support_email
 from gs.profile.email.base.emailuser import EmailUser
+from gs.database import getSession
 from profileaudit import *
-import sqlalchemy as sa
-import datetime
 
 class GSRequestContact(PageForm):
     label = u'Request Contact'
@@ -36,14 +37,7 @@ class GSRequestContact(PageForm):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.userInfo = IGSUserInfo(context)
         self.__loggedInUser = self.__loggedInEmailUser = None
-        da = context.zsqlalchemy
-
-        engine = da.engine
-        metadata = sa.BoundMetaData(engine)
-        self.auditEventTable = sa.Table(
-          'audit_event', 
-          metadata, 
-          autoload=True)
+        self.auditEventTable = getTable('audit_event')
         self.now = datetime.datetime.now()    
 
     def get_requestLimit(self):
@@ -63,8 +57,9 @@ class GSRequestContact(PageForm):
         statement.append_whereclause(aet.c.event_date>=(self.now-datetime.timedelta(1)))
         statement.append_whereclause(aet.c.subsystem=='groupserver.ProfileAudit')
         statement.append_whereclause(aet.c.event_code==REQUEST_CONTACT)
-         
-        r = statement.execute()
+        
+        session = getSession()
+        r = session.execute(statement)
 
         return r.rowcount
 
