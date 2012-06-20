@@ -16,8 +16,7 @@ class GSAuditTrailView(BrowserView):
           context)
         self.userInfo = IGSUserInfo(context)
 
-        da = context.zsqlalchemy
-        self.queries = AuditQuery(da)
+        self.queries = AuditQuery()
         self.users = {}
     
     @property
