@@ -1,6 +1,7 @@
 # coding=utf-8
 from zope.component import createObject
 from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces.browser import IBrowserPage
 from zope.interface import implements
 from Products.Five import BrowserView
 from zExceptions import NotFound
@@ -16,7 +17,7 @@ def ec(name):
 # --=mpj17=-- TODO: rewrite this redirector, and the profile-view, to
 # behave a lot more like the topics, posts, and images.
 class GSUserProfiles(BrowserView):
-    implements(IGSUserProfiles, IPublishTraverse)
+    implements(IGSUserProfiles, IPublishTraverse, IBrowserPage)
     
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
