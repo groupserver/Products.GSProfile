@@ -100,7 +100,7 @@
                 view.request.AUTHENTICATED_USER.getRolesInContext(group.groupObj)">
                 <a href="#" class="group"
                   tal:content="group/name" 
-                  tal:attributes="href group/url">Group!</a>
+                  tal:attributes="href group/relativeURL">Group!</a>
                 <a href="#" class="manage"
                   tal:condition="python:(isSiteAdmin or isGroupAdmin) and 
                     not(isViewingSelf)"
