@@ -37,14 +37,13 @@ class GSUserProfiles(BrowserView):
                 retval = user            
             else:       
                 url = '/p/%s/' % cnn
-                retval = self.request.response.redirect(url)
+                self.request.response.redirect(url)
         else:
             m = "No user with the nickname %s" % ec(name)
             log.info(m)
                    
             raise NotFound, m
    
-        assert retval != None
         return retval
 
     @property
