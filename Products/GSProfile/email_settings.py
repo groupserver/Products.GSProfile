@@ -13,7 +13,6 @@ import zope.app.apidoc.interface #
 
 from gs.profile.email.base.emailaddress import NewEmailAddress, NotAValidEmailAddress, \
   DisposableEmailAddressNotAllowed, EmailAddressExists
-from gs.profile.email.base.emailuser import EmailUserFromUser
 
 import logging
 log = logging.getLogger('GSProfile GSEmailSettings')
@@ -27,10 +26,11 @@ class GSEmailSettings(BrowserView):
         self.request = request
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupsInfo = createObject('groupserver.GroupsInfo', context)
-         
+        
         self.__user = self.__get_user()
-        self.__emailUser = EmailUserFromUser(self.__user)
         self.__addressData = []
+        self.__preferredAddresses = []
+        self.__verifiedAddresses = []
         self.__groupEmailSettings = []
 
     def __get_user(self):
@@ -110,10 +110,10 @@ class GSEmailSettings(BrowserView):
     @property
     def userAddresses(self):
         if self.__addressData == []:
-            addr = self.__emailUser.get_email_addresses()
+            addr = self.__user.get_emailAddresses()
             addr.sort()
             pref = self.preferredAddresses
-            veri = self.__emailUser.get_verified_addresses()
+            veri = self.__user.get_verifiedEmailAddresses()
             self.__addressData = [Address(a, pref, veri) for a in addr]
         retval = self.__addressData
 
@@ -122,7 +122,9 @@ class GSEmailSettings(BrowserView):
 
     @property
     def preferredAddresses(self):
-        retval = self.emailUser.get_delivery_addresses()
+        if self.__preferredAddresses == []:
+            self.__preferredAddresses = self.__user.get_preferredEmailAddresses()
+        retval = self.__preferredAddresses
         assert type(retval) == list
         # --=mpj17=-- We cannot assume that the user has a preferred, 
         #   address, as the preferred address may have been bouncing.
@@ -131,7 +133,9 @@ class GSEmailSettings(BrowserView):
         
     @property
     def verifiedAddresses(self):
-        retval = self.__emailUser.get_verified_addresses()
+        if self.__verifiedAddresses == []:
+            self.__verifiedAddresses = self.__user.get_verifiedEmailAddresses()
+        retval = self.__verifiedAddresses
         assert type(retval) == list
         log.info('verifiedAddresses %s' % retval)
         return retval
@@ -215,6 +219,7 @@ class GSEmailSettings(BrowserView):
                     error, message = actions[action](address)
                     # Reset the address information
                     self.__addressData = []
+                    self.__preferredAddresses = []
                     self.__groupEmailSettings = []
                 
                 else:
