@@ -168,7 +168,6 @@ class GSEmailSettings(BrowserView):
     @property
     def verificationEmailAddress(self):
         retval = get_support_email(self.context, self.siteInfo.id)
-        assert type(retval) == str
         assert '@' in retval
         return retval
 
@@ -450,20 +449,15 @@ class Address(object):
     """
     def __init__(self, emailAddress, defaultAddresses=[],
                  verifiedAddresses=[]):
-        assert type(emailAddress) == str
-        assert type(defaultAddresses) == list
-        assert type(verifiedAddresses) == list
+        assert type(emailAddress) in (str, unicode), "The emailAddress is a %s, not a string or unicode" % type(emailAddress)
+        assert type(defaultAddresses) == list, "The defaultAddresses are a %s, not a list" % type(defaultAddresses)
+        assert type(verifiedAddresses) == list, "The verifiedAddresses are a %s, not a list" % type(verifiedAddresses)
 
         self.address = emailAddress
         addressId = emailAddress.replace('@', 'at').replace('-', 'dash')
         self.addressId = addressId
         self.default = emailAddress in defaultAddresses
         self.verified = emailAddress in verifiedAddresses
-
-        assert type(self.address) == str
-        assert type(self.addressId) == str
-        assert type(self.default) == bool
-        assert type(self.verified) == bool
 
     def __str__(self):
         defl = (self.default and 'default') or 'not default'
