@@ -24,6 +24,9 @@ class GSUserProfiles(BrowserView):
         self.__loggedInUser = None
         self.acl_users = context.acl_users
         self.traverse_subpath = []
+
+    def browserDefault(self, request):
+        return self, ()
     
     def publishTraverse(self, request, name):
         retval = None
