@@ -28,7 +28,7 @@
       </tal:block>
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="request-contact"
-        tal:condition="python:not view.loggedInUserInfo.anonymous and (requestcount <= request24hrlimit)">
+        tal:condition="python:not view.loggedInUser.anonymous and (requestcount <= request24hrlimit)">
         <h1 tal:content="view/label">Request Contact</h1>
         <p>
           When you request contact, an email will be sent to
@@ -39,7 +39,7 @@
         </p>
         <ul>
           <li><em>Your</em> name
-            (<span class="name" tal:content="view/loggedInUserInfo/name"/>)
+            (<span class="name" tal:content="view/loggedInUser/name"/>)
           </li>
           <li><em>Your</em> email address
             (<span class="emails"
@@ -48,7 +48,7 @@
           </li>
           <li>Information in
             <a href="#"
-              tal:attributes="href view/loggedInUserInfo/url"><em>your</em>
+              tal:attributes="href view/loggedInUser/url"><em>your</em>
               profile.</a></li>
         </ul>
         <tal:block define="widgets view/widgets">

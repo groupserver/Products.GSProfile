@@ -1,25 +1,25 @@
 # coding=utf-8
 '''Implementation of the Request Contact form.
 '''
+from datetime import datetime, timedelta
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
 from zope.security.interfaces import Forbidden
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from interfaceCoreProfile import *
-from Products.CustomUserFolder.interfaces import IGSUserInfo
-from gs.profile.email.base.emailuser import EmailUser
+from gs.content.form import SiteForm
 from gs.database import getSession, getTable
-from profileaudit import *
-from datetime import datetime, timedelta
-from gs.profile.base.page import ProfilePage
+from gs.profile.email.base.emailuser import EmailUser
 from gs.profile.notify.interfaces import IGSNotifyUser
+from Products.CustomUserFolder.interfaces import IGSUserInfo
+from interfaceCoreProfile import *
+from profileaudit import *
 
 # TODO: Move to its own product (gs.profile.requestcontact).
 # TODO: Split the queries and requester off from this class.
 # TODO: Turn the Request Contact email into a new-style notification.
 
 
-class GSRequestContact(ProfilePage):
+class GSRequestContact(SiteForm):
     label = u'Request Contact'
     pageTemplateFileName = 'browser/templates/request_contact.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
@@ -28,8 +28,7 @@ class GSRequestContact(ProfilePage):
 
     def __init__(self, context, request):
         super(GSRequestContact, self).__init__(context, request)
-
-        self.__loggedInEmailUser = None
+        self.userInfo = IGSUserInfo(context)
         self.auditEventTable = getTable('audit_event')
         self.now = datetime.now()
 
@@ -59,7 +58,7 @@ class GSRequestContact(ProfilePage):
 
     @Lazy
     def loggedInEmailUser(self):
-        retval = EmailUser(self.context, self.loggedInUserInfo)
+        retval = EmailUser(self.context, self.loggedInUser)
         return retval
 
     @Lazy
