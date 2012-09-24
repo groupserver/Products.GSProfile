@@ -3,6 +3,7 @@
 '''
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
+from zope.security.interfaces import Forbidden
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from interfaceCoreProfile import *
 from Products.CustomUserFolder.interfaces import IGSUserInfo
@@ -38,6 +39,8 @@ class GSRequestContact(ProfilePage):
     def count_contactRequests(self):
         """ Get a count of the contact requests by this user in the past
             24 hours."""
+        if self.anonymous_viewing_page:
+            raise Forbidden
         aet = self.auditEventTable
         statement = aet.select()
         au = self.request.AUTHENTICATED_USER
