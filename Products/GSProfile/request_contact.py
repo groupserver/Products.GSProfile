@@ -4,7 +4,7 @@
 from datetime import datetime, timedelta
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
-from zope.security.interfaces import Forbidden
+#from zope.security.interfaces import Unauthorized
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form import SiteForm
 from gs.database import getSession, getTable
@@ -39,7 +39,13 @@ class GSRequestContact(SiteForm):
         """ Get a count of the contact requests by this user in the past
             24 hours."""
         if self.anonymous_viewing_page:
-            raise Forbidden
+            # FIXME: Figure out why raising Unauthorized does not work.
+            # m = 'You must be logged in to request contact with someone.'
+            #raise Unauthorized(m)
+            uri = '/login.html?came_from=%s/request_contact.html' % \
+                self.userInfo.url
+            return self.request.RESPONSE.redirect(uri)
+
         aet = self.auditEventTable
         statement = aet.select()
         au = self.request.AUTHENTICATED_USER
