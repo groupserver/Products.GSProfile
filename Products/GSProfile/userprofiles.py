@@ -24,6 +24,9 @@ class GSUserProfiles(BrowserView):
         self.__loggedInUser = None
         self.acl_users = context.acl_users
         self.traverse_subpath = []
+
+    def browserDefault(self, request):
+        return self, ()
     
     def publishTraverse(self, request, name):
         retval = None
@@ -37,14 +40,13 @@ class GSUserProfiles(BrowserView):
                 retval = user            
             else:       
                 url = '/p/%s/' % cnn
-                retval = self.request.response.redirect(url)
+                self.request.response.redirect(url)
         else:
             m = "No user with the nickname %s" % ec(name)
             log.info(m)
                    
             raise NotFound, m
    
-        assert retval != None
         return retval
 
     @property
