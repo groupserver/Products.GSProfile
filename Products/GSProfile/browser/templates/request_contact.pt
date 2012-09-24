@@ -14,7 +14,7 @@
       define="errors view/errors; status view/status; widgets view/widgets"
       metal:fill-slot="messages">&#160;</tal:block>
     <tal:block metal:fill-slot="contextnavigation">
-      <span 
+      <span
         tal:replace="structure provider:groupserver.ProfileContextMenu">
         Context Menu
       </span>
@@ -24,31 +24,31 @@
                              request24hrlimit view/get_requestLimit">
       <tal:block tal:condition="python:requestcount > request24hrlimit">
        <h1 tal:content="view/label">Request Contact</h1>
-       <p>Unfortunately you have exceeded your request quota for today. You may only send <span tal:replace="request24hrlimit"/> requests per day.</p>  
+       <p>Unfortunately you have exceeded your request quota for today. You may only send <span tal:replace="request24hrlimit"/> requests per day.</p>
       </tal:block>
       <form enctype="multipart/form-data"  method="post" action="."
         tal:attributes="action request/URL" id="request-contact"
-        tal:condition="python:not view.loggedInUser.anonymous and (requestcount <= request24hrlimit)">
+        tal:condition="python:not view.loggedInUserInfo.anonymous and (requestcount <= request24hrlimit)">
         <h1 tal:content="view/label">Request Contact</h1>
         <p>
-          When you request contact, an email will be sent to 
-          <span class="name" 
+          When you request contact, an email will be sent to
+          <span class="name"
             tal:content="python:view.userInfo.name">a user</span>. In that email,
           <em>your</em> private information will be
           exposed:
         </p>
         <ul>
-          <li><em>Your</em> name 
-            (<span class="name" tal:content="view/loggedInUser/name"/>)
+          <li><em>Your</em> name
+            (<span class="name" tal:content="view/loggedInUserInfo/name"/>)
           </li>
           <li><em>Your</em> email address
             (<span class="emails"
               tal:content="python:view.loggedInEmailUser.get_delivery_addresses()[0]"/>),
             and
           </li>
-          <li>Information in 
+          <li>Information in
             <a href="#"
-              tal:attributes="href view/loggedInUser/url"><em>your</em>
+              tal:attributes="href view/loggedInUserInfo/url"><em>your</em>
               profile.</a></li>
         </ul>
         <tal:block define="widgets view/widgets">
