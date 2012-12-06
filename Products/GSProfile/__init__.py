@@ -1,5 +1,5 @@
 # coding=utf-8
-import profileContextMenu, userImage, utils, formwidgets, \
+import profileContextMenu, utils, formwidgets, \
     viewprofilejavascript, requiredwidgetsjavascript
 from AccessControl import ModuleSecurityInfo
 from AccessControl import allow_class
