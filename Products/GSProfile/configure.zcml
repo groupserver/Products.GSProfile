@@ -32,10 +32,6 @@
     factory=".profileContextMenu.GSProfileContextMenuContentProvider"
     provides="zope.contentprovider.interfaces.IContentProvider"
     name="groupserver.ProfileContextMenu"/>
-
-  <interface 
-    interface=".interfaces.IGSViewProfileJavaScriptContentProvider"
-    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
     
   <interface 
     interface=".interfaces.IGSAwaitingVerificationJavaScriptContentProvider"
@@ -110,12 +106,6 @@
   <interface 
     interface=".interfaces.IGSUserProfileMarker"
     type="zope.app.content.interfaces.IContentType" />
-   <browser:page 
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="index.html"
-    class=".view_profile.GSProfileView"
-    template="browser/templates/view_profile.pt"
-    permission="zope2.View" />
 
   <interface
     interface=".interfaces.IGSEditProfileMarker"
