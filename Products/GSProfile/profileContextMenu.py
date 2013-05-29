@@ -1,7 +1,7 @@
 from zope.component import createObject
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 import zope.interface, zope.component, zope.publisher.interfaces
-import zope.viewlet.interfaces, zope.contentprovider.interfaces 
+import zope.viewlet.interfaces, zope.contentprovider.interfaces
 from Products.XWFCore import XWFUtils, ODict
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from interfaces import *
@@ -26,8 +26,8 @@ class GSProfileContextMenuContentProvider(object):
 
         self.context = context
         self.request = request
-                
-        newInteraction()        
+
+        newInteraction()
 
     def update(self):
         self.__updated = True
@@ -49,11 +49,11 @@ class GSProfileContextMenuContentProvider(object):
 
         pageTemplate = PageTemplateFile(self.pageTemplateFileName)
         return pageTemplate(view=self)
-        
+
     #########################################
     # Non standard methods below this point #
     #########################################
-    
+
     def page_class(self, page):
         if page['selected']:
             retval = 'current'

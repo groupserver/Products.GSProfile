@@ -69,32 +69,6 @@
       template="browser/templates/reject_invite_delete.pt" />
   </browser:pages>
 
-  <browser:menu 
-    id="user_profile_menu"
-    title="Test of the profile menus" />
-  <browser:menuItems
-    menu="user_profile_menu"
-    for="Products.CustomUserFolder.interfaces.ICustomUser">
-    <browser:menuItem 
-      action="edit.html"
-      title="Change Profile"
-      description="Change what you show in your profile"
-      order="1"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="image.html"
-      title="Change Image"
-      description="Change the image that is shown on your profile and posts"
-      order="2"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="nickname.html"
-      title="Change Nickname"
-      description="Change the link to your profile"
-      order="4"
-      permission="zope2.ManageProperties"/>
-  </browser:menuItems>
-
   <interface 
     interface=".interfaces.IGSUserProfileMarker"
     type="zope.app.content.interfaces.IContentType" />
