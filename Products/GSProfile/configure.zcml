@@ -24,14 +24,6 @@
     interface=".interfaces.IGSResendVerification" />
   <interface 
     interface=".interfaces.IGSVerifyAddress" />
-
-  <interface 
-    interface=".interfaces.IGSProfileContextMenuContentProvider"
-    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
-  <adapter
-    factory=".profileContextMenu.GSProfileContextMenuContentProvider"
-    provides="zope.contentprovider.interfaces.IContentProvider"
-    name="groupserver.ProfileContextMenu"/>
     
   <interface 
     interface=".interfaces.IGSAwaitingVerificationJavaScriptContentProvider"
