@@ -1,36 +1,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:tal="http://xml.zope.org/namespaces/tal"
-  xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_layout/page">
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="context/@@groupserver_layout/page">
   <head>
     <title metal:fill-slot="title">
       <span tal:define="fn python:view.userInfo.name"
-        tal:replace="string:${view/label}: ${fn}: ${view/siteInfo/get_name}">
+            tal:replace="string:${view/label}: ${fn}: ${view/siteInfo/get_name}">
         Edit Profile
       </span>
     </title>
   </head>
   <body>
     <tal:block content="structure provider:groupserver.FormStatusMessage"
-      define="errors view/errors; status view/status; widgets view/widgets"
-      metal:fill-slot="messages">&#160;</tal:block>
+               define="errors view/errors; status view/status; widgets view/widgets"
+               metal:fill-slot="messages">&#160;</tal:block>
     <tal:block metal:fill-slot="contextnavigation">
-      <span 
+      <span
         tal:replace="structure provider:groupserver.ProfileContextMenu">
         Context Menu
       </span>
     </tal:block>
     <tal:block metal:fill-slot="body">
       <form enctype="multipart/form-data"  method="post" action="."
-        tal:attributes="action request/URL" id="edit-profile">
-        
+            class="gs-content-js-required"
+            tal:attributes="action request/URL" id="edit-profile">
+
         <h1 tal:content="view/label">Edit Profile</h1>
         <p>
           Most of your profile properties are only visible to other
           logged in users of
-          <span class="site" 
-            tal:content="view/siteInfo/get_name">this site</span>.
-          However, if you post to a public group, then your name and 
+          <span class="site"
+                tal:content="view/siteInfo/get_name">this site</span>.
+          However, if you post to a public group, then your name and
           image will be visible to all visitors to that group, even if
           they are not logged in.
         </p>
@@ -46,27 +47,11 @@
         </div><!--buttons-->
       </form>
     </tal:block>
-    <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript"
-        src="/++resource++check_required-20071214.js">&#160;</script>
-      <script type="text/javascript"
-        tal:define="widgets view/widgets; 
-          button string:#form\\.actions\\.change"
-        tal:content="provider:groupserver.RequiredWidgetsJavaScript">
-        alert("I have not been replaced.");
-      </script>
-      <script type="text/javascript"
-        src="/++resource++popup_help-20071218.js">&#160;</script>
-      <script type="text/javascript">
-        jQuery(document).ready( function() {
-            GSPopupFormHelp.init('#edit-profile');
-        });
-      </script>
-      <script type="text/javascript" 
-        src="/++resource++wymeditor-20090831/jquery.wymeditor.js">&#160;</script>
-      <script type="text/javascript"
-        src="/++resource++gswym.js">&#160;</script>
-    </tal:block>
+    <script metal:fill-slot="javascript" class="gs-content-js-wymeditor"
+            type="text/javascript"
+            data-text-element="#form\.biography"
+            data-submit="#form\.actions\.change"
+            src="/++resource++wymeditor-1.0.0b5/gswymeditor-min.js"
+            defer="true"> </script>
   </body>
 </html>
-
