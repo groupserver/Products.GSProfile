@@ -1,12 +1,26 @@
-# coding=utf-8
-import re, pytz
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013 E-Democracy.org and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+import pytz
 from string import ascii_letters, digits
-from zope.interface.interface import Interface, Invalid, invariant
+from zope.interface.interface import Interface
 from zope.schema import ASCIILine, Bool, Bytes, Choice, List
-from zope.schema import Text, TextLine, URI, ValidationError 
+from zope.schema import Text, TextLine, URI, ValidationError
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from OFS.Image import Image
 from gs.profile.email.base.emailaddress import EmailAddress
+
 
 def display_name_not_nul(text):
     retval = text.strip() != u''
@@ -18,9 +32,10 @@ deliveryVocab = SimpleVocabulary([
   SimpleTerm('digest', 'digest', u'Daily digest of topics.'),
   SimpleTerm('web', 'web', u'Web only.')])
 
+
 class IGSCoreProfile(Interface):
     """Schema use to defile the core profile of a GroupServer user."""
-    
+
     fn = TextLine(title=u'Name',
       description=u'The name that you want others to see on your profile '
         u'and posts.',
@@ -33,11 +48,12 @@ class IGSCoreProfile(Interface):
       required=False,
       default=u'UTC',
       vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
-    
+
     biography = Text(title=u'Biography',
       description=u'A desciption of you.',
       required=False,
       default=u'')
+
 
 class IGSCoreProfileRegister(IGSCoreProfile):
     joinable_groups = List(title=u'Joinable Groups',
@@ -49,13 +65,15 @@ class IGSCoreProfileRegister(IGSCoreProfile):
     came_from = URI(title=u'Came From',
       description=u'The page to return to after registration has finished',
       required=False)
-    
+
+
 class IGSCoreProfileAdminJoin(IGSCoreProfile):
     toAddr = EmailAddress(title=u'Email To',
-      description=u'The email address of the new group member.'\
-        u'The invitation will be sent to this address, and the address '\
+      description=u'The email address of the new group member.'
+        u'The invitation will be sent to this address, and the address '
         u'will become the default address for the new group member.',
       required=True)
+
 
 class IGSCoreProfileAdminDelivery(Interface):
     delivery = Choice(title=u'Group Message Delivery Settings',
@@ -63,59 +81,66 @@ class IGSCoreProfileAdminDelivery(Interface):
       vocabulary=deliveryVocab,
       default='email')
 
-class IGSCoreProfileAdminBasic(IGSCoreProfileAdminJoin, IGSCoreProfileAdminDelivery):
+
+class IGSCoreProfileAdminBasic(IGSCoreProfileAdminJoin,
+                                IGSCoreProfileAdminDelivery):
     pass
+
 
 class IGSCoreProfileAdminJoinSingle(IGSCoreProfileAdminBasic):
     message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the two links that allow the user to accept '\
+        description=u'The message that appears at the top of the email '
+            u'invitation to the new group member. The message will '
+            u'appear before the two links that allow the user to accept '
             u'or reject the invitation.',
         required=True)
-    
+
     fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
+      description=u'The email address that you want in the "From" '
         u'line in the invitation that you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
+      vocabulary='EmailAddressesForLoggedInUser',
       required=True)
 
     subject = TextLine(title=u'Subject',
-        description=u'The subject line of the invitation message that '\
+        description=u'The subject line of the invitation message that '
             u'will be sent to the new member',
-        required=True)    
+        required=True)
+
 
 class IGSCoreProfileAdminJoinCSV(IGSCoreProfileAdminJoin):
     pass
-    
+
 #########
 # Image #
 #########
+
 
 class VGSImageWrongType(ValidationError):
     """Verification identifier not found"""
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         msg = 'The image should be a JPEG (image/jpeg), but it is'
         msg = '%s a %s.' % (msg, repr(self.value))
         return msg
+
     def doc(self):
         return self.__str__()
+
 
 class GSImage(Bytes):
     def constraint(self, image):
         tmpImageName = '%s.jpg_temp' % self.context.getId()
-        
-        tmpImage = Image(tmpImageName, tmpImageName, image)        
-        
+
+        tmpImage = Image(tmpImageName, tmpImageName, image)
+
         imageContentType = tmpImage.content_type
-        imageWidth = tmpImage.width
-        imageHeight = tmpImage.height
-        
+
         if (imageContentType != 'image/jpeg'):
             raise VGSImageWrongType(imageContentType)
         return True
+
 
 class IGSProfileImage(Interface):
 
@@ -124,7 +149,7 @@ class IGSProfileImage(Interface):
         u'and posts, usually a photograph. The image must be a JPEG.',
       required=False,
       default=None)
-      
+
     showImage = Bool(title=u'Show Image',
       description=u'If set, others can see your image.',
       required=False,
@@ -134,40 +159,50 @@ class IGSProfileImage(Interface):
 # Nickname #
 ############
 
+
 class VInvalidNicnameChar(ValidationError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         msg = 'The character %s is not allowed. '\
           'Nicknames can only contain ASCII letters, digits, '\
           'underscores, and dashes.' % repr(self.value)
         return msg
+
     def doc(self):
         return self.__str__()
+
 
 class VNicknameUsed(ValidationError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         msg = 'The nickname %s is already in use.' % \
           repr(self.value)
         return msg
+
     def doc(self):
         return self.__str__()
+
 
 class VUserIDUsed(ValidationError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         msg = 'The user-identifier %s is already in use.' % \
           repr(self.value)
         return msg
+
     def doc(self):
         return self.__str__()
 
 
 class GSNickname(ASCIILine):
     allowedChars = ascii_letters + digits + '_-'
+
     def constraint(self, nickname):
         for c in nickname:
             if c not in self.allowedChars:
@@ -178,17 +213,19 @@ class GSNickname(ASCIILine):
             raise VNicknameUsed(nickname)
         return True
 
+
 class IGSSetNickname(Interface):
     nickname = GSNickname(title=u'Nickname',
-      description=u'The nickname you wish to set.'\
-        u'A nickname can only contain upper or lower case letters, '\
-        u'digits, underscores and dashes. A nickname cannot contain '\
-        u'spaces, and you cannot have a nickname that is used by anyone '\
+      description=u'The nickname you wish to set.'
+        u'A nickname can only contain upper or lower case letters, '
+        u'digits, underscores and dashes. A nickname cannot contain '
+        u'spaces, and you cannot have a nickname that is used by anyone '
         u'else.',
       required=True)
-   
+
 #####
-    
+
+
 class IGSCreateUserCSV(Interface):
     csvFile = Bytes(title=u'CSV File',
       description=u'The comma-separated value file that contains the '
@@ -196,11 +233,10 @@ class IGSCreateUserCSV(Interface):
       required=True,
       default=None)
 
+
 class IGSRequestContact(Interface):
-      message = TextLine(title=u'Message',
-        description=u'A message that will appear in the email to the person.'\
+    message = TextLine(title=u'Message',
+        description=u'A message that will appear in the email to the person.'
          ' It should be brief as only 140 characters are allowed.',
         max_length=140,
-        required=False)  
-
-   
+        required=False)
