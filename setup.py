@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013 E-Democracy.org and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 import os
 from setuptools import setup, find_packages
 from version import get_version
@@ -34,19 +47,11 @@ setup(name='Products.GSProfile',
           'setuptools',
           'AccessControl',
           'five.formlib',
-          'gs.content.form',
-          'gs.database',
-          'gs.profile.base',
-          'gs.profile.email.base',
-          'gs.profile.notify',
-          'Zope2',
-          'Products.CustomUserFolder',
-          'Products.GSAuditTrail',
-          'Products.XWFCore',
           'pytz',
           'zope.app.apidoc',
           'zope.app.form',
           'zope.app.publisher',
+          'zope.browserpage',
           'zope.cachedescriptors',
           'zope.component',
           'zope.contentprovider',
@@ -56,8 +61,20 @@ setup(name='Products.GSProfile',
           'zope.publisher',
           'zope.schema',
           'zope.security',
+          'zope.tal',
+          'zope.tales',
           'zope.viewlet',
-          # -*- Extra requirements: -*-
+          'Zope2',
+          'gs.content.form',
+          'gs.content.js.wymeditor[zope]',
+          'gs.content.layout',
+          'gs.database',
+          'gs.profile.base',
+          'gs.profile.email.base',
+          'gs.profile.notify',
+          'Products.CustomUserFolder',
+          'Products.GSAuditTrail',
+          'Products.XWFCore',
       ],
       entry_points="""
       # -*- Entry points: -*-
