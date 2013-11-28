@@ -1,13 +1,20 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+##############################################################################
+from __future__ import absolute_import
 import pytz
-from zope.interface.interface import Interface, Invalid, invariant
-from zope.schema import ASCIILine, Bool, Choice, Date, Field 
-from zope.schema import Float, Int, List, Text, TextLine, URI
+from zope.interface.interface import Interface
+from zope.schema import ASCIILine, Bool, Choice, List, Text, TextLine, URI
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-from interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
-  deliveryVocab
 from gs.profile.email.base.emailaddress import EmailAddress
-from saneuri import SaneURI
+from .interfaceCoreProfile import IGSCoreProfile, display_name_not_nul, \
+    deliveryVocab
+from .saneuri import SaneURI
+
 
 class IOGNProfile(IGSCoreProfile):
     """Profile for a user of OnlineGroups.Net
@@ -16,39 +23,40 @@ class IOGNProfile(IGSCoreProfile):
       description=u'Your primary spoken language.',
       required=False,
       default=u'')
-      
+
     city = TextLine(title=u'City/Locality',
       description=u'The city or locality that you live in.',
       required=False,
       default=u'')
-      
+
     country = TextLine(title=u'Country',
       description=u'The country you work in.',
       required=False,
       default=u'')
-      
+
     url = SaneURI(title=u'Personal URL',
       description=u'Your personal website, blog or podcast URL.',
       required=False)
-      
+
     skypeId = TextLine(title=u'Skype User ID',
       description=u'The user ID you use for Skype, if you use Skype.',
       required=False,
       default=u'')
-      
+
     org = TextLine(title=u'Organisation',
       description=u'The organisation that you are involved with.',
       required=False,
       default=u'')
-      
+
     org_url = SaneURI(title=u'Organisation Website',
       description=u'URL for the organisation you are involved with.',
       required=False)
-      
+
     org_role = TextLine(title=u'Roles',
       description=u'Your roles in organisations and the world.',
       required=False,
       default=u'')
+
 
 class IOGNProfileRegister(IOGNProfile):
     joinable_groups = List(title=u'Joinable Groups',
@@ -62,12 +70,14 @@ class IOGNProfileRegister(IOGNProfile):
       description=u'The page to return to after retistration has finished',
       required=False)
 
+
 class IOGNProfileAdminJoin(IOGNProfile):
     toAddr = EmailAddress(title=u'Email To',
-      description=u'The email address of the new group member.'\
-        u'The invitation will be sent to this address, and the address '\
+      description=u'The email address of the new group member.'
+        u'The invitation will be sent to this address, and the address '
         u'will become the default address for the new group member.',
       required=True)
+
 
 class IOGNProfileAdminDelivery(Interface):
     delivery = Choice(title=u'Group Message Delivery Settings',
@@ -75,19 +85,21 @@ class IOGNProfileAdminDelivery(Interface):
       vocabulary=deliveryVocab,
       default='email')
 
+
 class IOGNProfileAdminBasic(IOGNProfileAdminJoin, IOGNProfileAdminDelivery):
     pass
 
+
 class IOGNProfileAdminJoinSingle(IOGNProfileAdminBasic):
     message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the link that allows the member to accept '\
+        description=u'The message that appears at the top of the email '
+            u'invitation to the new group member. The message will '
+            u'appear before the link that allows the member to accept '
             u'or reject the invitation.',
         required=True)
-    
+
     fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
+      description=u'The email address that you want in the "From" '
         u'line in the invitation that you send.',
       vocabulary='EmailAddressesForLoggedInUser',
       required=True)
@@ -98,9 +110,10 @@ class IOGNProfileAdminJoinSingle(IOGNProfileAdminBasic):
       default='email')
 
     subject = TextLine(title=u'Subject',
-        description=u'The subject line of the invitation message that '\
+        description=u'The subject line of the invitation message that '
             u'will be sent to the new member',
-        required=True)    
+        required=True)
+
 
 class IOGNProfileAdminJoinCSV(IOGNProfileAdminJoin):
     pass
@@ -140,7 +153,7 @@ pasLocationVocab = SimpleVocabulary([
 addressTypeVocab = SimpleVocabulary([
   SimpleTerm('work', 'work', u'Work'),
   SimpleTerm('home', 'home', u'Home')])
-  
+
 employerClassificationVocab = SimpleVocabulary([
   SimpleTerm('publicPractice_business', 'publicPractice_business',
              u'Public Practice Business Services'),
@@ -167,46 +180,47 @@ subjectExpertiseVocab = SimpleVocabulary([
   SimpleTerm('business_strategy', 'business_strategy',
              u'Business Strategy'), ])
 
+
 class IABELProfile(IGSCoreProfile):
     membershipID = TextLine(title=u'NZICA Membership Number',
-      description=u'New Zealand Institute of Chartered Accountants '\
+      description=u'New Zealand Institute of Chartered Accountants '
         u'Membership Number.',
       required=False)
 
     candidateID = TextLine(title=u'Candidate Number',
       description=u'ABEL Candidate Number.',
       required=False)
-      
+
     familyName = TextLine(title=u'Family Name',
-      description=u'The name of your family, which you inherited '\
-        u'by birth, or acquired by marriage. ' \
-        u'For example "Keeling" for Philip Keeling, or "Ban" for '\
+      description=u'The name of your family, which you inherited '
+        u'by birth, or acquired by marriage. '
+        u'For example "Keeling" for Philip Keeling, or "Ban" for '
         u'Ban Ki-moon.',
       required=False,
       min_length=1,
       constraint=display_name_not_nul)
-      
+
     givenName = TextLine(title=u'Given Names',
-      description=u'The names that are given to you by your parents. '\
-        u'This name may be used in more formal situations to your '\
-        u'preferred name. '\
-        u'For example, "Philip" for Philip Keeling, or "Ki-moon" '\
+      description=u'The names that are given to you by your parents. '
+        u'This name may be used in more formal situations to your '
+        u'preferred name. '
+        u'For example, "Philip" for Philip Keeling, or "Ki-moon" '
         u'for Ban Ki-moon.',
       required=False,
       min_length=1,
       constraint=display_name_not_nul)
-    
+
     additionalName = TextLine(title=u'Preferred Name',
-      description=u'The name that is commonly used to greet you. '\
-        u'This name may be a shorter version of one of your given '\
-        u'names — such as Liz, Phil, Mike, or Beth — or a '\
+      description=u'The name that is commonly used to greet you. '
+        u'This name may be a shorter version of one of your given '
+        u'names — such as Liz, Phil, Mike, or Beth — or a '
         u'different name entirely!',
       required=False)
-      
+
     fn = TextLine(title=u'eCampus Display Name',
-      description=u'The name seen on the eCampus: on your profile, '\
-        u'and in emails sent to you. The display name is usually '\
-        u'a combination of your family name and preferred name, '\
+      description=u'The name seen on the eCampus: on your profile, '
+        u'and in emails sent to you. The display name is usually '
+        u'a combination of your family name and preferred name, '
         u'such as "Philip Keeling" or "Ban Ki-moon".',
       required=True,
       min_length=1,
@@ -218,45 +232,45 @@ class IABELProfile(IGSCoreProfile):
       required=False)
 
     gender = Choice(title=u'Gender',
-      description=u'The gender that people perceive you as having '\
+      description=u'The gender that people perceive you as having '
         u'(your identified gender).',
       vocabulary=SimpleVocabulary.fromValues((u'Female', u'Male')),
       required=False)
-      
+
     tel_work = TextLine(title=u'Work Phone',
-      description=u'The phone number for your place of work. '\
-        u'This is written with digits, spaces, and an optional '\
-        u' plus sign. '\
-        u'If you live outside New Zeland put a plus and the '\
-        u'country-code at the start. '\
-        u'For example the phone number for ABEL is '\
+      description=u'The phone number for your place of work. '
+        u'This is written with digits, spaces, and an optional '
+        u' plus sign. '
+        u'If you live outside New Zeland put a plus and the '
+        u'country-code at the start. '
+        u'For example the phone number for ABEL is '
         u'+64 3 961 2400.',
       required=False)
-      
+
     tel_home = TextLine(title=u'Home Phone',
-      description=u'The phone number for your place of '\
-        u'residence. '\
-        u'This is written with digits, spaces, and an optional '\
-        u' plus sign. '\
-        u'If you live outside New Zealand put a plus and the '\
-        u'country-code at the start. '\
-        u'For example the phone number for ABEL is '\
+      description=u'The phone number for your place of '
+        u'residence. '
+        u'This is written with digits, spaces, and an optional '
+        u' plus sign. '
+        u'If you live outside New Zealand put a plus and the '
+        u'country-code at the start. '
+        u'For example the phone number for ABEL is '
         u'+64 3 961 2400.',
       required=False)
-      
+
     tel_cell = TextLine(title=u'Cell Phone',
-      description=u'The phone number for your cell (mobile) '\
-        u'phone. '\
-        u'This is written with digits, spaces, and an optional '\
-        u' plus sign. '\
-        u'If you live outside New Zealand put a plus and the '\
-        u'country-code at the start. '\
-        u'For example the phone number for ABEL is '\
+      description=u'The phone number for your cell (mobile) '
+        u'phone. '
+        u'This is written with digits, spaces, and an optional '
+        u' plus sign. '
+        u'If you live outside New Zealand put a plus and the '
+        u'country-code at the start. '
+        u'For example the phone number for ABEL is '
         u'+64 3 961 2400.',
       required=False)
 
     org = TextLine(title=u'Employer',
-      description=u'The name of the company, firm or institution '\
+      description=u'The name of the company, firm or institution '
         u'that you work for.',
       required=False)
 
@@ -264,16 +278,16 @@ class IABELProfile(IGSCoreProfile):
       description=u'Type of address',
       vocabulary=addressTypeVocab,
       required=False)
-      
+
     adr_extended_address = TextLine(title=u'Extended Address',
-      description=u'The flat, apartment or office number. '\
-        u'If the address is a work address, then the name of your '\
+      description=u'The flat, apartment or office number. '
+        u'If the address is a work address, then the name of your '
         u'employer should be written here.',
       required=False)
 
     adr_street_address = TextLine(title=u'Street Address',
-      description=u'The street address of the building. If you '\
-        u'want your deliveries to a PO Box or private bag then '\
+      description=u'The street address of the building. If you '
+        u'want your deliveries to a PO Box or private bag then '
         u'you should fill out the PO Box field below.',
       required=False)
 
@@ -282,21 +296,21 @@ class IABELProfile(IGSCoreProfile):
       required=False)
 
     adr_region = TextLine(title=u'Suburb',
-      description=u'The suburb the building or Post Office Box is '\
+      description=u'The suburb the building or Post Office Box is '
         u'located.',
       required=False)
-   
+
     adr_locality = TextLine(title=u'Town, City, or State',
-      description=u'The town, city or state that the suburb is '\
+      description=u'The town, city or state that the suburb is '
         u'located.',
       required=False)
 
     adr_country = TextLine(title=u'Country',
-      description=u'The country the city, town, or state is '\
+      description=u'The country the city, town, or state is '
         u'located.',
       required=False,
       default=u'New Zealand')
-      
+
     adr_postal_code = TextLine(title=u'Post Code',
       description=u'The postal code for the address.',
       required=False)
@@ -319,54 +333,56 @@ class IABELProfile(IGSCoreProfile):
       description=u'Intended NZICA College',
       vocabulary=collegeVocab,
       required=False)
-      
+
     subjectExpertise = List(title=u'Subject Expertise',
       description=u'Subjects that you are an expert in.',
       required=False,
       value_type=Choice(title=u'Subject', vocabulary=subjectExpertiseVocab),
       unique=True)
-      
-    foundationsWorkshopLocation = Choice(title=u'Preferred Foundations Workshop and Exam Location',
+
+    foundationsWorkshopLocation = Choice(title=u'Preferred Foundations '
+                                        u'Workshop and Exam Location',
       description=u'Where you would prefer to attend the '
         u'Foundations workshop and examination.',
       vocabulary=fndLocationVocab,
       required=False)
 
     preferredWorkshopLocation = Choice(title=u'Preferred PAS Workshop Location',
-      description=u'Where you would prefer to attend the '\
+      description=u'Where you would prefer to attend the '
         u'PAS workshop.',
       vocabulary=pasLocationVocab,
       required=False)
-    
+
     preferredExamLocation = Choice(title=u'Preferred PCE 2 Location',
       description=u'Where you would prefer to sit PCE 2.',
       vocabulary='abel.ExamLocations',
       required=False)
 
     disability = Bool(title=u'Disability',
-      description=u'You require special support to participate in '\
-        u'the programme. If you select this option, ABEL will '\
+      description=u'You require special support to participate in '
+        u'the programme. If you select this option, ABEL will '
         u'contact you to determine the support you require.',
       default=False,
       required=False)
-      
+
     specialDiet = Bool(title=u'Special Dietary Requirements',
-      description=u'Your dietary requirements are different from '\
-        u'the general populous for medical, religious, ethical or '\
-        u'other reasons. If you selected this option ABEL will '\
+      description=u'Your dietary requirements are different from '
+        u'the general populous for medical, religious, ethical or '
+        u'other reasons. If you selected this option ABEL will '
         u'contact you to determine your requirements.',
       default=False,
       required=False)
-      
+
     biography = Text(title=u'Biography',
       description=u'A description of your life and interests.',
       required=False)
-      
+
     tz = Choice(title=u'Timezone',
       description=u'The timezone you wish to use',
       required=True,
       default=u'Pacific/Auckland',
       vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
+
 
 class IABELProfileRegister(IABELProfile):
     joinable_groups = List(title=u'Joinable Groups',
@@ -379,13 +395,15 @@ class IABELProfileRegister(IABELProfile):
     came_from = URI(title=u'Came From',
       description=u'The page to return to after retistration has finished',
       required=False)
-    
+
+
 class IABELProfileAdminJoin(IABELProfile):
     toAddr = EmailAddress(title=u'Email To',
-      description=u'The email address of the new group member.'\
-        u'The invitation will be sent to this address, and the address '\
+      description=u'The email address of the new group member.'
+        u'The invitation will be sent to this address, and the address '
         u'will become the default address for the new group member.',
       required=True)
+
 
 class IABELProfileAdminDelivery(Interface):
     delivery = Choice(title=u'Group Message Delivery Settings',
@@ -393,30 +411,34 @@ class IABELProfileAdminDelivery(Interface):
       vocabulary=deliveryVocab,
       default='email')
 
+
 class IABELProfileAdminBasic(IABELProfileAdminJoin, IABELProfileAdminDelivery):
     pass
 
+
 class IABELProfileAdminJoinSingle(IABELProfileAdminBasic):
     message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the link that allows the member to accept '\
+        description=u'The message that appears at the top of the email '
+            u'invitation to the new group member. The message will '
+            u'appear before the link that allows the member to accept '
             u'or reject the inviation.',
         required=True)
-    
+
     fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
+      description=u'The email address that you want in the "From" '
         u'line in the invitation tat you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
+      vocabulary='EmailAddressesForLoggedInUser',
       required=True)
 
     subject = TextLine(title=u'Subject',
-        description=u'The subject line of the invitation message that '\
+        description=u'The subject line of the invitation message that '
             u'will be sent to the new member',
-        required=True)    
+        required=True)
+
 
 class IABELProfileAdminJoinCSV(IABELProfileAdminJoin):
     pass
+
 
 ##########
 # DoWire #
@@ -425,25 +447,26 @@ class IABELProfileAdminJoinCSV(IABELProfileAdminJoin):
 imClients = [u'Skype', u'Yahoo!', u'ICQ', u'MSN', u'AIM',
   u'Google Talk', u'Gizmo', u'IRC']
 
+
 class IDoWireProfile(IGSCoreProfile):
-    
+
     fn = TextLine(title=u'Name',
       description=u'The name that you want others to see on your profile '
         u'and posts.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
-      
+
     givenName = TextLine(title=u'First Name',
       description=u'The name that you are commonly called, that is given '
         u'to you by your parents.',
       required=False)
-    
+
     familyName = TextLine(title=u'Last Name',
       description=u'The name that you inherit by birth, or aquire by '
         u'marrage.',
       required=False)
-    
+
     biography = Text(title=u'Biography',
       description=u'A desciption of you.',
       required=False,
@@ -454,7 +477,7 @@ class IDoWireProfile(IGSCoreProfile):
         u'with most recent at the top.',
       required=False,
       default=u'')
-    
+
     topicsOfInterest = Text(title=u'Topics of Interest',
       description=u'Keywords of topics you are interested in',
       required=False,
@@ -482,7 +505,7 @@ class IDoWireProfile(IGSCoreProfile):
       description=u'The state or province you live in.',
       required=False,
       default=u'')
-      
+
     countryName = TextLine(title=u'Country',
       description=u'The country where you live.',
       required=False,
@@ -502,7 +525,7 @@ class IDoWireProfile(IGSCoreProfile):
     url = SaneURI(title=u'Your Website',
       description=u'The URL for your website, or page on the Web.',
       required=False)
-    
+
     weblog = SaneURI(title=u'Weblog URL',
       description=u'The location of your weblog (blog).',
       required=False)
@@ -529,7 +552,7 @@ class IDoWireProfile(IGSCoreProfile):
         u'client.',
       required=False,
       default=u'')
-    
+
     secondaryIMClient = Choice(title=u'Secondary IM Client',
       description=u'The other instant messaging (IM) client you use '
         u'frequently.',
@@ -552,7 +575,7 @@ class IDoWireProfile(IGSCoreProfile):
         u'with.',
       required=False,
       default=u'')
-    
+
     org_url = SaneURI(title=u'Organisation Website',
       description=u'The Web page for your organisation.',
       required=False)
@@ -572,6 +595,7 @@ class IDoWireProfile(IGSCoreProfile):
       required=False,
       default=u'')
 
+
 class IDoWireProfileRegister(IDoWireProfile):
     joinable_groups = List(title=u'Joinable Groups',
       description=u'Groups on this site you can join.',
@@ -583,14 +607,15 @@ class IDoWireProfileRegister(IDoWireProfile):
     came_from = URI(title=u'Came From',
       description=u'The page to return to after registration has finished',
       required=False)
-    
+
 
 class IDoWireProfileAdminJoin(IDoWireProfile):
     toAddr = EmailAddress(title=u'Email To',
-      description=u'The email address of the new group member.'\
-        u'The invitation will be sent to this address, and the address '\
+      description=u'The email address of the new group member.'
+        u'The invitation will be sent to this address, and the address '
         u'will become the default address for the new group member.',
       required=True)
+
 
 class IDoWireProfileAdminDelivery(Interface):
     delivery = Choice(title=u'Group Message Delivery Settings',
@@ -598,63 +623,68 @@ class IDoWireProfileAdminDelivery(Interface):
       vocabulary=deliveryVocab,
       default='email')
 
-class IDoWireProfileAdminBasic(IDoWireProfileAdminJoin, IDoWireProfileAdminDelivery):
+
+class IDoWireProfileAdminBasic(IDoWireProfileAdminJoin,
+                                IDoWireProfileAdminDelivery):
     pass
 
 
 class IDoWireProfileAdminJoinSingle(IDoWireProfileAdminBasic):
     message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the link that allows the member to accept '\
+        description=u'The message that appears at the top of the email '
+            u'invitation to the new group member. The message will '
+            u'appear before the link that allows the member to accept '
             u'or reject the inviation.',
         required=True)
-    
+
     fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
+      description=u'The email address that you want in the "From" '
         u'line in the invitation tat you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
+      vocabulary='EmailAddressesForLoggedInUser',
       required=True)
 
     subject = TextLine(title=u'Subject',
-        description=u'The subject line of the invitation message that '\
+        description=u'The subject line of the invitation message that '
             u'will be sent to the new member',
-        required=True)    
+        required=True)
+
 
 class IDoWireProfileAdminJoinCSV(IDoWireProfileAdminJoin):
     pass
 
+
 ########
 # eDem #
 ########
+
 
 class IEDemProfile(IGSCoreProfile):
     givenName = TextLine(title=u'Given (First) Name',
       description=u'The name that you are commonly called, which is given '
         u'to you by your parents.',
       required=True)
-     
+
     familyName = TextLine(title=u'Family (Last) Name',
       description=u'The name that you inherit by birth, or acquire by '
         u'marriage.',
       required=True)
-    
+
     fn = TextLine(title=u'Full Name',
       description=u'The name you want others to see. This must contain '
         u'your real first and last name, but you may add a nickname.',
       required=True,
       min_length=1,
       constraint=display_name_not_nul)
-      
+
     biography = Text(title=u'Biography',
       description=u'A description of you.',
       required=False,
       default=u'')
 
     streetAddress = TextLine(title=u'Street Address (Hidden)',
-      description=u'Your street address. '\
-       u'The street address number is required by some groups for admin '\
-       u'purposes, but it is only shown to the site-administrators of '\
+      description=u'Your street address. '
+       u'The street address number is required by some groups for admin '
+       u'purposes, but it is only shown to the site-administrators of '
        u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default=u'')
@@ -673,23 +703,23 @@ class IEDemProfile(IGSCoreProfile):
       description=u'The state or province you live in.',
       required=False,
       default=u'')
-      
+
     countryName = TextLine(title=u'Country',
       description=u'The country where you live.',
       required=False,
       default=u'')
 
-      
     adr_postal_code = TextLine(title=u'Postal/Zip Code',
       description=u'Your postal code (also known as a zip code).',
       required=False,
       default=u'')
 
-    url = SaneURI(title=u'Best Web Link About You (Twitter, LinkedIn, Facebook etc.)',
+    url = SaneURI(title=u'Best Web Link About You (Twitter, LinkedIn, '
+                        u'Facebook etc.)',
       description=u'The URL for the website, page, weblog, or feed about '
         u'you.',
       required=False)
- 
+
     org = TextLine(title=u'Organization/Organisation',
       description=u'The organisation that you are primarily engaged with.',
       required=False,
@@ -700,9 +730,9 @@ class IEDemProfile(IGSCoreProfile):
       required=False)
 
     tel = ASCIILine(title=u'Telephone Number (Hidden)',
-      description=u'Your telephone number (including the country code). '\
-       u'The phone number is required by some groups for admin purposes, '\
-       u'but it is only shown to the site-administrators of '\
+      description=u'Your telephone number (including the country code). '
+       u'The phone number is required by some groups for admin purposes, '
+       u'but it is only shown to the site-administrators of '
        u'e-democracy.org. Contact your forum manager for more information.',
       required=False,
       default='')
@@ -712,6 +742,7 @@ class IEDemProfile(IGSCoreProfile):
       required=False,
       default=u'UTC',
       vocabulary=SimpleVocabulary.fromValues(pytz.common_timezones))
+
 
 class IEDemProfileRegister(IEDemProfile):
     joinable_groups = List(title=u'Joinable Groups',
@@ -724,13 +755,15 @@ class IEDemProfileRegister(IEDemProfile):
     came_from = URI(title=u'Came From',
       description=u'The page to return to after registration has finished',
       required=False)
-    
+
+
 class IEDemProfileAdminJoin(IEDemProfile):
     toAddr = EmailAddress(title=u'Email To',
-      description=u'The email address of the new group member.'\
-        u'The invitation will be sent to this address, and the address '\
+      description=u'The email address of the new group member.'
+        u'The invitation will be sent to this address, and the address '
         u'will become the default address for the new group member.',
       required=True)
+
 
 class IEDemProfileAdminDelivery(Interface):
     delivery = Choice(title=u'Group Message Delivery Settings',
@@ -738,28 +771,30 @@ class IEDemProfileAdminDelivery(Interface):
       vocabulary=deliveryVocab,
       default='email')
 
+
 class IEDemProfileAdminBasic(IEDemProfileAdminJoin, IEDemProfileAdminDelivery):
     pass
 
+
 class IEDemProfileAdminJoinSingle(IEDemProfileAdminBasic):
     message = Text(title=u'Invitation Message',
-        description=u'The message that appears at the top of the email '\
-            u'invitation to the new group member. The message will '\
-            u'appear before the link that allows the member to accept '\
+        description=u'The message that appears at the top of the email '
+            u'invitation to the new group member. The message will '
+            u'appear before the link that allows the member to accept '
             u'or reject the invitation.',
         required=True)
-    
+
     fromAddr = Choice(title=u'Email From',
-      description=u'The email address that you want in the "From" '\
+      description=u'The email address that you want in the "From" '
         u'line in the invitation that you send.',
-      vocabulary = 'EmailAddressesForLoggedInUser',
+      vocabulary='EmailAddressesForLoggedInUser',
       required=True)
-    
+
     subject = TextLine(title=u'Subject',
-        description=u'The subject line of the invitation message that '\
+        description=u'The subject line of the invitation message that '
             u'will be sent to the new member',
-        required=True)    
+        required=True)
+
 
 class IEDemProfileAdminJoinCSV(IEDemProfileAdminJoin):
     pass
-
