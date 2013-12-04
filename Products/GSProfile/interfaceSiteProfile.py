@@ -148,7 +148,7 @@ pasLocationVocab = SimpleVocabulary([
   SimpleTerm('w', 'w', u'Wellington'),
   SimpleTerm('c', 'c', u'Christchurch'),
   SimpleTerm('d', 'd', u'Dunedin'),
-  SimpleTerm('syd', 'syd', u'Sydney'),
+  SimpleTerm('s', 's', u'Sydney'),
   SimpleTerm('lon', 'lon', u'London')])
 
 addressTypeVocab = SimpleVocabulary([
