@@ -89,8 +89,8 @@ def create_user_from_email(context, email):
 
     # --=mpj17=-- Ensure that the user's profile is owned by the user, and
     #   *only* the user.
-    assign_ownership(user, user.getId(), recursive=0,
-      acl_user_path='/'.join(acl_users.getPhysicalPath()))
+    p = '/'.join(acl_users.getPhysicalPath()).encode('ascii', 'ignore')
+    assign_ownership(user, user.getId(), recursive=0, acl_user_path=p)
     user.manage_delLocalRoles([uid for uid in
                                user.users_with_local_role('Owner')
                                if uid != userId])
