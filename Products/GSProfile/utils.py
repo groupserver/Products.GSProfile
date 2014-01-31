@@ -53,9 +53,19 @@ def login(context, user):
 
 
 def create_user_from_email(context, email):
-    assert email
-    assert type(email) == str, 'Email is a %s, not a str' % type(email)
-    assert '@' in email
+    if not context:
+        m = 'Context is "{0}"'.format(context)
+        raise ValueError(m)
+    if type(email) not in (str, unicode):
+        m = 'Email is a "{0}", not a string'.format(type(email))
+        raise TypeError(m)
+    if not email:
+        m = 'The email address is "{0}"'.format(email)
+        raise ValueError(m)
+    if '@' not in email:
+        m = 'No "@" in the email "{0}"'.format(email)
+        raise ValueError(m)
+
     m = 'utils.create_user_from_email: Creating a new user for the '\
       'address <%s>' % email
     log.info(m)
@@ -63,7 +73,7 @@ def create_user_from_email(context, email):
     userNum = long(new_md5(asctime() + email).hexdigest(), 16)
     userId = str(convert_int2b62(userNum))
 
-    # Ensure that the user ID is unique. There is also has a race
+    # Ensure that the user ID is unique. There is also a race
     #   condition, and the loop is non-deterministic.
     acl_users = __get_acl_users_for_context(context)
     while (acl_users.getUserById(userId)):
@@ -85,9 +95,9 @@ def create_user_from_email(context, email):
                                user.users_with_local_role('Owner')
                                if uid != userId])
 
-    m = 'utils.create_user_from_email: Created a new user %s (%s)' % \
-      (user.getProperty('fn', ''), user.getId())
-    log.info(m)
+    m = 'utils.create_user_from_email: Created a new user {name} ({id})'
+    msg = m.format(name=user.getProperty('fn', ''), id=user.getId())
+    log.info(msg)
 
     assert user
     assert isinstance(user, CustomUser)
