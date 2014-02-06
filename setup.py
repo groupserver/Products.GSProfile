@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright © 2013 E-Democracy.org and Contributors.
+# Copyright © 2014 E-Democracy.org and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
