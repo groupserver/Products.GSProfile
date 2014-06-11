@@ -1,18 +1,31 @@
-# coding=utf-8
-'''Implementation of the Request Contact form.
-'''
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import, unicode_literals
 from datetime import datetime, timedelta
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
 #from zope.security.interfaces import Unauthorized
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from gs.content.form import SiteForm
+from gs.core import to_unicode_or_bust
+from gs.content.form.base import SiteForm
 from gs.database import getSession, getTable
 from gs.profile.email.base.emailuser import EmailUser
 from gs.profile.notify.interfaces import IGSNotifyUser
 from Products.CustomUserFolder.interfaces import IGSUserInfo
-from interfaceCoreProfile import *
-from profileaudit import *
+from .interfaceCoreProfile import IGSRequestContact
+from .profileaudit import REQUEST_CONTACT, ProfileAuditer
 
 # TODO: Move to its own product (gs.profile.requestcontact).
 # TODO: Split the queries and requester off from this class.
@@ -20,7 +33,7 @@ from profileaudit import *
 
 
 class GSRequestContact(SiteForm):
-    label = u'Request Contact'
+    label = 'Request Contact'
     pageTemplateFileName = 'browser/templates/request_contact.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
     form_fields = form.Fields(IGSRequestContact, render_context=False)
@@ -78,31 +91,27 @@ class GSRequestContact(SiteForm):
         assert type(retval) == bool
         return retval
 
-    @form.action(label=u'Request Contact', failure='handle_set_action_failure')
+    @form.action(label='Request Contact', failure='handle_set_action_failure')
     def handle_set(self, action, data):
         if self.count_contactRequests() > self.request24hrlimit:
-            self.status = u'The request for contact has not been sent. You '\
-                u'have exceeded your daily limit of contact requests'
+            self.status = 'The request for contact has not been sent. You '\
+                'have exceeded your daily limit of contact requests'
         else:
             self.auditer = ProfileAuditer(self.context)
             assert self.context
 
-            message = data.get('message', u'')
-            if not isinstance(message, unicode):
-                message = unicode(message).encode('utf-8')
-
+            message = to_unicode_or_bust(data.get('message', ''))
             self.request_contact(message)
-            self.status = u'The request for contact has been sent to %s.' \
+            self.status = 'The request for contact has been sent to %s.' \
                 % self.userInfo.name
 
         assert self.status
-        assert type(self.status) == unicode
 
     def handle_set_action_failure(self, action, data, errors):
         if len(errors) == 1:
-            self.status = u'<p>There is an error:</p>'
+            self.status = '<p>There is an error:</p>'
         else:
-            self.status = u'<p>There are errors:</p>'
+            self.status = '<p>There are errors:</p>'
 
     def request_contact(self, message):
         au = self.request.AUTHENTICATED_USER

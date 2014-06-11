@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from base64 import b64encode
 from zope.app.form.browser import TextAreaWidget
 from zope.cachedescriptors.property import Lazy
@@ -10,9 +11,11 @@ from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.GSProfile.profileaudit import profile_interface, ProfileAuditer,\
     CHANGE_PROFILE
 from Products.XWFCore.XWFUtils import comma_comma_and
-from gs.content.form import SiteForm
-from gs.content.form import select_widget, multi_check_box_widget  # lint:ok
-from utils import enforce_schema
+    #lint:disable
+from gs.content.form.base import (SiteForm, select_widget,
+    multi_check_box_widget)
+    #lint:enable
+from .utils import enforce_schema
 
 import logging
 log = logging.getLogger('GSEditProfile')
