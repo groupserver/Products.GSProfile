@@ -118,10 +118,10 @@ class GSRequestContact(SiteForm):
         assert au, 'Contact requested by anonymous user'
         authUser = self.context.site_root().acl_users.getUser(au.getId())
         authUserInfo = IGSUserInfo(authUser)
-        email_addresses = \
-            self.userInfo.user.get_defaultDeliveryEmailAddresses()
+        email_addresses = self.loggedInEmailUser.get_delivery_addresses()
         if email_addresses:
-            deliveryAddress = authUser.get_defaultDeliveryEmailAddresses()[0]
+            aeu = EmailUser(self.context, authUserInfo)
+            deliveryAddress = aeu.get_delivery_addresses()[0]
             n_dict = {
                 'siteName': self.siteInfo.name,
                 'supportEmail': self.siteInfo.get_support_email(),
