@@ -71,12 +71,6 @@
 
   <browser:page 
     for="Products.XWFChat.interfaces.IGSGroupFolder"
-    name="admin_join.html"
-    class=".admin_join.AdminJoinEditProfileForm"
-    permission="zope2.ManageUsers"/>
-    
-  <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="admin_join_csv.html"
     class=".create_users_from_csv.CreateUsersForm"
     template="browser/templates/admin_create_users_from_csv.pt"
@@ -88,16 +82,6 @@
     class="Products.GSContent.view.GSContentView"
     template="browser/templates/verify_address.pt"
     permission="zope2.ManageProperties" />
-
-  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectLogin"
-    provides="Products.GSRedirect.interfaces.IGSRedirect"
-    name="password" />
-
-  <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
-    factory=".profile_redirect.GSRedirectVerify"
-    provides="Products.GSRedirect.interfaces.IGSRedirect"
-    name="verify" />  
 
   <adapter for="Products.GSRedirect.interfaces.IGSRedirectTraversal"
     factory=".profile_redirect.GSRedirectAdminVerified"
@@ -143,63 +127,13 @@
 
    <browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="password.html"
-    class=".set_password.SetPasswordForm"
-    permission="zope2.ManageProperties" />
-
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="join_password.html"
     class=".set_password.SetPasswordAdminJoinForm"
     permission="zope2.ManageProperties" />
 
-  <browser:menu 
-    id="user_profile_menu"
-    title="Test of the profile menus" />
-  <browser:menuItems
-    menu="user_profile_menu"
-    for="Products.CustomUserFolder.interfaces.ICustomUser">
-    <browser:menuItem 
-      action="edit.html"
-      title="Change Profile"
-      description="Change what you show in your profile"
-      order="1"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="image.html"
-      title="Change Image"
-      description="Change the image that is shown on your profile and posts"
-      order="2"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="email.html"
-      title="Change Email Settings"
-      description="Change your email addresses and delivery options"
-      order="3"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="nickname.html"
-      title="Change Nickname"
-      description="Change the link to your profile"
-      order="4"
-      permission="zope2.ManageProperties"/>
-    <browser:menuItem 
-      action="password.html"
-      title="Change Password"
-      description="Change the password you use to log in"
-      order="5"
-      permission="zope2.ManageProperties"/>
-  </browser:menuItems>
-
   <interface 
     interface=".interfaces.IGSUserProfileMarker"
     type="zope.app.content.interfaces.IContentType" />
-   <browser:page 
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="index.html"
-    class=".view_profile.GSProfileView"
-    template="browser/templates/view_profile.pt"
-    permission="zope2.View" />
 
   <interface
     interface=".interfaces.IGSEditProfileMarker"
@@ -257,13 +191,6 @@
     class=".viewaudittrail.GSAuditTrailView"
     template="browser/templates/viewaudittrail.pt"
     permission="zope2.ManageProperties" />
-
-  <!--Vocabularies-->
-  <utility
-      provides="zope.schema.interfaces.IVocabularyFactory"
-      component="Products.GSProfile.emailaddress.EmailAddressesForLoggedInUser"
-      name="EmailAddressesForLoggedInUser"
-      />
 
 </configure>
 
