@@ -106,18 +106,6 @@ class GSImage(Bytes):
             raise VGSImageWrongType(imageContentType)
         return True
 
-class IGSProfileImage(Interface):
-
-    image = GSImage(title=u'Image',
-      description=u'The image you want others to see on your profile '
-        u'and posts, usually a photograph. The image must be a JPEG.',
-      required=False,
-      default=None)
-      
-    showImage = Bool(title=u'Show Image',
-      description=u'If set, others can see your image.',
-      required=False,
-      default=True)
 
 ############
 # Nickname #
