@@ -84,12 +84,6 @@
 
    <browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="image.html"
-    class=".edit_image.GSEditImageForm"
-    permission="zope2.ManageProperties" />
-
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="email.html"
     class=".email_settings.GSEmailSettings"
     template="browser/templates/email_settings.pt"
