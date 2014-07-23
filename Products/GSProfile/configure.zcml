@@ -211,12 +211,6 @@
     permission="zope2.ManageProperties" />
 
 
-   <browser:page 
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="image.html"
-    class=".edit_image.GSEditImageForm"
-    permission="zope2.ManageProperties" />
-
    <browser:page
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="email.html"
