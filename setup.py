@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 E-Democracy.org and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 import codecs
 import os
 from setuptools import setup, find_packages
@@ -19,9 +19,10 @@ from version import get_version
 
 version = get_version()
 
-with codecs.open('README.txt', encoding='utf-8') as f:
+with codecs.open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
-with codecs.open(os.path.join("docs", "HISTORY.txt"), encoding='utf-8') as f:
+with codecs.open(os.path.join("docs", "HISTORY.rst"),
+                 encoding='utf-8') as f:
     long_description += '\n' + f.read()
 
 setup(name='Products.GSProfile',
@@ -29,15 +30,15 @@ setup(name='Products.GSProfile',
       description="The Profile page in GroupServer",
       long_description=long_description,
       classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        "Environment :: Web Environment",
-        "Framework :: Zope2",
-        "Intended Audience :: Developers",
-        'License :: OSI Approved :: Zope Public License',
-        "Natural Language :: English",
-        "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
+          'Development Status :: 5 - Production/Stable',
+          "Environment :: Web Environment",
+          "Framework :: Zope2",
+          "Intended Audience :: Developers",
+          'License :: OSI Approved :: Zope Public License',
+          "Natural Language :: English",
+          "Operating System :: POSIX :: Linux",
+          "Programming Language :: Python",
+          "Topic :: Software Development :: Libraries :: Python Modules",
       ],
       keywords='',
       author='Michael JasonSmith',
