@@ -15,7 +15,6 @@
     file="browser/javascript/suggest_fn.js"
     permission="zope2.Public" />
 
-
   <!-- Form schemas -->
   <interface
     interface=".interfaces.IGSEmailAddressEntry" />
