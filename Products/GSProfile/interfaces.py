@@ -110,18 +110,6 @@ class IGSProfileContextMenuContentProvider(IContentProvider):
       description=u'The pages that are in the context of the profile.')
 
 
-class IGSFormWidgets(Interface):
-    widgets = List(title=u'Widgets',
-      description=u'Widgets to be displayed',
-      required=True,
-      unique=True)
-
-    pageTemplateFileName = Text(title=u"Page Template File Name",
-      description=u'The name of the ZPT file that is used to render the '
-        u'widgets.',
-      required=False,
-      default=u"browser/templates/form_widgets.pt")
-
 # Marker interfaces
 
 

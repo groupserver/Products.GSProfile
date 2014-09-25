@@ -111,10 +111,7 @@
     class=".userprofiles.GSUserProfiles"
     permission="zope2.View" />
 
-  <interface
-    interface=".interfaces.IGSFormWidgets"
-    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
-  <interface
+ <interface
     interface=".interfaces.IGSRequiredWidgetsJavaScriptContentProvider"
     type="zope.contentprovider.interfaces.ITALNamespaceData"/>
 

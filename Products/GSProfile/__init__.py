@@ -1,6 +1,6 @@
 # coding=utf-8
 import utils
-import formwidgets
+#import formwidgets
 import requiredwidgetsjavascript
 
 from AccessControl import ModuleSecurityInfo
