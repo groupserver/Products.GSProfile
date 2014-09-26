@@ -1,5 +1,5 @@
 # coding=utf-8
-from zope.schema import ASCIILine, Dict, URI, List, Text, ValidationError
+from zope.schema import ASCIILine, Dict, List, Text, ValidationError
 from zope.contentprovider.interfaces import IContentProvider
 from zope.interface import Interface
 from zope.component import createObject
@@ -12,28 +12,6 @@ try:
 except ImportError, e:
     pass
 
-# Address Forms
-
-
-class IGSEmailAddressEntry(Interface):
-    email = EmailAddress(title=u'Email Address',
-        description=u'Your email address.',
-        required=True)
-
-
-class IGSResendVerification(IGSEmailAddressEntry):
-    """Schema use to define the user-interface that the user uses to
-    resend his or her verification email, while in the middle of
-    registration."""
-
-
-class IGSVerifyWait(IGSEmailAddressEntry):
-    """Schema use to define the user-interface presented while the user
-    waits for verification of his or her email address."""
-
-    came_from = URI(title=u'Came From',
-      description=u'The page to return to after retistration has finished',
-      required=False)
 
 # Registration
 

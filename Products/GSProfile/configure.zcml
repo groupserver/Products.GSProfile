@@ -15,19 +15,7 @@
     file="browser/javascript/suggest_fn.js"
     permission="zope2.Public" />
 
-  <!-- Form schemas -->
-  <interface
-    interface=".interfaces.IGSEmailAddressEntry" />
-  <interface
-    interface=".interfaces.IGSResendVerification" />
-  <interface
-    interface=".interfaces.IGSVerifyAddress" />
-
-  <interface
-    interface=".interfaces.IGSAwaitingVerificationJavaScriptContentProvider"
-    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
-
-  <interface
+ <interface
     interface=".interfaceCoreProfile.IGSCoreProfile" />
 
   <include files="*-site.zcml" />
@@ -78,14 +66,6 @@
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     name="edit.html"
     class=".edit_profile.EditProfileForm"
-    permission="zope2.ManageProperties" />
-
-
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="email.html"
-    class=".email_settings.GSEmailSettings"
-    template="browser/templates/email_settings.pt"
     permission="zope2.ManageProperties" />
 
    <browser:page
