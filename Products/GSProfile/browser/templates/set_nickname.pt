@@ -1,4 +1,9 @@
-<html metal:use-macro="context/@@groupserver_layout/page">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="gs.profile.nickname"
+      metal:use-macro="context/@@groupserver_layout/page">
   <head>
     <title metal:fill-slot="title">
       <span tal:replace="view/label"/>:
@@ -11,7 +16,7 @@
       define="errors view/errors; status view/status; widgets view/widgets"
       metal:fill-slot="messages">&#160;</tal:block>
     <tal:block metal:fill-slot="contextnavigation">
-      <span 
+      <span
         tal:replace="structure provider:groupserver.ProfileContextMenu">
         Context Menu
       </span>
@@ -21,38 +26,39 @@
         tal:attributes="action request/URL" id="set-nickname">
         <h1 tal:content="view/label">Set Nickname</h1>
         <tal:block condition="python:not(view.allowSetNickname)">
-          <p>Your nickname has been set.
+          <p i18n:translate="">
+            Your nickname has been set.
             The link to your profile is
-            <a href="#" 
+            <a href="#" i18n:name="url"
               tal:define="url python:'%s%s' % (view.siteInfo.url, view.userInfo.url)"
               tal:attributes="href url">
               <code class="url" tal:content="url">http://stuff/</code></a>.
           </p>
         </tal:block>
         <tal:block condition="view/allowSetNickname">
-          <p>
+          <p i18n:translate="" class="intro">
             Your nickname is used to navigate to your profile, rather than
             your user identifier (which is automatically assigned to you
             when your profile is created).
             By setting a nickname you make it easier to share the link to
-            your profile, by making the link more memorable &#8212; and 
+            your profile, by making the link more memorable &#8212; and
             potentially more meaningful.
             Currently, the link to your profile looks like
-            <a href="#" 
+            <a href="#" i18n:name="url"
               tal:define="url python:'%s%s' % (view.siteInfo.url, view.userInfo.url)"
               tal:attributes="href url">
               <code class="url" tal:content="url">http://stuff/</code></a>.
           </p>
-          <p>
+          <p i18n:translate="">
             To set your nickname, enter it in the entry below, and click
             the
-            <samp class="button" 
+            <samp class="button" i18n:name="button"
               tal:define="action python:[a for a in view.actions][0].label"
               tal:content="action">Big R</samp>
             button.
             Once set, all links to your profile will change; the old link
             will still work.
-            However, you cannot change your nickname once set, so 
+            However, you cannot change your nickname once set, so
             <strong>choose carefully!</strong>
           </p>
           <tal:block define="widgets view/widgets">
@@ -69,23 +75,9 @@
       </form>
     </tal:block>
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript"
-        src="/++resource++check_required-20071214.js">&#160;</script>
-      <script type="text/javascript"
-        tal:define="widgets view/widgets; 
-          button string:#form\\.actions\\.set"
-        tal:content="provider:groupserver.RequiredWidgetsJavaScript">
-        alert("I have not been replaced.");
-      </script>
-      <script type="text/javascript"
-        src="/++resource++popup_help-20071218.js">&#160;</script>
       <script type="text/javascript">
-        jQuery.noConflict()
-        jQuery(document).ready( function () {
-            GSPopupFormHelp.init('#set-nickname');
-        });
+        document.getElementById('set-nickname').focus();
       </script>
     </tal:block>
   </body>
 </html>
-
