@@ -8,12 +8,12 @@ from zope.formlib import form
 from zope.schema import getFieldsInOrder
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.CustomUserFolder.interfaces import IGSUserInfo
-from Products.GSProfile.profileaudit import profile_interface, ProfileAuditer,\
-    CHANGE_PROFILE
+from Products.GSProfile.profileaudit import (
+    profile_interface, ProfileAuditer, CHANGE_PROFILE)
 from Products.XWFCore.XWFUtils import comma_comma_and
     #lint:disable
 from gs.content.form.base import (SiteForm, select_widget,
-    multi_check_box_widget)
+                                  multi_check_box_widget)
     #lint:enable
 from .utils import enforce_schema
 
@@ -72,9 +72,11 @@ class EditProfileForm(SiteForm):
         else:
             self.status = u'<p>There are errors:</p>'
 
-    def set_data(self, data, skip=[]):
+    def set_data(self, data, skip=None):
         assert self.context
         assert self.form_fields
+        if skip is None:
+            skip = []
 
         alteredFields = self.audit_and_get_changed(data, skip)
 
@@ -90,7 +92,9 @@ class EditProfileForm(SiteForm):
         assert type(retval) == unicode
         return retval
 
-    def audit_and_get_changed(self, data, skip=[]):
+    def audit_and_get_changed(self, data, skip=None):
+        if skip is None:
+            skip = []
         fields = [field for field in getFieldsInOrder(self.interface)
                   if not field[1].readonly]
         # --=mpj17=-- There *must* be a better way to skip the joinable
