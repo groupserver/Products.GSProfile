@@ -24,8 +24,10 @@ profile is now in `gs.profile.view`_.
 Resources
 =========
 
-- Code repository: https://github.com/groupserver/Products.GSProfile
-- Questions and comments to http://groupserver.org/groups/development
+- Code repository:
+  https://github.com/groupserver/Products.GSProfile
+- Questions and comments to
+  http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
 
 .. _GroupServer: http://groupserver.org/
