@@ -232,11 +232,3 @@ class IGSCreateUserCSV(Interface):
         u'membership information you wish to load.',
       required=True,
       default=None)
-
-
-class IGSRequestContact(Interface):
-    message = TextLine(title=u'Message',
-        description=u'A message that will appear in the email to the person.'
-         ' It should be brief as only 140 characters are allowed.',
-        max_length=140,
-        required=False)

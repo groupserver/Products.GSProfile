@@ -75,13 +75,6 @@
     template="browser/templates/set_nickname.pt"
     permission="zope2.ManageProperties" />
 
-   <browser:page
-    for="Products.CustomUserFolder.interfaces.ICustomUser"
-    name="request_contact.html"
-    class=".request_contact.GSRequestContact"
-    template="browser/templates/request_contact.pt"
-    permission="zope2.View" />
-
   <interface
     interface=".interfaces.IGSUserProfiles" />
   <browser:page

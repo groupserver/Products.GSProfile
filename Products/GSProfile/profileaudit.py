@@ -22,7 +22,7 @@ SET_PASSWORD    = '1'
 CHANGE_PROFILE  = '2'
 REGISTER        = '3'
 CREATE_USER     = '4'
-REQUEST_CONTACT = '5'
+# REQUEST_CONTACT = '5' #  Now moved to gs.profile.contact
 class ProfileAuditEventFactory(object):
     implements(IFactory)
 
@@ -43,10 +43,6 @@ class ProfileAuditEventFactory(object):
               instanceDatum, supplementaryDatum)
         elif (code == REGISTER):
             event = RegisterEvent(context, event_id, date,
-              userInfo, instanceUserInfo, siteInfo,
-              instanceDatum, supplementaryDatum)
-        elif (code == REQUEST_CONTACT):
-            event = RequestContactEvent(context, event_id, date,
               userInfo, instanceUserInfo, siteInfo,
               instanceDatum, supplementaryDatum)
         else:
@@ -207,31 +203,6 @@ class CreateUserEvent(BasicAuditEvent):
         retval = u'%s (%s)' % \
           (retval, munge_date(self.context, self.date))
         return retval
-
-class RequestContactEvent(BasicAuditEvent):
-    """ A user requests contact with the user.
-
-
-    """
-    implements(IAuditEvent)
-
-    def __init__(self, context, id, d, userInfo, instanceUserInfo,
-        siteInfo, instanceDatum,  supplementaryDatum):
-
-        BasicAuditEvent.__init__(self, context, id,
-          REQUEST_CONTACT, d, userInfo, instanceUserInfo,
-          siteInfo, None,  instanceDatum, supplementaryDatum,
-          SUBSYSTEM)
-
-    def __unicode__(self):
-        m = u'{0} ({1}) requested contact with {2} ({3})'
-        retval = m.format(self.userInfo.name, self.userInfo.id,
-                        self.instanceUserInfo.name, self.instanceUserInfo.id)
-        return retval
-
-    @property
-    def xhtml(self):
-        return unicode(self)
 
 
 class ProfileAuditer(object):
